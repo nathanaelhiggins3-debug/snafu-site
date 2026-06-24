@@ -57,6 +57,11 @@
     var here = c.slug === current ? ' aria-current="page"' : "";
     return '<a href="' + base + c.slug + '/"' + here + ">" + c.label + "</a>";
   }).join("");
+  // Same links, larger, for the mobile drop-down menu.
+  var navLinksMobile = SECTIONS.map(function (c) {
+    var here = c.slug === current ? ' aria-current="page"' : "";
+    return '<a class="mobile-menu__link" href="' + base + c.slug + '/"' + here + ">" + c.label + "</a>";
+  }).join("");
 
   // --- CART COUNT ---------------------------------------------
   // Forward-compatible: reads the cart localStorage that Phase 2's
@@ -72,12 +77,19 @@
   var header =
     '<header class="site-header">' +
       '<div class="wrap site-header__bar">' +
+        '<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">' +
+          '<span></span><span></span><span></span>' +
+        "</button>" +
         '<a class="logo" href="' + base + 'index.html">SNAFU<span>.</span></a>' +
         '<nav class="nav">' + navLinks + "</nav>" +
         '<div class="site-header__right">' +
           '<a class="cart-link" href="' + base + 'cart/">Cart <span class="cart-count" data-cart-count>' + cartCount() + "</span></a>" +
           '<button class="stamp" type="button" aria-pressed="false">SITUATION: NORMAL</button>' +
         "</div>" +
+      "</div>" +
+      '<div class="mobile-menu" id="mobile-menu" hidden>' +
+        '<nav class="mobile-menu__nav">' + navLinksMobile + "</nav>" +
+        '<button class="stamp stamp--menu" type="button" aria-pressed="false">SITUATION: NORMAL</button>' +
       "</div>" +
     "</header>";
 
@@ -99,12 +111,39 @@
   document.body.insertAdjacentHTML("beforeend", footer);
 
   // --- SITUATION stamp toggle ---------------------------------
-  var stamp = document.querySelector(".stamp");
-  stamp.addEventListener("click", function () {
-    var snafu = stamp.classList.toggle("is-snafu");
-    stamp.textContent = snafu ? "SITUATION: ALL F'D UP" : "SITUATION: NORMAL";
-    stamp.setAttribute("aria-pressed", snafu ? "true" : "false");
+  // There can be two stamps (header bar + mobile menu); keep them in sync.
+  var stamps = document.querySelectorAll(".stamp");
+  var stampOn = false;
+  function paintStamps() {
+    for (var i = 0; i < stamps.length; i++) {
+      stamps[i].classList.toggle("is-snafu", stampOn);
+      stamps[i].textContent = stampOn ? "SITUATION: ALL F'D UP" : "SITUATION: NORMAL";
+      stamps[i].setAttribute("aria-pressed", stampOn ? "true" : "false");
+    }
+  }
+  for (var s = 0; s < stamps.length; s++) {
+    stamps[s].addEventListener("click", function () { stampOn = !stampOn; paintStamps(); });
+  }
+
+  // --- Mobile hamburger menu ----------------------------------
+  var toggle = document.querySelector(".nav-toggle");
+  var menu = document.getElementById("mobile-menu");
+  function closeMenu() {
+    menu.setAttribute("hidden", "");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.classList.remove("is-open");
+  }
+  function openMenu() {
+    menu.removeAttribute("hidden");
+    toggle.setAttribute("aria-expanded", "true");
+    toggle.classList.add("is-open");
+  }
+  toggle.addEventListener("click", function () {
+    if (menu.hasAttribute("hidden")) openMenu(); else closeMenu();
   });
+  // Tapping a menu link closes the menu (it then navigates).
+  var mlinks = menu.querySelectorAll("a");
+  for (var m = 0; m < mlinks.length; m++) mlinks[m].addEventListener("click", closeMenu);
 
   // --- Live cart badge ----------------------------------------
   // js/cart.js fires "snafu:cart" on add/remove; "storage" fires when

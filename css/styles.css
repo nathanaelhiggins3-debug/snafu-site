@@ -199,7 +199,7 @@ a   { color: inherit; }
   font-family: var(--display);
   font-weight: 900;
   text-transform: uppercase;
-  font-size: clamp(72px, 20vw, 260px);
+  font-size: clamp(56px, 18vw, 260px);
   line-height: 0.9;
   letter-spacing: -0.01em;
   margin: 0;
@@ -435,6 +435,31 @@ a   { color: inherit; }
 .cart-link:hover { border-bottom-color: var(--ink); }
 .cart-count { color: var(--red); }
 
+/* Hamburger toggle — hidden on desktop, shown on mobile via the query below */
+.nav-toggle {
+  display: none;
+  flex-direction: column; justify-content: center; gap: 5px;
+  width: 42px; height: 42px; padding: 9px;
+  background: transparent; border: 2px solid var(--ink); border-radius: 2px; cursor: pointer;
+}
+.nav-toggle span { display: block; height: 2px; width: 100%; background: var(--ink);
+  transition: transform 0.18s ease, opacity 0.18s ease; }
+.nav-toggle.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.is-open span:nth-child(2) { opacity: 0; }
+.nav-toggle.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile drop-down menu panel */
+.mobile-menu { display: none; border-top: 2px solid var(--ink); background: var(--cream);
+  padding: 6px var(--gut) 22px; }
+.mobile-menu__nav { display: flex; flex-direction: column; }
+.mobile-menu__link {
+  font-family: var(--display); font-weight: 700; text-transform: uppercase;
+  font-size: 30px; letter-spacing: 0.01em; line-height: 1; text-decoration: none;
+  padding: 16px 2px; border-bottom: 1px solid var(--ink-12);
+}
+.mobile-menu__link[aria-current="page"] { color: var(--red); }
+.stamp--menu { margin-top: 20px; }
+
 /* ---- 14. HERO CTA + reusable button (light variant) -------- */
 .hero__cta { margin-top: 30px; }
 /* A second button skin for cream-on-ink contexts (hero, teaser). */
@@ -571,7 +596,12 @@ a   { color: inherit; }
   .teaser { grid-template-columns: 1fr; gap: 18px; }
 }
 @media (max-width: 680px) {
+  /* Header: swap inline nav + in-bar stamp for the hamburger menu. */
   .nav { display: none; }
+  .nav-toggle { display: flex; }
+  .site-header__right .stamp { display: none; } /* the stamp lives in the menu now */
+  .mobile-menu:not([hidden]) { display: block; }
+  .site-header__bar { gap: 12px; }
   .trust { grid-template-columns: 1fr; }
   .index__item { grid-template-columns: 56px 1fr; }
   .index__desc { display: none; }
