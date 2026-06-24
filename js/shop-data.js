@@ -10,7 +10,7 @@
    - price:   a string. Use "—" for sold/POA.
    ============================================================ */
 
-window.SNAFU_SHOP = [
+var SNAFU_SHOP = [
   {
     id: "raf-bomber-01",
     name: "Bomber, Re-cut",
@@ -127,3 +127,9 @@ window.SNAFU_SHOP = [
     }
   }
 ];
+
+// One source of truth, usable in BOTH the browser (window.SNAFU_SHOP) and the
+// Netlify checkout function (require(...) -> module.exports). The server reads
+// prices from here so it never trusts amounts sent by the client.
+if (typeof window !== "undefined") window.SNAFU_SHOP = SNAFU_SHOP;
+if (typeof module !== "undefined" && module.exports) module.exports = SNAFU_SHOP;

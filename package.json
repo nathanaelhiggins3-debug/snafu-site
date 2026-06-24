@@ -1,0 +1,12 @@
+{
+  "name": "snafu-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SNAFU — static site with Stripe Checkout via a Netlify Function.",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "stripe": "^22.2.0"
+  }
+}

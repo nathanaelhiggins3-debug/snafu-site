@@ -1,0 +1,9 @@
+# Netlify config for the SNAFU static site + checkout function.
+# The site is plain static files served from the repo root; the only
+# server-side piece is the Stripe checkout function.
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# No build step — these are hand-edited static files.

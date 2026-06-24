@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNAFU. — Order received</title>
+  <meta name="description" content="Your SNAFU order was received." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../css/styles.css?v=6" />
+</head>
+<body>
+
+  <section class="page-head wrap">
+    <p class="code page-head__index code--red">&#8224; Situation: resolved</p>
+    <h1 class="page-head__title">Received</h1>
+    <p class="page-head__lede">Payment confirmed in test mode. Your piece is held — each one is one-of-one, so it's now off the board.</p>
+    <p>We file and pack by hand; you'll get a confirmation and shipping note from us directly. Thank you for collecting with SNAFU.</p>
+    <a class="backlink" href="../shop/">&larr; Back to the Shop</a>
+  </section>
+
+  <!-- Clear the cart now that the order is placed. -->
+  <script src="../js/cart.js"></script>
+  <script>
+    if (window.SNAFU_CART) window.SNAFU_CART.clear();
+  </script>
+  <script src="../js/site.js"></script>
+</body>
+</html>
