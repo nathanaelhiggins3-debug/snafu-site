@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../css/styles.css?v=7" />
+  <link rel="stylesheet" href="../css/styles.css?v=8" />
 </head>
 <body>
 
@@ -26,6 +26,14 @@
     </div>
 
     <p class="play__hint code">WASD or arrow keys to steer &middot; eat the stars &middot; don't hit the walls</p>
+
+    <!-- On-screen controls — shown on touch / small screens (see CSS). -->
+    <div class="dpad" id="dpad" role="group" aria-label="Game controls">
+      <button class="dpad__btn dpad__btn--up" type="button" data-dir="up" aria-label="Up">&#9650;</button>
+      <button class="dpad__btn dpad__btn--left" type="button" data-dir="left" aria-label="Left">&#9664;</button>
+      <button class="dpad__btn dpad__btn--down" type="button" data-dir="down" aria-label="Down">&#9660;</button>
+      <button class="dpad__btn dpad__btn--right" type="button" data-dir="right" aria-label="Right">&#9654;</button>
+    </div>
   </section>
 
   <!-- ===== THE GAME (vanilla JS, no libraries) ===== -->
@@ -216,7 +224,22 @@
     }
     function hideOverlay() { overlay.classList.add("is-hidden"); }
 
-    // ----- input: WASD (spec) + arrow keys (bonus) -----
+    // ----- input -----
+    // One entry point for every control: keyboard AND the on-screen D-pad.
+    function steer(d) {
+      if (dead) return;            // ignore during the GAME OVER hold
+      if (!started) {
+        started = true;
+        setDir(d);
+        dir = nextDir;             // first move honors the chosen direction
+        hideOverlay();
+        timer = setInterval(tick, SPEED);
+      } else {
+        setDir(d);
+      }
+    }
+
+    // WASD (spec) + arrow keys (bonus) — desktop.
     document.addEventListener("keydown", function (e) {
       var k = e.key.toLowerCase();
       var d = null;
@@ -226,18 +249,35 @@
       else if (k === "d" || k === "arrowright") d = { x: 1, y: 0 };
       if (!d) return;
       if (k.indexOf("arrow") === 0) e.preventDefault(); // stop page scroll
-      if (dead) return;                                  // ignore during GAME OVER hold
-
-      if (!started) {
-        started = true;
-        setDir(d);
-        dir = nextDir;          // first move honors the chosen direction
-        hideOverlay();
-        timer = setInterval(tick, SPEED);
-      } else {
-        setDir(d);
-      }
+      steer(d);
     });
+
+    // On-screen D-pad — touch / mobile.
+    var DPAD_DIRS = {
+      up: { x: 0, y: -1 }, down: { x: 0, y: 1 },
+      left: { x: -1, y: 0 }, right: { x: 1, y: 0 }
+    };
+    var dpad = document.getElementById("dpad");
+    if (dpad) {
+      function fromButton(e) {
+        var b = e.target.closest("[data-dir]");
+        if (!b) return null;
+        return DPAD_DIRS[b.getAttribute("data-dir")];
+      }
+      // touchstart for instant response; preventDefault suppresses the
+      // follow-up synthetic click (so we don't steer twice) and page scroll.
+      dpad.addEventListener("touchstart", function (e) {
+        var d = fromButton(e);
+        if (!d) return;
+        e.preventDefault();
+        steer(d);
+      }, { passive: false });
+      // click covers mouse / non-touch use of the buttons.
+      dpad.addEventListener("click", function (e) {
+        var d = fromButton(e);
+        if (d) steer(d);
+      });
+    }
 
     reset();
   })();
