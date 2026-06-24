@@ -10,7 +10,7 @@
    steps up one level into /fonts/. Filename has three underscores. */
 @font-face {
   font-family: "Libra";
-  src: url("../fonts/LIBRA___.TTF?v=2") format("truetype");
+  src: url("../fonts/Libra.ttf") format("truetype"); /* rebuilt clean: original LIBRA___.TTF had a malformed post table that desktop OTS rejected */
   font-weight: 100 900;   /* one static file answers for every headline weight (700/900) */
   font-style: normal;
   font-display: swap;
