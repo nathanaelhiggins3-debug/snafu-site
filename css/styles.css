@@ -10,7 +10,7 @@
    steps up one level into /fonts/. Filename has three underscores. */
 @font-face {
   font-family: "Libra";
-  src: url("../fonts/LIBRA___.TTF?v=1") format("truetype");
+  src: url("../fonts/LIBRA___.TTF?v=2") format("truetype");
   font-weight: 100 900;   /* one static file answers for every headline weight (700/900) */
   font-style: normal;
   font-display: swap;
@@ -147,11 +147,12 @@ a   { color: inherit; }
 }
 .logo span { color: var(--red); }
 
-.nav { display: flex; gap: 26px; align-items: center; }
+.nav { display: flex; gap: 22px; align-items: center; }
 .nav a {
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.08em;
+  font-family: var(--display);   /* Libra — matches the mobile menu + wordmark */
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   text-decoration: none;
   padding-bottom: 3px;
@@ -225,6 +226,7 @@ a   { color: inherit; }
 .hero__pron .hero__pos { font-style: italic; }
 .hero__pron .hero__hint { color: var(--red); margin-left: 6px; }
 .hero__def {
+  font-family: var(--serif);   /* Newsreader — the dictionary definition */
   max-width: 54ch;
   margin-top: 16px;
   font-size: clamp(18px, 2.2vw, 23px);
@@ -308,7 +310,7 @@ a   { color: inherit; }
 }
 .entry__title a { text-decoration: none; }
 .entry__title a:hover { color: var(--red); font-style: italic; }
-.entry__body { margin: 0; max-width: 64ch; }
+.entry__body { font-family: var(--serif); margin: 0; max-width: 64ch; }
 .entry__tags { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
 .tag {
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
@@ -403,7 +405,7 @@ a   { color: inherit; }
 }
 .detail__price { font-family: var(--display); font-weight: 700; font-size: 26px; margin: 0 0 4px; }
 .detail__price.is-sold { color: var(--red); }
-.detail__desc { margin: 22px 0; max-width: 52ch; }
+.detail__desc { font-family: var(--serif); margin: 22px 0; max-width: 52ch; }
 .specs { border-top: 2px solid var(--ink); margin-top: 22px; }
 .specs__row {
   display: flex; justify-content: space-between; gap: 20px;
