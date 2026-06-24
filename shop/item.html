@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNAFU. — Shop piece</title>
+  <meta name="description" content="A one-of-one piece from the SNAFU Shop." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../css/styles.css?v=5" />
+</head>
+<body>
+
+  <section class="wrap" style="padding-top:28px;">
+    <a class="backlink" href="index.html">&larr; Back to Shop</a>
+    <!-- Everything below is filled in by the script from the ?id= in the URL -->
+    <div id="detail"></div>
+  </section>
+
+  <script src="../js/shop-data.js"></script>
+  <script>
+    (function () {
+      // Read the ?id=... from the address bar.
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get("id");
+      var piece = window.SNAFU_SHOP.filter(function (p) { return p.id === id; })[0];
+      var mount = document.getElementById("detail");
+
+      if (!piece) {
+        mount.innerHTML =
+          '<div class="page-head"><h1 class="page-head__title" style="font-size:56px;">Not filed</h1>' +
+          '<p class="page-head__lede">That piece isn\'t in the Shop. It may already be gone.</p></div>';
+        document.title = "SNAFU. — Not filed";
+        return;
+      }
+
+      document.title = "SNAFU. — " + piece.name;
+      var sold = piece.status !== "AVAILABLE";
+
+      // Spec rows
+      var specRows = Object.keys(piece.specs).map(function (k) {
+        return '<div class="specs__row"><dt>' + k + '</dt><dd>' + piece.specs[k] + '</dd></div>';
+      }).join("");
+
+      // Tags
+      var tags = piece.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join("");
+
+      // Buy button: live when available, disabled otherwise.
+      // (Wires to Stripe later — for now it's a placeholder.)
+      var action = sold
+        ? '<span class="btn is-disabled">' + piece.status.charAt(0) + piece.status.slice(1).toLowerCase() + '</span>'
+        : '<a class="btn" href="#">Acquire <span class="orn">&#10022;</span></a>';
+
+      mount.innerHTML =
+        '<div class="detail">' +
+          '<div class="detail__media">' +
+            '<div class="detail__frame"><span class="product__id">' + piece.id + '</span></div>' +
+            '<div class="detail__thumbs">' +
+              '<div class="detail__thumb"></div><div class="detail__thumb"></div>' +
+              '<div class="detail__thumb"></div><div class="detail__thumb"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="detail__info">' +
+            '<p class="code code--red">' + piece.year + ' <span class="orn">&#8224;</span> ' + piece.origin + '</p>' +
+            '<h1 class="detail__name">' + piece.name + '</h1>' +
+            '<p class="detail__price' + (sold ? ' is-sold' : '') + '">' +
+              (sold ? piece.status.charAt(0) + piece.status.slice(1).toLowerCase() : piece.price) +
+            '</p>' +
+            '<div class="entry__tags">' + tags + '</div>' +
+            '<p class="detail__desc">' + piece.details + '</p>' +
+            '<dl class="specs">' + specRows + '</dl>' +
+            action +
+          '</div>' +
+        '</div>';
+    })();
+  </script>
+  <script src="../js/site.js"></script>
+</body>
+</html>

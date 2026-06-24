@@ -1,0 +1,11 @@
+# OS / editor cruft
+.DS_Store
+.obsidian/
+
+# Secrets — never commit (Stripe keys etc. land here in a later phase)
+.env
+.env.*
+!.env.example
+
+# Node (for the future serverless/Stripe phase)
+node_modules/
