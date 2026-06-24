@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../css/styles.css?v=5" />
+  <link rel="stylesheet" href="../css/styles.css?v=6" />
 </head>
 <body>
 
@@ -26,13 +26,23 @@
     <div class="products" id="product-grid"></div>
   </section>
 
-  <!-- data first, then the renderer, then shared chrome -->
+  <!-- data first, then cart helper, then the renderer, then shared chrome -->
   <script src="../js/shop-data.js"></script>
+  <script src="../js/cart.js"></script>
   <script>
     (function () {
       var grid = document.getElementById("product-grid");
+
+      function addLabel(p) {
+        return window.SNAFU_CART.has(p.id) ? "In Cart ✓" : "Add to Cart";
+      }
+
       grid.innerHTML = window.SNAFU_SHOP.map(function (p) {
         var sold = p.status !== "AVAILABLE";
+        // Available pieces get an Add button; sold/reserved pieces don't.
+        var addBtn = sold ? "" :
+          '<button class="product__add" type="button" data-add="' + p.id + '"' +
+            (window.SNAFU_CART.has(p.id) ? " disabled" : "") + ">" + addLabel(p) + "</button>";
         return (
           '<a class="product" href="item.html?id=' + p.id + '">' +
             '<div class="product__frame">' +
@@ -44,9 +54,28 @@
             '<div class="product__price' + (sold ? ' is-sold' : '') + '">' +
               (sold ? p.status.charAt(0) + p.status.slice(1).toLowerCase() : p.price) +
             '</div>' +
+            addBtn +
           '</a>'
         );
       }).join("");
+
+      // The Add button lives inside the card link, so cancel the navigation
+      // and add the piece to the cart instead.
+      grid.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-add]");
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var id = btn.getAttribute("data-add");
+        var p = window.SNAFU_SHOP.filter(function (x) { return x.id === id; })[0];
+        if (!p) return;
+        window.SNAFU_CART.add({
+          id: p.id, title: p.name, brand: p.year + " · " + p.origin,
+          price: p.price, image: null
+        });
+        btn.textContent = "In Cart ✓";
+        btn.disabled = true;
+      });
     })();
   </script>
   <script src="../js/site.js"></script>

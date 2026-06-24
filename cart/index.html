@@ -10,17 +10,84 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../css/styles.css?v=5" />
+  <link rel="stylesheet" href="../css/styles.css?v=6" />
 </head>
 <body>
 
   <section class="page-head wrap">
     <p class="code page-head__index">&#8224; The counter</p>
     <h1 class="page-head__title">Cart</h1>
-    <p class="page-head__lede">Nothing claimed yet. The cart and checkout come online in the next build — for now this is a placeholder.</p>
     <a class="backlink" href="../shop/">&larr; Back to the Shop</a>
   </section>
 
+  <section class="wrap">
+    <div id="cart-root"></div>
+  </section>
+
+  <script src="../js/cart.js"></script>
+  <script>
+    (function () {
+      var root = document.getElementById("cart-root");
+
+      function money(n) {
+        return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+      }
+
+      function render() {
+        var items = window.SNAFU_CART.read();
+
+        if (!items.length) {
+          root.innerHTML =
+            '<div class="cart-empty">' +
+              '<p class="cart-empty__title">Your cart is empty</p>' +
+              '<p class="code">Nothing claimed yet — the Shop is one-of-one, so move quick.</p>' +
+              '<a class="btn btn--ghost" href="../shop/">Browse the Shop <span class="orn">&#10022;</span></a>' +
+            '</div>';
+          return;
+        }
+
+        var rows = items.map(function (it) {
+          var line = window.SNAFU_CART.priceToNumber(it.price) * (it.qty || 1);
+          return (
+            '<div class="cart-row">' +
+              '<div class="cart-row__thumb"><span class="product__id">' + it.id + '</span></div>' +
+              '<div class="cart-row__info">' +
+                '<h2 class="cart-row__title">' + it.title + '</h2>' +
+                '<div class="cart-row__brand code">' + (it.brand || "") + '</div>' +
+              '</div>' +
+              '<div class="cart-row__qty code">Qty ' + (it.qty || 1) + '</div>' +
+              '<div class="cart-row__price">' + money(line) + '</div>' +
+              '<button class="cart-row__remove" type="button" data-remove="' + it.id + '">Remove</button>' +
+            '</div>'
+          );
+        }).join("");
+
+        root.innerHTML =
+          '<div class="cart-list">' + rows + '</div>' +
+          '<div class="cart-foot">' +
+            '<div class="cart-foot__sub">' +
+              '<span class="code">Subtotal</span>' +
+              '<span class="cart-foot__total">' + money(window.SNAFU_CART.subtotal()) + '</span>' +
+            '</div>' +
+            '<button class="btn is-disabled" disabled>Checkout — coming soon</button>' +
+            '<p class="code cart-foot__note">Stripe checkout arrives in a later phase. This is a working cart preview — no real payment yet.</p>' +
+          '</div>';
+      }
+
+      // Remove buttons (event-delegated so they work after every re-render).
+      root.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-remove]");
+        if (!btn) return;
+        window.SNAFU_CART.remove(btn.getAttribute("data-remove"));
+        render();
+      });
+
+      // Re-render if the cart changes elsewhere (e.g. another tab).
+      window.addEventListener("snafu:cart", render);
+
+      render();
+    })();
+  </script>
   <script src="../js/site.js"></script>
 </body>
 </html>

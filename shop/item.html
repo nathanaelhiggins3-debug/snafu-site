@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../css/styles.css?v=5" />
+  <link rel="stylesheet" href="../css/styles.css?v=6" />
 </head>
 <body>
 
@@ -21,6 +21,7 @@
   </section>
 
   <script src="../js/shop-data.js"></script>
+  <script src="../js/cart.js"></script>
   <script>
     (function () {
       // Read the ?id=... from the address bar.
@@ -48,11 +49,13 @@
       // Tags
       var tags = piece.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join("");
 
-      // Buy button: live when available, disabled otherwise.
-      // (Wires to Stripe later — for now it's a placeholder.)
+      // Buy button: adds to the (mock) cart when available, disabled otherwise.
+      // (Real Stripe checkout wires in from the cart in a later phase.)
+      var inCart = window.SNAFU_CART.has(piece.id);
       var action = sold
         ? '<span class="btn is-disabled">' + piece.status.charAt(0) + piece.status.slice(1).toLowerCase() + '</span>'
-        : '<a class="btn" href="#">Acquire <span class="orn">&#10022;</span></a>';
+        : '<button class="btn" type="button" id="add-btn"' + (inCart ? " disabled" : "") + ">" +
+            (inCart ? "In Cart ✓" : "Add to Cart") + "</button>";
 
       mount.innerHTML =
         '<div class="detail">' +
@@ -75,6 +78,19 @@
             action +
           '</div>' +
         '</div>';
+
+      // Wire the Add to Cart button (only present when the piece is available).
+      var addBtn = document.getElementById("add-btn");
+      if (addBtn) {
+        addBtn.addEventListener("click", function () {
+          window.SNAFU_CART.add({
+            id: piece.id, title: piece.name, brand: piece.year + " · " + piece.origin,
+            price: piece.price, image: null
+          });
+          addBtn.textContent = "In Cart ✓";
+          addBtn.disabled = true;
+        });
+      }
     })();
   </script>
   <script src="../js/site.js"></script>

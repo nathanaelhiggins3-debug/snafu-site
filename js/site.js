@@ -105,4 +105,17 @@
     stamp.textContent = snafu ? "SITUATION: ALL F'D UP" : "SITUATION: NORMAL";
     stamp.setAttribute("aria-pressed", snafu ? "true" : "false");
   });
+
+  // --- Live cart badge ----------------------------------------
+  // js/cart.js fires "snafu:cart" on add/remove; "storage" fires when
+  // another tab changes the cart. Either way, re-read and update the count.
+  function refreshBadge() {
+    var c = cartCount();
+    var els = document.querySelectorAll("[data-cart-count]");
+    for (var i = 0; i < els.length; i++) els[i].textContent = c;
+  }
+  window.addEventListener("snafu:cart", refreshBadge);
+  window.addEventListener("storage", function (e) {
+    if (e.key === "snafu_cart") refreshBadge();
+  });
 })();
