@@ -15,7 +15,6 @@
 <body>
 
   <section class="page-head wrap">
-    <p class="code page-head__index">&#8224; The counter</p>
     <h1 class="page-head__title">Cart</h1>
     <a class="backlink" href="../shop/">&larr; Back to the Shop</a>
   </section>
@@ -41,7 +40,7 @@
             '<div class="cart-empty">' +
               '<p class="cart-empty__title">Your cart is empty</p>' +
               '<p class="code">Nothing claimed yet — the Shop is one-of-one, so move quick.</p>' +
-              '<a class="btn btn--ghost" href="../shop/">Browse the Shop <span class="orn">&#10022;</span></a>' +
+              '<a class="btn btn--ghost" href="../shop/">Browse the Shop</a>' +
             '</div>';
           return;
         }
@@ -69,7 +68,7 @@
               '<span class="code">Subtotal</span>' +
               '<span class="cart-foot__total">' + money(window.SNAFU_CART.subtotal()) + '</span>' +
             '</div>' +
-            '<button class="btn" type="button" id="checkout-btn">Checkout <span class="orn">&#10022;</span></button>' +
+            '<button class="btn" type="button" id="checkout-btn">Checkout</button>' +
             '<p class="code cart-foot__note" id="checkout-note">Secure payment via Stripe (test mode). Test card: 4242 4242 4242 4242, any future date / CVC.</p>' +
           '</div>';
       }
@@ -99,7 +98,7 @@
           })
           .catch(function (err) {
             btn.disabled = false;
-            btn.innerHTML = "Checkout <span class=\"orn\">&#10022;</span>";
+            btn.innerHTML = "Checkout";
             note.textContent = "Couldn't start checkout: " + err.message +
               "  (Checkout needs `netlify dev` locally or a deploy — the plain python server has no functions.)";
             note.style.color = "var(--red)";

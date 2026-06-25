@@ -21,9 +21,7 @@
     "SNAFU — Los Angeles",
     "New in Shop: three 1/1 pieces filed this week",
     "Goods drop incoming — sign up for first access",
-    "When it's gone, it's gone",
-    "Global hub for fashion, culture & rare finds",
-    "Situation: developing"
+    "When it's gone, it's gone"
   ];
 
   // --- Where does this page live? -----------------------------
@@ -45,7 +43,7 @@
   // Build one run of items, then duplicate it so the scroll loops
   // seamlessly (the CSS slides exactly one copy's width).
   var oneRun = BROADCAST.map(function (line) {
-    return '<span class="ticker__item">' + line + ' <span class="orn">&#10022;</span></span>';
+    return '<span class="ticker__item">' + line + '</span>';
   }).join("");
   var ticker =
     '<div class="ticker" aria-hidden="true">' +
@@ -99,8 +97,7 @@
     '<footer class="site-footer">' +
       '<div class="wrap site-footer__bar">' +
         '<div class="site-footer__logo">SNAFU<span style="color:var(--red)">.</span></div>' +
-        '<div class="code">A global hub for fashion, culture &amp; rare 1/1 finds</div>' +
-        '<div class="code">Los Angeles <span class="orn">&#8224;</span> &copy; ' + year + "</div>" +
+        '<div class="code">Los Angeles &copy; ' + year + "</div>" +
       "</div>" +
     "</footer>";
 
