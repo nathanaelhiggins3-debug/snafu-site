@@ -33,7 +33,7 @@
   // file:// path, not just on a web server.
   var path = window.location.pathname;
   var SUBDIRS = SECTIONS.map(function (s) { return s.slug; })
-    .concat(["cart", "checkout", "brands", "about"]); // non-nav subfolders
+    .concat(["cart", "checkout"]); // non-nav subfolders
   var current = null; // which SECTION nav link to mark active (sections only)
   for (var i = 0; i < SECTIONS.length; i++) {
     if (path.indexOf("/" + SECTIONS[i].slug + "/") !== -1) current = SECTIONS[i].slug;

@@ -2,8 +2,9 @@
    SNAFU — cart (mock, client-side)
    One source of truth for the shopping cart. Stores items in
    localStorage under "snafu_cart" so they persist across page
-   loads and navigation. No backend, no Stripe yet — that's a
-   later phase. Every change fires a "snafu:cart" event so the
+   loads and navigation. Checkout itself is real: the cart POSTs
+   to the Netlify function, which builds the Stripe session from the
+   server-side catalog. Every change fires a "snafu:cart" event so the
    header badge (built in site.js) updates live.
 
    An item looks like:

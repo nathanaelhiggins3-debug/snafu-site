@@ -351,7 +351,7 @@ a   { color: inherit; }
 .shot--sq   { grid-column: span 4; } .shot--sq   .shot__frame { aspect-ratio: 1/1; }
 .shot--half { grid-column: span 6; } .shot--half .shot__frame { aspect-ratio: 3/2; }
 
-/* ---- 11. PRODUCT GRID (Archive / Supply) ------------------- */
+/* ---- 11. PRODUCT GRID (Shop / Goods) ----------------------- */
 .products {
   margin-top: 16px; display: grid;
   grid-template-columns: repeat(3, 1fr); gap: 2px;
@@ -388,7 +388,7 @@ a   { color: inherit; }
 .product__price { margin-top: auto; padding-top: 14px; font-family: var(--display); font-weight: 700; font-size: 19px; }
 .product__price.is-sold { color: var(--red); }
 
-/* ---- 12. PRODUCT DETAIL (Archive item) -------------------- */
+/* ---- 12. PRODUCT DETAIL (Shop item) ------------------------ */
 .detail { margin-top: 24px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2px;
   background: var(--ink); border: 2px solid var(--ink); }
 .detail__media, .detail__info { background: var(--cream); }
@@ -426,7 +426,7 @@ a   { color: inherit; }
   font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--red); }
 .backlink:hover { text-decoration: underline; }
 
-/* ---- 13a. HEADER RIGHT: cart + stamp ----------------------- */
+/* ---- 13. HEADER RIGHT: cart + stamp ------------------------ */
 .site-header__right { display: flex; align-items: center; gap: 18px; }
 .cart-link {
   font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em;
@@ -612,14 +612,12 @@ a   { color: inherit; }
 }
 .cart-empty .btn { margin-top: 24px; }
 
-/* ---- 13. RESPONSIVE ---------------------------------------- */
+/* ---- 20. RESPONSIVE ---------------------------------------- */
 @media (max-width: 860px) {
   .products { grid-template-columns: repeat(2, 1fr); }
   .detail { grid-template-columns: 1fr; }
   .gallery { gap: 12px; }
   .shot--wide, .shot--tall, .shot--sq, .shot--half { grid-column: span 6; }
-}
-@media (max-width: 860px) {
   .trust { grid-template-columns: repeat(2, 1fr); }
   .teaser { grid-template-columns: 1fr; gap: 18px; }
 }

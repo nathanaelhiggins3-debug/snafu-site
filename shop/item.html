@@ -49,8 +49,8 @@
       // Tags
       var tags = piece.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join("");
 
-      // Buy button: adds to the (mock) cart when available, disabled otherwise.
-      // (Real Stripe checkout wires in from the cart in a later phase.)
+      // Buy button: adds to the cart when available, disabled otherwise.
+      // (Checkout from the cart goes to Stripe via the Netlify function.)
       var inCart = window.SNAFU_CART.has(piece.id);
       var action = sold
         ? '<span class="btn is-disabled">' + piece.status.charAt(0) + piece.status.slice(1).toLowerCase() + '</span>'
