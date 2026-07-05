@@ -641,3 +641,120 @@ a   { color: inherit; }
   /* Keep the board small enough that the D-pad stays on screen. */
   .play__stage { width: min(92vw, 56vh); }
 }
+
+/* ============================================================
+   ATMOSPHERE PASS — added session 1
+   Etched veil + palette dialects + reticle cursor
+   ============================================================ */
+
+/* ---- 21. ETCHED VEIL --------------------------------------- */
+/* Layered on top of the existing dotted paper grain.
+   A very faint SVG noise + drypoint scratches. Never dominant.
+   Uses ::before on <body> so the base background stays intact. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0.09  0 0 0 0 0.075  0 0 0 0 0.047  0 0 0 0.9 0'/></filter><rect width='400' height='400' filter='url(%23n)'/></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'><g stroke='%2317130C' stroke-width='0.4' fill='none' opacity='0.35'><path d='M-50 120 Q 200 240 850 60'/><path d='M-30 340 Q 400 220 830 480'/><path d='M50 620 Q 380 520 780 720'/><path d='M120 -20 Q 300 300 200 830'/><path d='M600 -30 Q 550 380 720 820'/></g></svg>");
+  background-size: 400px 400px, 800px 800px;
+  background-repeat: repeat, repeat;
+}
+/* Content stays above the veil */
+body > * { position: relative; z-index: 2; }
+
+/* ---- 22. PALETTE DIALECTS ---------------------------------- */
+/* Same brand, different rooms. Apply as a class on <body> or on
+   a section wrapper: <body class="dialect-archive"> or
+   <section class="dialect-gallery">. Falls back to :root tokens. */
+
+/* Base dialect (implicit) — cream / near-black / red. Already :root. */
+
+/* Archive dialect — warmer, older, muted */
+.dialect-archive {
+  --cream: #E7DFC7;
+  --ink:   #2A241A;
+  --red:   #A83A26;   /* less brash */
+  --sand:  #C7B896;
+  --ink-60: rgba(42, 36, 26, 0.60);
+  --ink-30: rgba(42, 36, 26, 0.30);
+  --ink-12: rgba(42, 36, 26, 0.12);
+  --cream-70: rgba(231, 223, 199, 0.70);
+}
+
+/* Gallery dialect — inverted, black field, color comes from art */
+.dialect-gallery {
+  --cream: #17130C;
+  --ink:   #F1EAD8;
+  --red:   #CC2E1C;
+  --sand:  #2A241A;
+  --ink-60: rgba(241, 234, 216, 0.60);
+  --ink-30: rgba(241, 234, 216, 0.30);
+  --ink-12: rgba(241, 234, 216, 0.12);
+  --cream-70: rgba(23, 19, 12, 0.70);
+}
+/* Gallery dialect needs the veil to blend differently on dark bg */
+.dialect-gallery ~ body::before,
+body.dialect-gallery::before { mix-blend-mode: screen; opacity: 0.08; }
+
+/* Dispatch/News dialect — carbon-copy paper */
+.dialect-dispatch {
+  --cream: #F4EFDC;
+  --ink:   #17130C;
+  --red:   #B8321E;
+  --sand:  #E8DFB8;
+  --ink-60: rgba(23, 19, 12, 0.60);
+  --ink-30: rgba(23, 19, 12, 0.30);
+  --ink-12: rgba(23, 19, 12, 0.12);
+  --cream-70: rgba(244, 239, 220, 0.70);
+}
+
+/* Shop dialect — base held down, more restrained accents */
+.dialect-shop {
+  --cream: #F1EAD8;
+  --ink:   #17130C;
+  --red:   #8A2416;   /* deeper, less transactional */
+  --sand:  #DDD3BC;
+}
+
+/* ---- 23. RETICLE CURSOR ------------------------------------ */
+/* SVG cursor: small aperture that opens on hover, closes on click.
+   Encoded as data URL so no extra file request.
+   Falls back to auto on touch devices. */
+
+/* Default state: closed reticle */
+html, body {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><circle cx='12' cy='12' r='4.5' fill='none' stroke='%2317130C' stroke-width='1.2'/><line x1='12' y1='2' x2='12' y2='7' stroke='%2317130C' stroke-width='1.2'/><line x1='12' y1='17' x2='12' y2='22' stroke='%2317130C' stroke-width='1.2'/><line x1='2' y1='12' x2='7' y2='12' stroke='%2317130C' stroke-width='1.2'/><line x1='17' y1='12' x2='22' y2='12' stroke='%2317130C' stroke-width='1.2'/></svg>") 12 12, auto;
+}
+
+/* Hover state on interactive elements: open reticle (larger aperture) */
+a, button, [role="button"], .stamp, .nav a, .btn, .cart-link,
+.product, .shot, .index__item, .nav-toggle, .dpad__btn,
+.product__add, .cart-row__remove, .backlink, .section-head__link {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><circle cx='12' cy='12' r='7' fill='none' stroke='%2317130C' stroke-width='1.4'/><circle cx='12' cy='12' r='1' fill='%23CC2E1C'/><line x1='12' y1='1' x2='12' y2='4' stroke='%2317130C' stroke-width='1.4'/><line x1='12' y1='20' x2='12' y2='23' stroke='%2317130C' stroke-width='1.4'/><line x1='1' y1='12' x2='4' y2='12' stroke='%2317130C' stroke-width='1.4'/><line x1='20' y1='12' x2='23' y2='12' stroke='%2317130C' stroke-width='1.4'/></svg>") 12 12, pointer;
+}
+
+/* Text inputs get a subtle I-beam variant we don't override */
+input[type="text"], input[type="email"], textarea { cursor: text; }
+
+/* Gallery dialect inverts the reticle color */
+.dialect-gallery, .dialect-gallery a, .dialect-gallery button {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><circle cx='12' cy='12' r='4.5' fill='none' stroke='%23F1EAD8' stroke-width='1.2'/><line x1='12' y1='2' x2='12' y2='7' stroke='%23F1EAD8' stroke-width='1.2'/><line x1='12' y1='17' x2='12' y2='22' stroke='%23F1EAD8' stroke-width='1.2'/><line x1='2' y1='12' x2='7' y2='12' stroke='%23F1EAD8' stroke-width='1.2'/><line x1='17' y1='12' x2='22' y2='12' stroke='%23F1EAD8' stroke-width='1.2'/></svg>") 12 12, auto;
+}
+
+/* Respect touch devices — no cursor rendering there anyway, but
+   this stops the SVG from being requested unnecessarily. */
+@media (pointer: coarse) {
+  html, body, a, button, [role="button"] { cursor: auto; }
+}
+
+/* Respect reduced motion — no cursor animation (there's none to disable
+   currently, but future hover-open animation would go here). */
+@media (prefers-reduced-motion: reduce) {
+  /* placeholder for future cursor animation opt-out */
+}
