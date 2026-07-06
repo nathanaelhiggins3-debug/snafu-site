@@ -79,3 +79,4 @@ Adding a Shop piece = adding one entry to `js/shop-data.js` (+ images later).
   later phases. If the Shop ever grows large, move inventory to a real commerce
   backend (e.g. Shopify headless, or Stripe + a small DB/admin) behind this shell
   rather than hand-editing a huge data file.
+
