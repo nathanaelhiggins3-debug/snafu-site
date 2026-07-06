@@ -23,7 +23,30 @@
     "Goods drop incoming — sign up for first access",
     "When it's gone, it's gone"
   ];
-
+// Dispatch phrases — one picked at random per page load.
+  // Fragments, not slogans. Add or edit freely.
+  var DISPATCH_PHRASES = [
+    "the second time is the first time again.",
+    "recovered from the field.",
+    "unclassified transmission.",
+    "printed after hours.",
+    "nothing left to argue about.",
+    "still the only one who saw it.",
+    "filed under things worth keeping.",
+    "signal held. static ignored.",
+    "the story before the story.",
+    "walked past it twice before we understood.",
+    "one for the record.",
+    "built on the last day it made sense.",
+    "the paper is still warm.",
+    "notes taken in low light.",
+    "we were the only ones there.",
+    "found, not made.",
+    "no one asked. we filed it anyway.",
+    "the room got quiet for a reason.",
+    "worth the second look.",
+    "held over from the night before."
+  ];
   // --- Where does this page live? -----------------------------
   // Inside a one-level subfolder (e.g. /shop/, /cart/) links need
   // to step up with "../". The homepage needs no prefix. We match by
@@ -92,15 +115,19 @@
     "</header>";
 
   // --- FOOTER -------------------------------------------------
+  // --- FOOTER -------------------------------------------------
   var year = new Date().getFullYear();
+  var phrase = DISPATCH_PHRASES[Math.floor(Math.random() * DISPATCH_PHRASES.length)];
   var footer =
     '<footer class="site-footer">' +
+      '<div class="wrap">' +
+        '<div class="dispatch-phrase">' + phrase + "</div>" +
+      "</div>" +
       '<div class="wrap site-footer__bar">' +
         '<div class="site-footer__logo">SNAFU<span style="color:var(--red)">.</span></div>' +
-        '<div class="code">Los Angeles &copy; ' + year + "</div>" +
+        '<div class="code" data-heartbeat="clock">Los Angeles &copy; ' + year + "</div>" +
       "</div>" +
     "</footer>";
-
   // --- Inject -------------------------------------------------
   // Ticker first, then header (so the ticker sits above it), footer last.
   document.body.insertAdjacentHTML("afterbegin", header);
@@ -154,4 +181,28 @@
   window.addEventListener("storage", function (e) {
     if (e.key === "snafu_cart") refreshBadge();
   });
+})();/* ============================================================
+   SNAFU heartbeat — live UTC clock
+   Updates every element with data-heartbeat="clock" every second.
+   Runs independently of the main chrome builder.
+   ============================================================ */
+(function () {
+  function pad(n) { return String(n).padStart(2, "0"); }
+
+  function render() {
+    var d = new Date();
+    var stamp =
+      d.getUTCFullYear() + "." +
+      pad(d.getUTCMonth() + 1) + "." +
+      pad(d.getUTCDate()) + " · " +
+      pad(d.getUTCHours()) + ":" +
+      pad(d.getUTCMinutes()) + ":" +
+      pad(d.getUTCSeconds()) + " UTC";
+    var nodes = document.querySelectorAll('[data-heartbeat="clock"]');
+    for (var i = 0; i < nodes.length; i++) nodes[i].textContent = stamp;
+  }
+
+  // Run once immediately, then every second.
+  render();
+  setInterval(render, 1000);
 })();
