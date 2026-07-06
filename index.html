@@ -6,155 +6,141 @@
   <title>SNAFU.</title>
   <meta name="description" content="SNAFU — a global hub for fashion, culture, and rare 1/1 finds. Los Angeles." />
 
-  <!-- Google Fonts: Space Mono (labels), Newsreader (body); display = local Libra -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/styles.css?v=10" />
+  <link rel="stylesheet" href="css/styles.css?v=11" />
 </head>
 <body>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero wrap">
-    <h1 class="hero__title">SNAFU<span class="dot">.</span></h1>
-    <p class="hero__pron">/sn&#230;&#712;fu&#720;/ &middot; <span class="hero__pos">noun</span> <span class="hero__hint">(snuh-FOO)</span></p>
-    <p class="hero__def">a chaotic, hopelessly muddled situation &mdash; everything tangled at once, usually from a mix-up or miscommunication.</p>
-    <p class="hero__origin">Origin: military slang &mdash; &ldquo;Situation Normal: All Fouled Up.&rdquo;</p>
-    <div class="hero__cta">
-      <a class="btn btn--ghost" href="shop/">Enter the Shop <span class="orn">&#10022;</span></a>
-    </div>
+  <!-- ===== NAMEPLATE ===== -->
+  <!-- Front-page dateline. Left: brand mark. Right: live UTC clock. -->
+  <section class="wrap nameplate">
+    <div class="nameplate__mark">SNAFU<span class="dot">.</span></div>
+    <div class="nameplate__stamp" data-heartbeat="clock">—</div>
   </section>
 
-  <!-- ===== ORNAMENT DIVIDER ===== -->
-  <div class="wrap"><div class="ornament-rule"><span class="ornament-rule__mark">&#8258;</span></div></div>
-
-  <!-- ===== INDEX (the four sections) ===== -->
-  <section class="wrap">
-    <div class="section-head">
-      <h2 class="section-head__title">The Index</h2>
-      <span class="code">Four ways in</span>
+  <!-- ===== LEAD STORY ===== -->
+  <!-- The front-page piece. Edit these fields weekly.
+       Byline / desk / date / kicker / title / lede / link. -->
+  <section class="wrap lead">
+    <div class="lead__meta">
+      <span class="lead__desk">Editorial</span>
+      <span class="lead__sep">·</span>
+      <span class="lead__date">18 June 2026</span>
+      <span class="lead__sep">·</span>
+      <span class="lead__byline">N. Higgins</span>
     </div>
-
-    <nav class="index">
-      <a class="index__item" href="news/">
-        <span class="index__no">01</span>
-        <span class="index__name">News</span>
-        <span class="index__desc">Editorial &amp; news. What's worth knowing.</span>
-        <span class="index__go">Enter &rarr;</span>
-      </a>
-      <a class="index__item" href="gallery/">
-        <span class="index__no">02</span>
-        <span class="index__name">Gallery</span>
-        <span class="index__desc">Campaigns, fits, editorial shots.</span>
-        <span class="index__go">Enter &rarr;</span>
-      </a>
-      <a class="index__item" href="shop/">
-        <span class="index__no">03</span>
-        <span class="index__name">Shop</span>
-        <span class="index__desc">1/1 rare finds. Once each.</span>
-        <span class="index__go">Enter &rarr;</span>
-      </a>
-      <a class="index__item" href="goods/">
-        <span class="index__no">04</span>
-        <span class="index__name">Goods</span>
-        <span class="index__desc">Our own product &amp; drops.</span>
-        <span class="index__go">Enter &rarr;</span>
-      </a>
-    </nav>
+    <h1 class="lead__title">
+      <a href="news/">The one-of-one economy is eating the hype cycle.</a>
+    </h1>
+    <p class="lead__lede">
+      Resale's center of gravity is shifting from mass drops to single-copy pieces.
+      Why scarcity-of-one beats scarcity-of-thousands — and what it changes about how you buy and hold.
+    </p>
+    <a class="lead__cta" href="news/">Read the piece <span aria-hidden="true">→</span></a>
   </section>
 
-  <!-- ===== STRIP: NEW TO THE SHOP ===== -->
-  <section class="wrap strip" style="margin-top:72px;">
-    <div class="section-head">
-      <h2 class="section-head__title">New to the Shop</h2>
-      <a class="section-head__link" href="shop/">All pieces &rarr;</a>
-    </div>
-    <!-- Built from js/shop-data.js so the home strip never drifts
-         from the Shop itself. Shows the three most recent. -->
-    <div class="products" id="home-shop"></div>
-  </section>
-
-  <!-- ===== STRIP: LATEST NEWS ===== -->
-  <section class="wrap strip">
-    <div class="section-head">
-      <h2 class="section-head__title">Latest News</h2>
-      <a class="section-head__link" href="news/">All entries &rarr;</a>
-    </div>
-    <div class="feed">
-      <article class="entry">
-        <div class="entry__meta">
-          <span class="code entry__date">18 June 2026</span>
+  <!-- ===== ALSO IN THIS ISSUE ===== -->
+  <section class="wrap also">
+    <div class="also__label">Also in the dispatch</div>
+    <div class="also__grid">
+      <a class="also__entry" href="news/">
+        <div class="also__meta">
+          <span>Field Notes</span>
+          <span>·</span>
+          <span>16 June 2026</span>
         </div>
-        <div class="entry__main">
-          <h3 class="entry__title"><a href="news/">The one-of-one economy is eating the hype cycle</a></h3>
-          <p class="entry__body">Resale's center of gravity is shifting from mass drops to single-copy pieces. Why scarcity-of-one changes how you buy and hold.</p>
-          <div class="entry__tags"><span class="tag">Resale</span><span class="tag">Culture</span></div>
+        <h2 class="also__title">Field notes: what Los Angeles is actually wearing</h2>
+        <p class="also__lede">Forget the runways. We walked the east side and logged what's on bodies.</p>
+      </a>
+      <a class="also__entry" href="news/">
+        <div class="also__meta">
+          <span>Interview</span>
+          <span>·</span>
+          <span>13 June 2026</span>
         </div>
-      </article>
-      <article class="entry">
-        <div class="entry__meta">
-          <span class="code entry__date">16 June 2026</span>
-        </div>
-        <div class="entry__main">
-          <h3 class="entry__title"><a href="news/">Field notes: what Los Angeles is actually wearing</a></h3>
-          <p class="entry__body">Forget the runways. We walked the east side and logged what's on bodies — the workwear revival and the quiet return of real denim.</p>
-          <div class="entry__tags"><span class="tag">Street</span><span class="tag">Los Angeles</span></div>
-        </div>
-      </article>
+        <h2 class="also__title">The archivist who won't sell to resellers</h2>
+        <p class="also__lede">A collector on the rule that nothing leaves unless it's going to be worn.</p>
+      </a>
     </div>
   </section>
 
-  <!-- ===== STRIP: GALLERY ===== -->
-  <section class="wrap strip">
-    <div class="section-head">
-      <h2 class="section-head__title">Gallery</h2>
-      <a class="section-head__link" href="gallery/">All volumes &rarr;</a>
-    </div>
-    <div class="gallery">
-      <a class="shot shot--wide" href="gallery/"><div class="shot__frame"></div><div class="shot__cap"><b>Campaign 001</b> <span class="code">&nbsp;Spring editorial</span></div></a>
-      <a class="shot shot--tall" href="gallery/"><div class="shot__frame"></div><div class="shot__cap"><b>Look 014</b> <span class="code">&nbsp;Studio</span></div></a>
-    </div>
-  </section>
-
-  <!-- ===== STRIP: GOODS TEASER ===== -->
-  <section class="wrap strip">
-    <div class="section-head">
-      <h2 class="section-head__title">Goods</h2>
-      <a class="section-head__link" href="goods/">The counter &rarr;</a>
-    </div>
-    <div class="teaser">
-      <div>
-        <h3 class="teaser__title">Made,<br>not resold.</h3>
-        <p class="teaser__text">SNAFU's own product, built in small runs. The first drop is being cut now — checkout opens when it lands.</p>
+  <!-- ===== OBJECT OF THE WEEK ===== -->
+  <!-- One 1/1 piece treated like a museum entry, not a product card. -->
+  <section class="wrap object">
+    <div class="object__label">The object this week</div>
+    <div class="object__body">
+      <div class="object__frame" id="home-object">
+        <!-- Populated by the small JS at the bottom from shop-data.js -->
       </div>
-      <a class="btn btn--ghost" href="goods/">See Goods</a>
+      <div class="object__info">
+        <h2 class="object__name" id="home-object-name">—</h2>
+        <div class="object__specs" id="home-object-specs"></div>
+        <p class="object__note">
+          A single piece. When it's gone, it's gone. Everything in the Shop is 1/1 —
+          this is the one worth staring at right now.
+        </p>
+        <a class="object__cta" href="shop/">See it in the Shop <span aria-hidden="true">→</span></a>
+      </div>
     </div>
   </section>
 
-  <!-- Shared ticker + header + footer injected here -->
+  <!-- ===== GALLERY IMAGE ===== -->
+  <section class="wrap image-lead">
+    <a class="image-lead__link" href="gallery/">
+      <div class="image-lead__frame"></div>
+      <div class="image-lead__caption">
+        <span>Campaign 001 · Spring editorial</span>
+        <span class="image-lead__go">See the gallery →</span>
+      </div>
+    </a>
+  </section>
+
+  <!-- ===== GOODS NOTE ===== -->
+  <!-- Small note near the bottom, like a back-of-paper mention. -->
+  <section class="wrap goods-note">
+    <div class="goods-note__label">Made, not resold</div>
+    <p class="goods-note__body">
+      SNAFU's own product is in small runs. The first drop is being cut now.
+      <a href="goods/">Wait at the counter →</a>
+    </p>
+  </section>
+
+  <!-- ===== DEFINITION (the name explained, not the hero) ===== -->
+  <section class="wrap definition">
+    <div class="definition__mark">SNAFU<span class="dot">.</span></div>
+    <p class="definition__pron">/sn&#230;&#712;fu&#720;/ · noun · (snuh-FOO)</p>
+    <p class="definition__body">
+      a chaotic, hopelessly muddled situation — everything tangled at once,
+      usually from a mix-up or miscommunication.
+    </p>
+    <p class="definition__origin">Origin: military slang — "Situation Normal: All Fouled Up."</p>
+  </section>
+
+  <!-- Shared ticker + header + footer injected by site.js -->
   <script src="js/shop-data.js"></script>
   <script>
-    // Home "New to the Shop" strip — first three pieces from the data.
+    // Object of the week — pulls the first AVAILABLE piece from shop-data.
     (function () {
-      var grid = document.getElementById("home-shop");
-      if (!grid || !window.SNAFU_SHOP) return;
-      grid.innerHTML = window.SNAFU_SHOP.slice(0, 3).map(function (p) {
-        var sold = p.status !== "AVAILABLE";
-        return (
-          '<a class="product" href="shop/item.html?id=' + p.id + '">' +
-            '<div class="product__frame">' +
-              '<span class="product__id">' + p.id + '</span>' +
-              '<span class="product__flag' + (sold ? ' is-sold' : '') + '">' + p.status + '</span>' +
-            '</div>' +
-            '<h3 class="product__name">' + p.name + '</h3>' +
-            '<div class="product__meta">' + p.year + ' &middot; ' + p.origin + '</div>' +
-            '<div class="product__price' + (sold ? ' is-sold' : '') + '">' +
-              (sold ? p.status.charAt(0) + p.status.slice(1).toLowerCase() : p.price) +
-            '</div>' +
-          '</a>'
-        );
-      }).join("");
+      if (!window.SNAFU_SHOP) return;
+      var p = window.SNAFU_SHOP.find(function (x) { return x.status === "AVAILABLE"; })
+              || window.SNAFU_SHOP[0];
+      if (!p) return;
+
+      var frame = document.getElementById("home-object");
+      var nameEl = document.getElementById("home-object-name");
+      var specsEl = document.getElementById("home-object-specs");
+
+      if (frame) frame.innerHTML =
+        '<span class="object__id">' + p.id + '</span>' +
+        '<span class="object__flag' + (p.status !== "AVAILABLE" ? ' is-sold' : '') + '">' + p.status + '</span>';
+      if (nameEl) nameEl.textContent = p.name;
+      if (specsEl) specsEl.innerHTML =
+        '<span><em>Year</em> ' + (p.year || "—") + '</span>' +
+        '<span><em>Origin</em> ' + (p.origin || "—") + '</span>' +
+        '<span><em>Marked</em> ' + (p.price || "—") + '</span>';
     })();
   </script>
   <script src="js/site.js"></script>
