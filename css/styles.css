@@ -758,3 +758,97 @@ input[type="text"], input[type="email"], textarea { cursor: text; }
 @media (prefers-reduced-motion: reduce) {
   /* placeholder for future cursor animation opt-out */
 }
+
+/* ============================================================
+   ATMOSPHERE PASS — session 2
+   Editorial furniture: marginalia, stamps, meta strip, colophon
+   Every element carries real content. No fake redactions,
+   no decorative codes.
+   ============================================================ */
+
+/* ---- 24. MARGINALIA ---------------------------------------- */
+.marginalia {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+  font-style: italic;
+  line-height: 1.4;
+  max-width: 22ch;
+  position: absolute;
+  transform: rotate(-1.5deg);
+  padding: 6px 10px;
+  background: var(--cream-70);
+  border-left: 1px solid var(--ink-30);
+}
+.marginalia::before {
+  content: "◜ ";
+  color: var(--red);
+  font-family: var(--serif);
+  font-style: normal;
+  margin-right: 4px;
+}
+.marginalia--left  { left: calc(-1 * var(--gut)); transform: rotate(-1.5deg); }
+.marginalia--right { right: calc(-1 * var(--gut)); transform: rotate(1.2deg); border-left: none; border-right: 1px solid var(--ink-30); }
+.marginalia--right::before { content: ""; margin: 0; }
+.marginalia--right::after {
+  content: " ◝";
+  color: var(--red);
+  font-family: var(--serif);
+  font-style: normal;
+  margin-left: 4px;
+}
+.marginalia--note {
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 13px;
+  background: transparent;
+  border: none;
+  color: var(--ink);
+  transform: rotate(-3deg);
+}
+.marginalia--note::before { content: "→ "; }
+@media (max-width: 900px) {
+  .marginalia, .marginalia--left, .marginalia--right {
+    position: static;
+    max-width: none;
+    display: block;
+    margin: 12px 0;
+    transform: none;
+  }
+}
+
+/* ---- 25. STAMPED DATE / DROP MARK -------------------------- */
+.stamp-mark {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+  border: 1.5px solid var(--red);
+  padding: 4px 8px;
+  border-radius: 2px;
+  background: transparent;
+  transform: rotate(-4deg);
+  white-space: nowrap;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 3;
+}
+.stamp-mark--tl { top: 14px; left: 14px; transform: rotate(-4deg); }
+.stamp-mark--tr { top: 14px; right: 14px; transform: rotate(3deg); }
+.stamp-mark--bl { bottom: 14px; left: 14px; transform: rotate(2deg); }
+.stamp-mark--br { bottom: 14px; right: 14px; transform: rotate(-3deg); }
+.stamp-mark--ink { color: var(--ink); border-color: var(--ink); }
+
+/* ---- 26. META STRIP ---------------------------------------- */
+.meta-strip {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  font-family:
