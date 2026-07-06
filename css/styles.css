@@ -883,3 +883,13 @@ input[type="text"], input[type="email"], textarea { cursor: text; }
   border-right: none;
   padding-right: 0;
 }
+/* Dispatch phrase — rotating italic line above the footer bar */
+.dispatch-phrase {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-60);
+  text-align: center;
+  padding: 22px 0 8px;
+  letter-spacing: 0.02em;
+}
