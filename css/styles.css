@@ -852,3 +852,34 @@ input[type="text"], input[type="email"], textarea { cursor: text; }
   flex-wrap: wrap;
   align-items: baseline;
   font-family:
+/* ---- 27b. FURNITURE TUNING --------------------------------- */
+
+/* Meta strip: make labels visibly quieter than values */
+.meta-strip__label {
+  color: var(--ink-30);
+  opacity: 0.75;
+  font-weight: 400;
+}
+.meta-strip__value {
+  color: var(--ink);
+  font-weight: 700;
+}
+.meta-strip__value--red {
+  color: var(--red);
+  font-weight: 700;
+}
+
+/* Colophon: force visible separation between items */
+.colophon {
+  gap: 8px 40px;
+  padding: 14px 0;
+}
+.colophon span {
+  white-space: nowrap;
+  padding-right: 8px;
+  border-right: 1px solid var(--ink-12);
+}
+.colophon span:last-child {
+  border-right: none;
+  padding-right: 0;
+}
