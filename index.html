@@ -1,162 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SNAFU.</title>
-  <meta name="description" content="SNAFU — a global hub for fashion, culture, and rare 1/1 finds. Los Angeles." />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SNAFU</title>
 
-  <!-- Google Fonts: Space Mono (labels), Newsreader (body); display = local Libra -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css?v=10" />
+<style>
+/* ============================================================
+   SNAFU — title screen
+   Static. No build step. Save as index.html.
+   Needs: assets/forest.png
+   ============================================================ */
 
-  <script defer src="https://analytics.snafu.quest/script.js" data-website-id="664fa64b-2817-4e3f-9304-bb448b8d09cd"></script>
+:root {
+  /* sampled directly from assets/forest.png */
+  --cream: #f2e4c4;   /* brightest ray, lifted to hold as text */
+  --ink:   #0c1412;   /* deepest canopy shadow */
+  --gold:  #e3aa4d;   /* lantern light */
+  --moss:  #3f4726;   /* undergrowth */
+  --red:   #b8352b;   /* not in the forest — which is why it's the accent */
+  --px: 3px;
+
+  --display: 'Press Start 2P', monospace;
+  --body: 'Pixelify Sans', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--body);
+}
+
+/* ---------- FOREST ---------- */
+.forest {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(180deg, #151f19 0%, #1d3126 45%, #422b1e 100%);
+}
+.forest img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  image-rendering: pixelated;
+  display: block;
+}
+/* Darkens the edges so the wordmark holds the middle. */
+.forest::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 45%, transparent 0%, rgba(10,8,5,.6) 100%),
+    linear-gradient(180deg, rgba(10,8,5,.4) 0%, transparent 30%, transparent 65%, rgba(10,8,5,.75) 100%);
+  pointer-events: none;
+}
+
+/* ---------- TITLE SCREEN ---------- */
+.title-screen {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6vh 20px;
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-size: clamp(38px, 11vw, 130px);
+  line-height: 1;
+  letter-spacing: .02em;
+  color: var(--cream);
+  /* Hard stepped shadows, zero blur. Blur reads as vector; stacked
+     offsets read as sprite. */
+  text-shadow:
+    var(--px) var(--px) 0 var(--red),
+    calc(var(--px)*2) calc(var(--px)*2) 0 var(--ink),
+    calc(var(--px)*3) calc(var(--px)*3) 0 var(--ink),
+    calc(var(--px)*5) calc(var(--px)*6) 0 rgba(10,8,5,.45);
+  animation: drop .6s steps(4) both;
+}
+
+.pron {
+  font-family: var(--body);
+  margin-top: calc(var(--px)*8);
+  font-size: clamp(13px, 1.8vw, 20px);
+  letter-spacing: .18em;
+  color: var(--gold);
+  text-shadow: 0 var(--px) 0 rgba(10,8,5,.9);
+}
+
+.definition {
+  font-family: var(--body);
+  margin-top: calc(var(--px)*4);
+  max-width: 44ch;
+  font-size: clamp(15px, 1.9vw, 22px);
+  line-height: 1.5;
+  text-shadow: 0 var(--px) 0 rgba(10,8,5,.95);
+}
+
+.start {
+  font-family: var(--display);
+  margin-top: calc(var(--px)*14);
+  background: none;
+  border: none;
+  color: var(--cream);
+  font-size: clamp(9px, 1.1vw, 13px);
+  letter-spacing: .1em;
+  cursor: pointer;
+  padding: calc(var(--px)*2) calc(var(--px)*4);
+  text-shadow: var(--px) var(--px) 0 var(--ink);
+  animation: blink 1.1s steps(1, end) infinite;
+}
+.start:focus-visible { outline: var(--px) solid var(--gold); outline-offset: var(--px); }
+
+@keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:.2} }
+@keyframes drop {
+  from { transform: translateY(calc(var(--px)*-6)); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+/* ---------- INDEX ---------- */
+.index {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10vh 20px;
+}
+.index-inner {
+  width: min(820px, 100%);
+  background: rgba(12, 10, 7, .85);
+  border: var(--px) solid var(--cream);
+  box-shadow: calc(var(--px)*2) calc(var(--px)*2) 0 rgba(10,8,5,.6);
+  padding: clamp(22px, 4vw, 44px);
+}
+.index-label {
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: .2em;
+  color: var(--gold);
+  border-bottom: var(--px) solid var(--moss);
+  padding-bottom: calc(var(--px)*4);
+  margin-bottom: calc(var(--px)*8);
+}
+.index-nav { list-style: none; display: grid; gap: calc(var(--px)*2); }
+.index-nav a {
+  font-family: var(--display);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--px)*4);
+  text-decoration: none;
+  color: var(--cream);
+  font-size: clamp(14px, 2.4vw, 26px);
+  padding: calc(var(--px)*3);
+  transition: none; /* states snap. easing is the website tell. */
+}
+.index-nav a .blurb {
+  font-family: var(--body);
+  font-size: clamp(11px, 1.2vw, 14px);
+  letter-spacing: .1em;
+  color: var(--gold);
+  opacity: 0;
+}
+.index-nav a::before {
+  content: '\25B8';
+  color: var(--red);
+  opacity: 0;
+}
+.index-nav a:hover,
+.index-nav a:focus-visible {
+  background: var(--cream);
+  color: var(--ink);
+  outline: none;
+}
+.index-nav a:hover::before,
+.index-nav a:focus-visible::before { opacity: 1; }
+.index-nav a:hover .blurb,
+.index-nav a:focus-visible .blurb { opacity: 1; color: var(--red); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .wordmark, .start { animation: none; }
+}
+</style>
 </head>
 <body>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero wrap">
-    <h1 class="hero__title">SNAFU<span class="dot">.</span></h1>
-    <p class="hero__pron">/sn&#230;&#712;fu&#720;/ &middot; <span class="hero__pos">noun</span> <span class="hero__hint">(snuh-FOO)</span></p>
-    <p class="hero__def">a chaotic, hopelessly muddled situation &mdash; everything tangled at once, usually from a mix-up or miscommunication.</p>
-    <p class="hero__origin">Origin: military slang &mdash; &ldquo;Situation Normal: All Fouled Up.&rdquo;</p>
-    <div class="hero__cta">
-      <a class="btn btn--ghost" href="shop/">Enter the Shop <span class="orn">&#10022;</span></a>
-    </div>
-  </section>
+<div class="forest" aria-hidden="true">
+  <img src="assets/forest.png" alt="">
+</div>
 
-  <!-- ===== ORNAMENT DIVIDER ===== -->
-  <div class="wrap"><div class="ornament-rule"><span class="ornament-rule__mark">&#8258;</span></div></div>
+<main class="title-screen">
+  <h1 class="wordmark">SNAFU</h1>
+  <p class="pron">/sna&#712;fo&#823;o&#823;/</p>
+  <p class="definition">
+    A confusing, muddled, or chaotic situation where things go wrong
+    and nothing happens as planned.
+  </p>
+  <button class="start" id="start">Press any key to begin</button>
+</main>
 
-  <!-- ===== INDEX (the four sections) ===== -->
-  <section class="wrap">
-    <div class="section-head">
-      <h2 class="section-head__title">The Index</h2>
-      <span class="code">Four ways in</span>
-    </div>
+<section class="index" id="index">
+  <div class="index-inner">
+    <p class="index-label">Index</p>
+    <ul class="index-nav">
+      <li><a href="/news">News <span class="blurb">Dispatch</span></a></li>
+      <li><a href="/gallery">Gallery <span class="blurb">Archive</span></a></li>
+      <li><a href="/shop">Shop <span class="blurb">Drops</span></a></li>
+      <li><a href="/goods">Goods <span class="blurb">Objects</span></a></li>
+      <li><a href="/play">Play <span class="blurb">Misc</span></a></li>
+    </ul>
+  </div>
+</section>
 
-    <nav class="index">
-      <a class="index__item" href="news/">
-        <span class="index__no">01</span>
-        <span class="index__name">News</span>
-        <span class="index__desc">Editorial &amp; news. What's worth knowing.</span>
-        <span class="index__go">Enter &rarr;</span>
-      </a>
-      <a class="index__item" href="gallery/">
-        <span class="index__no">02</span>
-        <span class="index__name">Gallery</span>
-        <span class="index__desc">Campaigns, fits, editorial shots.</span>
-        <span class="index__go">Enter &rarr;</span>
-      </a>
-      <a class="index__item" href="shop/">
-        <span class="index__no">03</span>
-        <span class="index__name">Shop</span>
-        <span class="index__desc">1/1 rare finds. Once each.</span>
-        <span class="index__go">Enter &rarr;</span>
-      </a>
-      <a class="index__item" href="goods/">
-        <span class="index__no">04</span>
-        <span class="index__name">Goods</span>
-        <span class="index__desc">Our own product &amp; drops.</span>
-        <span class="index__go">Enter &rarr;</span>
-      </a>
-    </nav>
-  </section>
+<script>
+(function () {
+  var index = document.getElementById('index');
+  var start = document.getElementById('start');
+  var used = false;
 
-  <!-- ===== STRIP: NEW TO THE SHOP ===== -->
-  <section class="wrap strip" style="margin-top:72px;">
-    <div class="section-head">
-      <h2 class="section-head__title">New to the Shop</h2>
-      <a class="section-head__link" href="shop/">All pieces &rarr;</a>
-    </div>
-    <div class="products" id="home-shop"></div>
-  </section>
+  function begin() {
+    if (used) return;
+    used = true;
+    index.scrollIntoView({ behavior: 'smooth' });
+    var first = index.querySelector('a');
+    if (first) setTimeout(function () { first.focus(); }, 600);
+  }
 
-  <!-- ===== STRIP: LATEST NEWS ===== -->
-  <section class="wrap strip">
-    <div class="section-head">
-      <h2 class="section-head__title">Latest News</h2>
-      <a class="section-head__link" href="news/">All entries &rarr;</a>
-    </div>
-    <div class="feed">
-      <article class="entry">
-        <div class="entry__meta">
-          <span class="code entry__date">18 June 2026</span>
-        </div>
-        <div class="entry__main">
-          <h3 class="entry__title"><a href="news/">The one-of-one economy is eating the hype cycle</a></h3>
-          <p class="entry__body">Resale's center of gravity is shifting from mass drops to single-copy pieces. Why scarcity-of-one changes how you buy and hold.</p>
-          <div class="entry__tags"><span class="tag">Resale</span><span class="tag">Culture</span></div>
-        </div>
-      </article>
-      <article class="entry">
-        <div class="entry__meta">
-          <span class="code entry__date">16 June 2026</span>
-        </div>
-        <div class="entry__main">
-          <h3 class="entry__title"><a href="news/">Field notes: what Los Angeles is actually wearing</a></h3>
-          <p class="entry__body">Forget the runways. We walked the east side and logged what's on bodies — the workwear revival and the quiet return of real denim.</p>
-          <div class="entry__tags"><span class="tag">Street</span><span class="tag">Los Angeles</span></div>
-        </div>
-      </article>
-    </div>
-  </section>
+  start.addEventListener('click', begin);
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (window.scrollY > 40) return;
+    begin();
+  });
+})();
+</script>
 
-  <!-- ===== STRIP: GALLERY ===== -->
-  <section class="wrap strip">
-    <div class="section-head">
-      <h2 class="section-head__title">Gallery</h2>
-      <a class="section-head__link" href="gallery/">All volumes &rarr;</a>
-    </div>
-    <div class="gallery">
-      <a class="shot shot--wide" href="gallery/"><div class="shot__frame"></div><div class="shot__cap"><b>Campaign 001</b> <span class="code">&nbsp;Spring editorial</span></div></a>
-      <a class="shot shot--tall" href="gallery/"><div class="shot__frame"></div><div class="shot__cap"><b>Look 014</b> <span class="code">&nbsp;Studio</span></div></a>
-    </div>
-  </section>
-
-  <!-- ===== STRIP: GOODS TEASER ===== -->
-  <section class="wrap strip">
-    <div class="section-head">
-      <h2 class="section-head__title">Goods</h2>
-      <a class="section-head__link" href="goods/">The counter &rarr;</a>
-    </div>
-    <div class="teaser">
-      <div>
-        <h3 class="teaser__title">Made,<br>not resold.</h3>
-        <p class="teaser__text">SNAFU's own product, built in small runs. The first drop is being cut now — checkout opens when it lands.</p>
-      </div>
-      <a class="btn btn--ghost" href="goods/">See Goods</a>
-    </div>
-  </section>
-
-  <!-- Shared ticker + header + footer injected here -->
-  <script src="js/shop-data.js"></script>
-  <script>
-    // Home "New to the Shop" strip — first three pieces from the data.
-    (function () {
-      var grid = document.getElementById("home-shop");
-      if (!grid || !window.SNAFU_SHOP) return;
-      grid.innerHTML = window.SNAFU_SHOP.slice(0, 3).map(function (p) {
-        var sold = p.status !== "AVAILABLE";
-        return (
-          '<a class="product" href="shop/item.html?id=' + p.id + '">' +
-            '<div class="product__frame">' +
-              '<span class="product__id">' + p.id + '</span>' +
-              '<span class="product__flag' + (sold ? ' is-sold' : '') + '">' + p.status + '</span>' +
-            '</div>' +
-            '<h3 class="product__name">' + p.name + '</h3>' +
-            '<div class="product__meta">' + p.year + ' &middot; ' + p.origin + '</div>' +
-            '<div class="product__price' + (sold ? ' is-sold' : '') + '">' +
-              (sold ? p.status.charAt(0) + p.status.slice(1).toLowerCase() : p.price) +
-            '</div>' +
-          '</a>'
-        );
-      }).join("");
-    })();
-  </script>
-  <script src="js/site.js"></script>
 </body>
 </html>
