@@ -69,9 +69,12 @@
     object-position: center;
     image-rendering: pixelated;
     display: block;
-    background: var(--damp);
   }
-  .scene .layer { background: var(--damp); }
+  .scene .layer {
+    background:
+      radial-gradient(ellipse 70% 90% at center, transparent 0%, transparent 55%, #0a0d10 100%),
+      #000;
+  }
   .scene::after {
     content: '';
     position: absolute;
