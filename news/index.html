@@ -3,125 +3,354 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SNAFU. — News</title>
-  <meta name="description" content="News — editorial and news from SNAFU. What's worth knowing." />
+  <title>SNAFU. — Dispatches</title>
+  <meta name="description" content="Dispatches — weekly reports from SNAFU." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="../css/styles.css?v=10" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <script defer src="https://analytics.snafu.quest/script.js" data-website-id="664fa64b-2817-4e3f-9304-bb448b8d09cd"></script>
+
+  <style>
+  :root {
+    --cream:  #f2e4c4;
+    --paper:  #efe0b8;
+    --ink:    #0c1412;
+    --gold:   #e3aa4d;
+    --wheat:  #e8d29a;
+    --wood:   #624225;
+    --moss:   #3f4726;
+    --floor:  #151f19;
+    --rose:   #814951;
+    --red:    #b8352b;
+    --px: 3px;
+    --display: 'Press Start 2P', monospace;
+    --body: 'Pixelify Sans', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body);
+    color: var(--cream);
+    background: var(--floor);
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+  }
+
+  /* ---------- SCENE (fixed forest path) ---------- */
+  .scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: var(--floor);
+  }
+  .scene img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    image-rendering: pixelated;
+    display: block;
+  }
+  .scene::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(12,20,18,.35);
+    pointer-events: none;
+  }
+
+  /* deeper darken as you scroll */
+  .veil {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      transparent 45%,
+      rgba(12,20,18,.55) 80%,
+      rgba(12,20,18,.9) 100%);
+    pointer-events: none;
+  }
+
+  /* ---------- ARRIVAL ---------- */
+  .arrive {
+    position: relative;
+    z-index: 2;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: clamp(20px, 3vw, 32px);
+  }
+
+  .path-back {
+    justify-self: start;
+    font-family: var(--display);
+    font-size: clamp(10px, 1vw, 12px);
+    letter-spacing: .18em;
+    color: var(--cream);
+    text-decoration: none;
+    padding: calc(var(--px)*2) calc(var(--px)*3);
+    background: rgba(12,20,18,.6);
+    border: var(--px) solid var(--cream);
+    box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  }
+  .path-back::before { content: '\25C2  '; color: var(--rose); }
+  .path-back:hover { background: var(--cream); color: var(--ink); }
+
+  /* the title floats in the clearing air, 16-bit game-style */
+  .title {
+    align-self: center;
+    justify-self: center;
+    text-align: center;
+    padding: 0 20px;
+  }
+  .title h1 {
+    font-family: var(--display);
+    font-size: clamp(30px, 6.5vw, 88px);
+    line-height: 1;
+    letter-spacing: .04em;
+    color: var(--wheat);
+    text-shadow:
+      /* hard black 1px outline all sides */
+      calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+      0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+      calc(var(--px)*-1) calc(var(--px)*-1) 0 var(--ink),
+      var(--px) calc(var(--px)*-1) 0 var(--ink),
+      calc(var(--px)*-1) var(--px) 0 var(--ink),
+      var(--px) var(--px) 0 var(--ink),
+      /* red offset */
+      calc(var(--px)*2) calc(var(--px)*2) 0 var(--red),
+      calc(var(--px)*3) calc(var(--px)*3) 0 var(--ink),
+      /* deep drop */
+      calc(var(--px)*5) calc(var(--px)*7) 0 rgba(2,2,0,.55);
+    animation: drop .6s steps(4) both;
+  }
+  .title .lede {
+    display: block;
+    margin-top: calc(var(--px)*6);
+    font-family: var(--body);
+    font-size: clamp(13px, 1.4vw, 17px);
+    color: var(--wheat);
+    letter-spacing: .12em;
+    text-shadow:
+      calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+      0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+      var(--px) var(--px) 0 rgba(2,2,0,.7);
+  }
+
+  @keyframes drop {
+    from { transform: translateY(calc(var(--px)*-6)); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  .cue {
+    justify-self: center;
+    align-self: end;
+    font-family: var(--display);
+    font-size: clamp(9px, 1vw, 11px);
+    letter-spacing: .2em;
+    color: var(--cream);
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+    animation: blink 1.2s steps(1, end) infinite;
+    padding-bottom: 12px;
+  }
+  .cue::after { content: '  \25BE'; color: var(--gold); }
+  @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:.2} }
+
+  /* ---------- DESKS (3 papers on a stump — placeholder framework) ---------- */
+  .desks {
+    position: relative;
+    z-index: 2;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10vh clamp(20px, 4vw, 40px);
+    gap: clamp(24px, 3vw, 36px);
+  }
+
+  .desks-heading {
+    text-align: center;
+    margin-bottom: clamp(20px, 4vh, 40px);
+  }
+  .desks-heading .eyebrow {
+    display: block;
+    font-family: var(--display);
+    font-size: 10px;
+    letter-spacing: .3em;
+    color: var(--gold);
+    margin-bottom: 12px;
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+  }
+  .desks-heading h2 {
+    font-family: var(--display);
+    font-size: clamp(18px, 3vw, 32px);
+    color: var(--cream);
+    letter-spacing: .04em;
+    text-shadow:
+      calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+      0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.6);
+  }
+
+  .desks-grid {
+    display: grid;
+    gap: clamp(20px, 3vw, 32px);
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 900px;
+  }
+  @media (min-width: 720px) {
+    .desks-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Each desk is a cream paper card. Nail head at top. Pinned to nothing —
+     they float in the dark forest for now. Stump art can come later. */
+  .desk {
+    position: relative;
+    display: block;
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    border: var(--px) solid var(--ink);
+    box-shadow:
+      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.7),
+      0 0 40px 6px rgba(227,170,77,.1);
+    padding: clamp(24px, 3vw, 32px);
+    text-align: center;
+  }
+  .desk:nth-child(1) { transform: rotate(-.5deg); }
+  .desk:nth-child(2) { transform: rotate(.3deg); }
+  .desk:nth-child(3) { transform: rotate(-.2deg); }
+  .desk::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--px)*-2);
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(var(--px)*4);
+    height: calc(var(--px)*4);
+    background: var(--wood);
+    border: var(--px) solid var(--ink);
+    box-shadow: 0 var(--px) 0 rgba(2,2,0,.6);
+  }
+  .desk .name {
+    display: block;
+    font-family: var(--display);
+    font-size: clamp(13px, 1.5vw, 17px);
+    letter-spacing: .06em;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .desk .count {
+    display: block;
+    font-family: var(--body);
+    font-size: 15px;
+    color: var(--rose);
+    letter-spacing: .06em;
+  }
+  .desk:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: rotate(0);
+  }
+  .desk:hover .name { color: var(--paper); }
+  .desk:hover .count { color: var(--gold); }
+
+  /* ---------- END OF PATH ---------- */
+  .end {
+    position: relative;
+    z-index: 2;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 8vh 20px 6vh;
+    text-align: center;
+    color: var(--cream);
+  }
+  .end .marker {
+    font-family: var(--display);
+    font-size: 10px;
+    letter-spacing: .3em;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+  }
+  .end .colophon {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 22px;
+    font-family: var(--display);
+    font-size: 9px;
+    letter-spacing: .18em;
+    opacity: .85;
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+  }
+  .end em { color: var(--gold); font-style: normal; }
+  .end a { color: var(--gold); text-decoration: none; }
+  .end a:hover { color: var(--cream); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .cue, .title h1 { animation: none; }
+  }
+  </style>
 </head>
 <body>
 
-  <!-- ===== PAGE HEAD ===== -->
-  <section class="page-head wrap">
-    <p class="code page-head__index">01 Editorial</p>
-    <h1 class="page-head__title">News</h1>
-    <p class="page-head__lede">What's worth knowing — written down, not shouted. Signal, never a comment pool.</p>
+  <!-- fixed scene -->
+  <div class="scene" aria-hidden="true">
+    <img src="../assets/path.png" alt="" />
+  </div>
+  <div class="veil" aria-hidden="true"></div>
+
+  <!-- arrival: big Dispatches over the path -->
+  <section class="arrive">
+    <a class="path-back" href="/">Back to the clearing</a>
+    <div class="title">
+      <h1>Dispatches</h1>
+      <span class="lede">Weekly. Written, not aggregated.</span>
+    </div>
+    <span class="cue">Read on</span>
   </section>
 
-  <!-- ===== FEED ===== -->
-  <section class="wrap feed">
+  <!-- desks: three doors down -->
+  <section class="desks" id="desks" aria-label="Desks">
+    <div class="desks-heading">
+      <span class="eyebrow">Choose your desk</span>
+      <h2>Three ways in</h2>
+    </div>
+    <div class="desks-grid">
+      <a class="desk" href="/news/editorial/">
+        <span class="name">Editorial</span>
+        <span class="count">1 dispatch</span>
+      </a>
+      <a class="desk" href="/news/field-notes/">
+        <span class="name">Field Notes</span>
+        <span class="count">1 dispatch</span>
+      </a>
+      <a class="desk" href="/news/interview/">
+        <span class="name">Interview</span>
+        <span class="count">1 dispatch</span>
+      </a>
+    </div>
+  </section>
 
-      <div class="marginalia marginalia--right" style="position: relative; margin: 0 0 32px auto;">
-        Weekly. Written, not aggregated. If you got this from a feed, welcome — it's a person on the other end.
-      </div>
+  <!-- end -->
+  <footer class="end">
+    <div class="marker">\ end of the path \</div>
+    <div class="colophon">
+      <span>SNAFU. <em>Dispatch desk</em></span>
+      <span>Los Angeles</span>
+      <span>Weekly since 2026</span>
+      <span><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></span>
+    </div>
+  </footer>
 
-      <article class="entry">
-        <div class="entry__meta">
-          <div class="meta-strip">
-            <span class="meta-strip__item">
-              <span class="meta-strip__label">Filed</span>
-              <span class="meta-strip__value">18 June 2026</span>
-            </span>
-            <span class="meta-strip__item">
-              <span class="meta-strip__label">Desk</span>
-              <span class="meta-strip__value meta-strip__value--red">Editorial</span>
-            </span>
-            <span class="meta-strip__item">
-              <span class="meta-strip__label">By</span>
-              <span class="meta-strip__value">N. Higgins</span>
-            </span>
-          </div>
-        </div>
-        <div class="entry__main">
-          <h2 class="entry__title"><a href="#">The one-of-one economy is eating the hype cycle</a></h2>
-          <p class="entry__body">
-            Resale's center of gravity is shifting from mass drops to single-copy pieces.
-            Why scarcity-of-one beats scarcity-of-thousands — and what it changes about how you buy and hold.
-          </p>
-          <div class="entry__tags"><span class="tag">Resale</span><span class="tag">Culture</span><span class="tag">Analysis</span></div>
-        </div>
-      </article>
-
-      <article class="entry">
-        <div class="entry__meta">
-          <div class="meta-strip">
-            <span class="meta-strip__item">
-              <span class="meta-strip__label">Filed</span>
-              <span class="meta-strip__value">16 June 2026</span>
-            </span>
-            <span class="meta-strip__item">
-              <span class="meta-strip__label">Desk</span>
-              <span class="meta-strip__value meta-strip__value--red">Field Notes</span>
-            </span>
-            <span class="meta-strip__item">
-              <span class="meta-strip__label">By</span>
-              <span class="meta-strip__value">N. Higgins</span>
-            </span>
-          </div>
-        </div>
-        <div class="entry__main">
-          <h2 class="entry__title"><a href="#">Field notes: what Los Angeles is actually wearing</a></h2>
-          <p class="entry__body">
-            Forget the runways. We walked the east side and logged what's on bodies — the workwear
-            revival, the death of the box logo, and the quiet return of real denim.
-          </p>
-          <div class="entry__tags"><span class="tag">Street</span><span class="tag">Los Angeles</span><span class="tag">Field Notes</span></div>
-        </div>
-      </article>
-
-      <article class="entry">
-        <div class="entry__meta">
-          <div class="meta-strip">
-            <span class="meta-strip__item">
-              <span class="meta-strip__label">Filed</span>
-              <span class="meta-strip__value">13 June 2026</span>
-            </span>
-            <span class="meta-strip__item">
-              <span class="meta-strip__label">Desk</span>
-              <span class="meta-strip__value meta-strip__value--red">Interview</span>
-            </span>
-            <span class="meta-strip__item">
-              <span class="meta-strip__label">By</span>
-              <span class="meta-strip__value">N. Higgins</span>
-            </span>
-          </div>
-        </div>
-        <div class="entry__main">
-          <h2 class="entry__title"><a href="#">The archivist who won't sell to resellers</a></h2>
-          <p class="entry__body">
-            A conversation with a collector building a vault of one-offs — and his rule that nothing
-            leaves unless it's going to someone who'll actually wear it.
-          </p>
-          <div class="entry__tags"><span class="tag">Interview</span><span class="tag">Shop</span></div>
-        </div>
-      </article>
-
-    </section>
-
-    <section class="wrap">
-      <div class="colophon">
-        <span>SNAFU. <em>News Desk</em></span>
-        <span>Los Angeles /</span>
-        <span>Weekly dispatch since 2026</span>
-        <span>Contact: nate@snafu.quest</span>
-      </div>
-    </section>
-
-  <script src="../js/site.js"></script>
 </body>
 </html>
