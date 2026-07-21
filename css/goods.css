@@ -1,0 +1,185 @@
+﻿:root {
+  --cream: #f2e4c4;
+  --ink: #0c1412;
+  --wheat: #e8d29a;
+  --red: #b8352b;
+  --gold: #e3aa4d;
+  --gold-deep: #b8860b;
+  --ember: #d97706;
+  --stone: #3a342c;
+  --dust: #d4c896;
+  --display: "Press Start 2P", monospace;
+  --body: "Pixelify Sans", sans-serif;
+  --px: 3px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #0a0806; color: var(--cream); font-family: var(--body); overflow-x: hidden; }
+img { image-rendering: pixelated; }
+a { color: var(--gold); }
+
+.back {
+  position: fixed; top: 14px; left: 14px; z-index: 60;
+  font-family: var(--display); font-size: 10px; letter-spacing: .08em;
+  color: var(--cream); text-decoration: none;
+  padding: 8px 10px;
+  text-shadow:
+    calc(var(--px) * -1) 0 0 var(--ink),
+    var(--px) 0 0 var(--ink),
+    0 calc(var(--px) * -1) 0 var(--ink),
+    0 var(--px) 0 var(--ink),
+    var(--px) var(--px) 0 var(--red);
+}
+.back:hover { transform: translateY(calc(var(--px) * -1)); }
+
+.arrival {
+  position: relative; width: 100%; height: 100svh; min-height: 560px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.arrival-bg {
+  position: absolute; inset: 0;
+  background: url("/assets/vault-threshold.png") center/cover no-repeat;
+  image-rendering: pixelated; z-index: 0;
+}
+.wordmark {
+  position: relative; z-index: 2;
+  font-family: var(--display);
+  font-size: clamp(48px, 10vw, 112px);
+  letter-spacing: .04em;
+  color: var(--wheat);
+  text-shadow:
+    calc(var(--px) * -1) 0 0 var(--ink),
+    var(--px) 0 0 var(--ink),
+    0 calc(var(--px) * -1) 0 var(--ink),
+    0 var(--px) 0 var(--ink),
+    var(--px) var(--px) 0 var(--red),
+    calc(var(--px) * 2) calc(var(--px) * 2) 0 var(--ink),
+    calc(var(--px) * 6) calc(var(--px) * 8) 0 rgba(0,0,0,.5);
+  animation: drop .6s steps(4, end) both;
+}
+@keyframes drop {
+  0%   { transform: translateY(-40px); opacity: 0; }
+  100% { transform: translateY(0);      opacity: 1; }
+}
+.cue {
+  position: absolute; bottom: 40px; left: 0; right: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-family: var(--display); font-size: 10px; letter-spacing: .1em;
+  color: var(--dust);
+  animation: blink 1s steps(2, end) infinite;
+}
+.cue-arrow { color: var(--gold-deep); font-size: 20px; line-height: 1; }
+@keyframes blink { 50% { opacity: .15; } }
+
+.chamber { position: relative; min-height: 100svh; padding: 80px 20px 120px; overflow: hidden; }
+.chamber-bg {
+  position: absolute; inset: 0;
+  background: url("/assets/vault-interior.png") center top / cover no-repeat;
+  background-attachment: fixed;
+  image-rendering: pixelated; z-index: 0;
+}
+@media (max-width: 900px) {
+  .chamber-bg { background-attachment: scroll; background-size: cover; }
+}
+.chamber-veil {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at center 90%, rgba(217,119,6,.22), transparent 55%),
+    linear-gradient(180deg, rgba(10,8,6,.55) 0%, rgba(10,8,6,.35) 40%, rgba(10,8,6,.75) 100%);
+  z-index: 1; pointer-events: none;
+}
+
+.chamber-head { position: relative; z-index: 2; text-align: center; margin: 0 auto 48px; max-width: 720px; }
+.eyebrow { font-family: var(--display); font-size: 9px; letter-spacing: .2em; color: var(--gold-deep); margin-bottom: 14px; }
+.chamber-title {
+  font-family: var(--display); font-size: clamp(24px, 4vw, 40px); letter-spacing: .06em; color: var(--wheat);
+  text-shadow:
+    calc(var(--px) * -1) 0 0 var(--ink),
+    var(--px) 0 0 var(--ink),
+    0 calc(var(--px) * -1) 0 var(--ink),
+    0 var(--px) 0 var(--ink),
+    var(--px) var(--px) 0 var(--ember);
+  margin-bottom: 12px;
+}
+.chamber-sub { font-family: var(--body); font-size: 18px; color: var(--dust); }
+
+.relics { position: relative; z-index: 2; max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+
+.relic {
+  position: relative;
+  background: rgba(12,10,8,.82);
+  border: var(--px) solid var(--gold-deep);
+  box-shadow:
+    0 0 0 var(--px) var(--ink),
+    calc(var(--px) * 2) calc(var(--px) * 3) 0 rgba(0,0,0,.6),
+    0 0 40px rgba(217,119,6,.25);
+  display: grid; grid-template-columns: 200px 1fr; gap: 0;
+}
+@media (max-width: 620px) { .relic { grid-template-columns: 1fr; } }
+
+.relic-media {
+  position: relative;
+  background: linear-gradient(180deg, #1a1410 0%, #0c0806 100%);
+  border-right: var(--px) solid var(--gold-deep);
+  aspect-ratio: 1 / 1; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+@media (max-width: 620px) {
+  .relic-media { border-right: 0; border-bottom: var(--px) solid var(--gold-deep); }
+}
+.relic-media img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+.relic-media.placeholder::after {
+  content: "RELIC";
+  font-family: var(--display); font-size: 10px; letter-spacing: .2em; color: var(--gold-deep);
+}
+
+.relic-body { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 12px; }
+.relic-eyebrow { font-family: var(--display); font-size: 8px; letter-spacing: .18em; color: var(--ember); }
+.relic-name { font-family: var(--display); font-size: 14px; line-height: 1.4; letter-spacing: .04em; color: var(--wheat); }
+.relic-price { font-family: var(--display); font-size: 16px; letter-spacing: .04em; color: var(--gold); }
+
+.relic-stats {
+  list-style: none;
+  display: grid; grid-template-columns: auto 1fr; gap: 4px 12px;
+  font-family: var(--body); font-size: 15px; color: var(--cream);
+  padding: 10px 0;
+  border-top: 1px dashed rgba(184,134,11,.5);
+  border-bottom: 1px dashed rgba(184,134,11,.5);
+}
+.relic-stats dt { font-family: var(--display); font-size: 8px; letter-spacing: .12em; color: var(--gold-deep); padding-top: 3px; }
+.relic-stats dd { color: var(--cream); }
+
+.relic-note { font-family: var(--body); font-size: 15px; line-height: 1.4; color: var(--dust); font-style: italic; }
+.relic-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+.btn {
+  font-family: var(--display); font-size: 10px; letter-spacing: .1em;
+  padding: 12px 16px;
+  border: var(--px) solid var(--ink); cursor: pointer;
+  color: var(--ink); background: var(--gold);
+  box-shadow: var(--px) var(--px) 0 var(--ink);
+  transition: transform 60ms steps(2, end);
+}
+.btn:hover { transform: translate(calc(var(--px) * -1), calc(var(--px) * -1)); box-shadow: calc(var(--px) * 2) calc(var(--px) * 2) 0 var(--ink); }
+.btn:active { transform: translate(var(--px), var(--px)); box-shadow: none; }
+.btn.secondary { background: transparent; color: var(--wheat); border-color: var(--gold-deep); box-shadow: var(--px) var(--px) 0 var(--gold-deep); }
+
+.relic.sold .btn { opacity: .35; pointer-events: none; }
+.relic.sold::after {
+  content: "CLAIMED";
+  position: absolute; top: 12px; right: 12px; z-index: 3;
+  font-family: var(--display); font-size: 9px; letter-spacing: .15em;
+  color: var(--red); background: var(--ink); border: var(--px) solid var(--red);
+  padding: 6px 8px;
+}
+
+.empty { position: relative; z-index: 2; text-align: center; font-family: var(--display); font-size: 10px; letter-spacing: .15em; color: var(--dust); padding: 40px 20px; }
+
+.colophon {
+  position: relative; padding: 40px 20px; text-align: center;
+  font-family: var(--body); font-size: 15px; color: var(--dust);
+  background: #0a0806; border-top: var(--px) solid var(--stone);
+}
+.colophon p { margin: 4px 0; }
+.colophon a { color: var(--gold-deep); }
