@@ -1,290 +1,131 @@
-<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SNAFU. — Play</title>
-  <meta name="description" content="SNAFU // PLAY — a block-snake game spelling SNAFU. Eat the stars, mind the walls." />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SNAFU. &mdash; Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --px: 3px;
+  --cream: #f2e4c4; --ink: #0c1412; --wheat: #e8d29a;
+  --red: #b8352b; --rose: #d96a5c; --gold: #e3aa4d;
+  --dust: #d4c896;
+  /* play dialect */
+  --canopy: #1a3a1e; --leaf: #3d7a3d; --moss: #6b8a3a;
+  --bark: #4a3520; --amber: #d4a04c;
+  --display: 'Press Start 2P', monospace;
+  --body: 'Pixelify Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: var(--cream); font-family: var(--body); }
+img { image-rendering: pixelated; image-rendering: -moz-crisp-edges; }
+a { color: inherit; text-decoration: none; }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+.scene {
+  position: fixed; inset: 0; z-index: 0;
+  background: url('/assets/play-arrival.png') center / cover no-repeat, var(--canopy);
+  image-rendering: pixelated;
+}
+.scene::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(12,20,18,0) 40%, rgba(12,20,18,.65) 100%);
+  pointer-events: none;
+}
 
-  <link rel="stylesheet" href="../css/styles.css?v=10" />
+.arrive {
+  position: relative; z-index: 2; min-height: 100svh;
+  display: grid; grid-template-rows: auto 1fr auto;
+  padding: clamp(20px, 3vw, 32px);
+}
+.path-back {
+  font-family: var(--display); font-size: 10px; color: var(--cream);
+  align-self: start; justify-self: start;
+  padding: calc(var(--px)*2) calc(var(--px)*3);
+  background: rgba(12,20,18,.55); border: var(--px) solid var(--ink);
+}
+.path-back:hover { color: var(--amber); }
 
-  <script defer src="https://analytics.snafu.quest/script.js" data-website-id="664fa64b-2817-4e3f-9304-bb448b8d09cd"></script>
+.title { align-self: center; justify-self: center; text-align: center; }
+.title h1 {
+  font-family: var(--display);
+  font-size: clamp(40px, 12vw, 104px); line-height: 1;
+  color: var(--wheat);
+  text-shadow:
+    calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+    0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+    calc(var(--px)*2) calc(var(--px)*2) 0 var(--red),
+    calc(var(--px)*5) calc(var(--px)*5) 0 rgba(12,20,18,.5);
+  animation: markdrop .6s steps(4) both;
+}
+@keyframes markdrop {
+  from { transform: translateY(-40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.lede {
+  display: block; margin-top: calc(var(--px)*5);
+  font-family: var(--body); font-size: 16px; color: var(--dust);
+}
+.cue {
+  align-self: end; justify-self: center;
+  font-family: var(--display); font-size: 12px; color: var(--amber);
+  animation: blink 1s steps(2) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* game */
+.game {
+  position: relative; z-index: 2; background: var(--ink);
+  min-height: 100svh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: calc(var(--px)*4); padding: calc(var(--px)*12) calc(var(--px)*4);
+}
+.board-wrap { width: min(92vw, 720px); display: flex; justify-content: center; }
+#play-canvas {
+  image-rendering: pixelated;
+  border: var(--px) solid var(--bark);
+  background: var(--canopy);
+  touch-action: none; display: block;
+}
+.play-instructions {
+  font-family: var(--display); font-size: 9px; color: var(--dust);
+  text-align: center; letter-spacing: 1px;
+}
+
+.colophon {
+  position: relative; z-index: 2; background: var(--ink);
+  font-family: var(--body); font-size: 13px; color: var(--wheat);
+  text-align: center; padding: calc(var(--px)*8) calc(var(--px)*4); opacity: .7;
+}
+</style>
 </head>
 <body>
 
-  <section class="play wrap">
-    <div class="play__head">
-      <span class="play__title code">SNAFU // PLAY</span>
-      <span class="play__score code" id="score">SCORE <b>0</b> &middot; HIGH <b>0</b></span>
-    </div>
+<div class="scene"></div>
 
-    <div class="play__stage">
-      <canvas id="board" width="520" height="520"></canvas>
-      <div class="play__overlay" id="overlay">PRESS W A S D TO START</div>
-    </div>
+<section class="arrive">
+  <a class="path-back" href="/">Back to the clearing</a>
+  <div class="title">
+    <h1>Play</h1>
+    <span class="lede">Classic snake. Jungle floor. Local score only.</span>
+  </div>
+  <span class="cue">Enter</span>
+</section>
 
-    <p class="play__hint code">WASD or arrow keys to steer &middot; eat the stars &middot; don't hit the walls</p>
+<section class="game" id="game">
+  <div class="board-wrap">
+    <canvas id="play-canvas" width="640" height="480"></canvas>
+  </div>
+  <div class="play-instructions">ARROWS OR WASD &nbsp;&middot;&nbsp; P TO PAUSE</div>
+</section>
 
-    <!-- On-screen controls — shown on touch / small screens (see CSS). -->
-    <div class="dpad" id="dpad" role="group" aria-label="Game controls">
-      <button class="dpad__btn dpad__btn--up" type="button" data-dir="up" aria-label="Up">&#9650;</button>
-      <button class="dpad__btn dpad__btn--left" type="button" data-dir="left" aria-label="Left">&#9664;</button>
-      <button class="dpad__btn dpad__btn--down" type="button" data-dir="down" aria-label="Down">&#9660;</button>
-      <button class="dpad__btn dpad__btn--right" type="button" data-dir="right" aria-label="Right">&#9654;</button>
-    </div>
-  </section>
+<footer class="colophon">
+  SNAFU &mdash; Situation Normal. One egg at a time. Don't bite yourself.
+</footer>
 
-  <!-- ===== THE GAME (vanilla JS, no libraries) ===== -->
-  <script>
-  (function () {
-    var GRID = 20;            // 20 x 20 board
-    var SIZE = 520;           // logical pixels (520 / 20 = 26px cells)
-    var CELL = SIZE / GRID;   // 26
-    var SPEED = 120;          // ms per step (medium)
-    var WORD = "SNAFU";
-    var COLORS = { S: "#CC2E1C", N: "#2E5BCC", A: "#E0A422", F: "#2E8C57", U: "#17130C" };
-
-    var canvas = document.getElementById("board");
-    var ctx = canvas.getContext("2d");
-    var overlay = document.getElementById("overlay");
-    var scoreEl = document.getElementById("score");
-
-    // Crisp rendering on retina: scale the backing store, draw in logical px.
-    var dpr = Math.max(1, window.devicePixelRatio || 1);
-    canvas.width = SIZE * dpr;
-    canvas.height = SIZE * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    var snake, dir, nextDir, food, score, started, dead, timer;
-    var high = parseInt(localStorage.getItem("snafu_snake_high") || "0", 10) || 0;
-
-    function reset() {
-      // Length 3 near center, head = S, facing right, but still until start.
-      var c = Math.floor(GRID / 2);
-      snake = [ { x: c, y: c }, { x: c - 1, y: c }, { x: c - 2, y: c } ];
-      dir = { x: 1, y: 0 };
-      nextDir = { x: 1, y: 0 };
-      score = 0;
-      started = false;
-      dead = false;
-      placeFood();
-      updateScore();
-      showOverlay("PRESS W A S D TO START", false);
-      draw();
-    }
-
-    function placeFood() {
-      var open = [];
-      for (var x = 0; x < GRID; x++) {
-        for (var y = 0; y < GRID; y++) {
-          var onSnake = false;
-          for (var i = 0; i < snake.length; i++) {
-            if (snake[i].x === x && snake[i].y === y) { onSnake = true; break; }
-          }
-          if (!onSnake) open.push({ x: x, y: y });
-        }
-      }
-      food = open.length ? open[Math.floor(Math.random() * open.length)] : null;
-    }
-
-    function updateScore() {
-      scoreEl.innerHTML = "SCORE <b>" + score + "</b> &middot; HIGH <b>" + high + "</b>";
-    }
-
-    function setDir(d) {
-      // Ignore a 180° reversal into the snake's own neck.
-      if (snake.length > 1 && d.x === -dir.x && d.y === -dir.y) return;
-      nextDir = d;
-    }
-
-    function tick() {
-      dir = nextDir;
-      var nx = snake[0].x + dir.x;
-      var ny = snake[0].y + dir.y;
-
-      // Wall (edge of grid) = death.
-      if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) return die();
-
-      var willGrow = food && nx === food.x && ny === food.y;
-      // When not growing, the tail vacates its cell this step, so it's safe.
-      var body = willGrow ? snake : snake.slice(0, -1);
-      for (var i = 0; i < body.length; i++) {
-        if (body[i].x === nx && body[i].y === ny) return die();
-      }
-
-      snake.unshift({ x: nx, y: ny });
-      if (willGrow) {
-        score++;
-        updateScore();
-        placeFood();
-      } else {
-        snake.pop();
-      }
-      draw();
-    }
-
-    function die() {
-      if (timer) { clearInterval(timer); timer = null; }
-      dead = true;
-      started = false;
-      if (score > high) {
-        high = score;
-        localStorage.setItem("snafu_snake_high", String(high));
-        updateScore();
-      }
-      showOverlay("GAME OVER", true);
-      // Hold ~1.2s, then auto-redirect to the News page (root-relative so it
-      // works on the local server AND when deployed). No click needed.
-      setTimeout(function () { window.location.href = "/news/"; }, 1200);
-    }
-
-    // ----- drawing -----
-    function draw() {
-      // Cream board + faint dot texture (matches the rest of the site).
-      ctx.fillStyle = "#F1EAD8";
-      ctx.fillRect(0, 0, SIZE, SIZE);
-      ctx.fillStyle = "rgba(23,19,12,0.06)";
-      for (var gx = 9; gx < SIZE; gx += 18) {
-        for (var gy = 9; gy < SIZE; gy += 18) {
-          ctx.beginPath();
-          ctx.arc(gx, gy, 1, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      if (food) drawStar(food.x * CELL + CELL / 2, food.y * CELL + CELL / 2, CELL * 0.36);
-      // Draw tail-first so the head block sits on top.
-      for (var i = snake.length - 1; i >= 0; i--) {
-        drawBlock(snake[i].x, snake[i].y, WORD.charAt(i % WORD.length));
-      }
-    }
-
-    function roundRect(x, y, w, h, r) {
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + w, y, x + w, y + h, r);
-      ctx.arcTo(x + w, y + h, x, y + h, r);
-      ctx.arcTo(x, y + h, x, y, r);
-      ctx.arcTo(x, y, x + w, y, r);
-      ctx.closePath();
-    }
-
-    function drawBlock(gx, gy, letter) {
-      var pad = 2;
-      var X = gx * CELL + pad, Y = gy * CELL + pad, S = CELL - pad * 2;
-      roundRect(X, Y, S, S, 5);
-      ctx.fillStyle = COLORS[letter];
-      ctx.fill();
-      // Beveled toy-block look: light top-left, dark bottom-right.
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "rgba(255,255,255,0.32)";
-      ctx.beginPath();
-      ctx.moveTo(X + 2, Y + S - 3); ctx.lineTo(X + 2, Y + 2); ctx.lineTo(X + S - 3, Y + 2);
-      ctx.stroke();
-      ctx.strokeStyle = "rgba(0,0,0,0.22)";
-      ctx.beginPath();
-      ctx.moveTo(X + S - 2, Y + 3); ctx.lineTo(X + S - 2, Y + S - 2); ctx.lineTo(X + 3, Y + S - 2);
-      ctx.stroke();
-      // Bold capital letter, cream so it reads on every block color.
-      ctx.fillStyle = "#F1EAD8";
-      ctx.font = "bold " + Math.round(S * 0.62) + "px Helvetica, Arial, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(letter, X + S / 2, Y + S / 2 + 1);
-    }
-
-    function drawStar(cx, cy, outer) {
-      var inner = outer * 0.45, spikes = 5;
-      ctx.save();
-      ctx.shadowColor = "rgba(224,164,34,0.75)";
-      ctx.shadowBlur = 8;
-      ctx.beginPath();
-      for (var i = 0; i < spikes * 2; i++) {
-        var rad = (i % 2 === 0) ? outer : inner;
-        var a = (Math.PI / spikes) * i - Math.PI / 2;
-        var px = cx + Math.cos(a) * rad, py = cy + Math.sin(a) * rad;
-        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-      }
-      ctx.closePath();
-      ctx.fillStyle = "#E0A422";
-      ctx.fill();
-      ctx.shadowBlur = 0;
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = "#17130C";
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // ----- overlays -----
-    function showOverlay(text, isOver) {
-      overlay.textContent = text;
-      overlay.classList.remove("is-hidden");
-      overlay.classList.toggle("is-over", !!isOver);
-    }
-    function hideOverlay() { overlay.classList.add("is-hidden"); }
-
-    // ----- input -----
-    // One entry point for every control: keyboard AND the on-screen D-pad.
-    function steer(d) {
-      if (dead) return;            // ignore during the GAME OVER hold
-      if (!started) {
-        started = true;
-        setDir(d);
-        dir = nextDir;             // first move honors the chosen direction
-        hideOverlay();
-        timer = setInterval(tick, SPEED);
-      } else {
-        setDir(d);
-      }
-    }
-
-    // WASD (spec) + arrow keys (bonus) — desktop.
-    document.addEventListener("keydown", function (e) {
-      var k = e.key.toLowerCase();
-      var d = null;
-      if (k === "w" || k === "arrowup") d = { x: 0, y: -1 };
-      else if (k === "s" || k === "arrowdown") d = { x: 0, y: 1 };
-      else if (k === "a" || k === "arrowleft") d = { x: -1, y: 0 };
-      else if (k === "d" || k === "arrowright") d = { x: 1, y: 0 };
-      if (!d) return;
-      if (k.indexOf("arrow") === 0) e.preventDefault(); // stop page scroll
-      steer(d);
-    });
-
-    // On-screen D-pad — touch / mobile.
-    var DPAD_DIRS = {
-      up: { x: 0, y: -1 }, down: { x: 0, y: 1 },
-      left: { x: -1, y: 0 }, right: { x: 1, y: 0 }
-    };
-    var dpad = document.getElementById("dpad");
-    if (dpad) {
-      function fromButton(e) {
-        var b = e.target.closest("[data-dir]");
-        if (!b) return null;
-        return DPAD_DIRS[b.getAttribute("data-dir")];
-      }
-      // touchstart for instant response; preventDefault suppresses the
-      // follow-up synthetic click (so we don't steer twice) and page scroll.
-      dpad.addEventListener("touchstart", function (e) {
-        var d = fromButton(e);
-        if (!d) return;
-        e.preventDefault();
-        steer(d);
-      }, { passive: false });
-      // click covers mouse / non-touch use of the buttons.
-      dpad.addEventListener("click", function (e) {
-        var d = fromButton(e);
-        if (d) steer(d);
-      });
-    }
-
-    reset();
-  })();
-  </script>
-
-  <script src="../js/site.js"></script>
+<script src="/js/play.js" defer></script>
+<script src="/js/site.js" defer></script>
 </body>
 </html>
