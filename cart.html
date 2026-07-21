@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SNAFU. — Pack</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --px: 3px;
+  --cream: #f2e4c4; --ink: #0c1412; --wheat: #e8d29a;
+  --red: #b8352b; --rose: #d96a5c; --gold: #e3aa4d;
+  --moss: #6b8a3a; --loam: #8a5a2b;
+  --display: 'Press Start 2P', monospace;
+  --body: 'Pixelify Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: var(--cream); font-family: var(--body); min-height: 100vh; display: flex; flex-direction: column; }
+img { image-rendering: pixelated; image-rendering: -moz-crisp-edges; }
+a { color: inherit; }
+
+.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px clamp(16px, 3vw, 32px);
+  border-bottom: var(--px) solid var(--cream);
+}
+.top a {
+  font-family: var(--display); font-size: clamp(10px, 1vw, 12px);
+  letter-spacing: .18em; color: var(--cream); text-decoration: none;
+  padding: calc(var(--px)*2) calc(var(--px)*3);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+.top .back::before { content: '\25C2  '; color: var(--rose); }
+.top a:hover { background: var(--cream); color: var(--ink); }
+.top h2 {
+  font-family: var(--display); font-size: clamp(12px, 1.4vw, 16px);
+  letter-spacing: .18em; color: var(--wheat);
+}
+
+main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-width: 900px; margin: 0 auto; width: 100%; }
+
+.empty {
+  text-align: center; padding: 80px 20px;
+  font-family: var(--display); font-size: 12px;
+  color: var(--wheat); letter-spacing: .16em;
+}
+.empty a {
+  display: inline-block; margin-top: 20px;
+  color: var(--gold); text-decoration: underline;
+}
+
+.rows { display: flex; flex-direction: column; gap: 12px; }
+
+.row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto auto;
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+  border: var(--px) solid var(--cream);
+  background: rgba(242,228,196,.03);
+}
+.row .thumb {
+  width: 80px; height: 80px;
+  background: var(--wheat);
+  border: var(--px) solid var(--cream);
+  display: grid; place-items: center;
+  font-family: var(--display); font-size: 7px;
+  color: var(--loam); letter-spacing: .1em;
+  text-align: center; padding: 6px; overflow: hidden;
+}
+.row .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.row .name-block { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.row .name {
+  font-family: var(--body); font-size: 16px;
+  color: var(--cream); text-decoration: none;
+}
+.row .name:hover { color: var(--gold); }
+.row .sub {
+  font-family: var(--display); font-size: 9px;
+  color: var(--wheat); letter-spacing: .12em;
+}
+.row .qty {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--display); font-size: 11px;
+  color: var(--cream);
+}
+.row .qty button {
+  width: 28px; height: 28px;
+  background: transparent;
+  border: var(--px) solid var(--cream);
+  color: var(--cream); cursor: pointer;
+  font-family: var(--display); font-size: 12px;
+}
+.row .qty button:hover { background: var(--cream); color: var(--ink); }
+.row .line-price {
+  font-family: var(--display); font-size: 12px;
+  color: var(--gold); letter-spacing: .1em;
+  min-width: 70px; text-align: right;
+}
+.row .remove {
+  background: transparent; border: 0;
+  color: var(--rose); cursor: pointer;
+  font-family: var(--display); font-size: 9px;
+  letter-spacing: .16em;
+  padding: 4px 6px;
+}
+.row .remove:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .row { grid-template-columns: 60px 1fr; grid-template-areas: 'thumb name' 'thumb qty' 'thumb price'; gap: 8px 12px; }
+  .row .thumb { width: 60px; height: 60px; grid-area: thumb; }
+  .row .name-block { grid-area: name; }
+  .row .qty { grid-area: qty; }
+  .row .line-price { grid-area: price; text-align: left; }
+  .row .remove { position: absolute; }
+}
+
+.summary {
+  margin-top: 24px;
+  padding: 20px;
+  border: var(--px) solid var(--cream);
+  background: rgba(107,138,58,.06);
+  display: flex; flex-direction: column; gap: 16px;
+}
+.summary .total {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--display);
+  color: var(--wheat);
+  font-size: 14px; letter-spacing: .16em;
+}
+.summary .total .amt { color: var(--gold); font-size: 16px; }
+.summary .checkout {
+  font-family: var(--display); font-size: 12px;
+  letter-spacing: .18em;
+  padding: 16px 24px;
+  background: var(--moss); color: var(--ink);
+  border: var(--px) solid var(--moss);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  cursor: pointer; text-align: center;
+  text-decoration: none;
+  transition: transform 80ms steps(2, end);
+}
+.summary .checkout:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
+.summary .note {
+  font-family: var(--body); font-size: 13px;
+  color: var(--wheat); text-align: center;
+  opacity: .7;
+}
+
+.colophon {
+  border-top: var(--px) solid var(--cream);
+  padding: 40px clamp(16px, 3vw, 32px);
+  display: grid; gap: 8px;
+  font-family: var(--body); font-size: 14px; color: var(--wheat);
+}
+.colophon .row1 { font-family: var(--display); font-size: 11px; letter-spacing: .18em; color: var(--cream); }
+.colophon a { color: var(--gold); text-decoration: none; }
+.colophon a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="back" href="shop.html">Back to the market</a>
+  <h2>YOUR PACK</h2>
+  <span style="width: 120px"></span>
+</header>
+
+<main id="main"></main>
+
+<footer class="colophon">
+  <div class="row1">SNAFU. &nbsp;·&nbsp; SHOP &nbsp;·&nbsp; LOS ANGELES</div>
+  <div>Situation Normal: All Fouled Up.</div>
+  <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
+</footer>
+
+<script src="js/shop-data.js"></script>
+<script>
+const main = document.getElementById('main');
+
+function getCart() {
+  return JSON.parse(localStorage.getItem('snafu.cart') || '[]');
+}
+function setCart(cart) {
+  localStorage.setItem('snafu.cart', JSON.stringify(cart));
+  render();
+}
+
+function render() {
+  const cart = getCart();
+  const products = window.SNAFU_SHOP || [];
+
+  // resolve cart items to full product data, drop any that no longer exist
+  const items = cart
+    .map(ci => ({ ...products.find(p => p.id === ci.id), qty: ci.qty || 1 }))
+    .filter(i => i.id);
+
+  if (!items.length) {
+    main.innerHTML = `
+      <div class="empty">
+        Your pack is empty.
+        <br>
+        <a href="shop.html">back to the market</a>
+      </div>`;
+    return;
+  }
+
+  const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+  main.innerHTML = `
+    <div class="rows">
+      ${items.map(i => `
+        <div class="row">
+          <div class="thumb">
+            ${i.img ? `<img src="${i.img}" alt="${i.name}">` : i.name.toUpperCase()}
+          </div>
+          <div class="name-block">
+            <a class="name" href="product.html?id=${i.id}">${i.name}</a>
+            <span class="sub">${i.year} · ${i.origin} · ${i.size}</span>
+            <button class="remove" data-remove="${i.id}">REMOVE</button>
+          </div>
+          <div class="qty">
+            <button data-dec="${i.id}">−</button>
+            <span>${i.qty}</span>
+            <button data-inc="${i.id}">+</button>
+          </div>
+          <div class="line-price">$${i.price * i.qty}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="summary">
+      <div class="total">
+        <span>TOTAL</span>
+        <span class="amt">$${total}</span>
+      </div>
+      <a class="checkout" href="/checkout">PROCEED TO CHECKOUT</a>
+      <div class="note">Checkout via Stripe. Shipping calculated at next step.</div>
+    </div>
+  `;
+
+  // wire buttons
+  main.querySelectorAll('[data-inc]').forEach(b => b.addEventListener('click', () => changeQty(b.dataset.inc, +1)));
+  main.querySelectorAll('[data-dec]').forEach(b => b.addEventListener('click', () => changeQty(b.dataset.dec, -1)));
+  main.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => removeItem(b.dataset.remove)));
+}
+
+function changeQty(id, delta) {
+  const cart = getCart();
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty = Math.max(1, (item.qty || 1) + delta);
+  setCart(cart);
+}
+
+function removeItem(id) {
+  const cart = getCart().filter(i => i.id !== id);
+  setCart(cart);
+}
+
+render();
+</script>
+</body>
+</html>

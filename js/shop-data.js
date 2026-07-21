@@ -1,135 +1,118 @@
-/* ============================================================
-   SNAFU — Shop inventory
-   ONE source of truth for the 1/1 pieces. Both the Shop grid
-   (shop/index.html) and the detail page (shop/item.html)
-   read from this list.
-
-   TO ADD A PIECE: copy one { ... } block, change the values.
-   - id:      unique slug, used in the URL (?id=...). No spaces.
-   - status:  "AVAILABLE" or "SOLD" or "RESERVED"
-   - price:   a string. Use "—" for sold/POA.
-   ============================================================ */
-
-var SNAFU_SHOP = [
+/* SNAFU shop data.
+   One source of truth. Read by shop.html, product.html, cart.html.
+   Add a piece: paste one object. Both grid and detail regenerate.
+*/
+window.SNAFU_SHOP = [
   {
-    id: "raf-bomber-01",
-    name: "Bomber, Re-cut",
-    year: "c. 2003",
-    origin: "Antwerp",
-    status: "AVAILABLE",
-    price: "$2,400",
-    tags: ["Outerwear", "Shop", "1 of 1"],
-    note: "Deconstructed military bomber, re-cut and re-lined by hand.",
-    details:
-      "A single-copy reconstruction: an early-2000s military bomber taken apart and " +
-      "rebuilt with an asymmetric front and a salvaged silk lining. No two exist. " +
-      "Wears heavy, moves light.",
-    specs: {
-      Condition: "Excellent / worn twice",
-      Size: "Fits M–L",
-      Material: "Nylon shell, silk lining",
-      Provenance: "Private collection, Antwerp"
-    }
+    id: 'p001',
+    name: 'Placeholder Jacket',
+    price: 220,
+    gender: 'mens',
+    cat: 'jackets',
+    year: '1990s',
+    origin: 'Japan',
+    size: 'M',
+    condition: 'Very good, minor wear at cuffs.',
+    note: 'A workwear silhouette with the shoulders cut for someone who actually worked.',
+    img: '',
+    sold: false
   },
   {
-    id: "denim-trucker-02",
-    name: "Trucker, Bleached",
-    year: "c. 1996",
-    origin: "Los Angeles",
-    status: "AVAILABLE",
-    price: "$680",
-    tags: ["Denim", "Vintage", "1 of 1"],
-    note: "Hand-bleached selvedge trucker with repaired chain-stitch hem.",
-    details:
-      "Sun-bleached over a real LA summer, not a machine. Original selvedge denim with " +
-      "honest fade lines and a chain-stitched repair at the hem. One piece, as found and finished.",
-    specs: {
-      Condition: "Good / visible wear",
-      Size: "Medium",
-      Material: "100% cotton selvedge denim",
-      Provenance: "Found, Rose Bowl"
-    }
+    id: 'p002',
+    name: 'Placeholder Tee',
+    price: 45,
+    gender: 'mens',
+    cat: 'tops',
+    year: '2001',
+    origin: 'USA',
+    size: 'L',
+    condition: 'Excellent, soft hand.',
+    note: 'The kind of graphic you saw on the floor of a college dorm in 2003.',
+    img: '',
+    sold: false
   },
   {
-    id: "knit-cardigan-03",
-    name: "Cardigan, Hand-Knit",
-    year: "Unknown",
-    origin: "Scotland",
-    status: "SOLD",
-    price: "—",
-    tags: ["Knitwear", "Shop", "1 of 1"],
-    note: "Aran-pattern hand-knit, undyed wool, single maker.",
-    details:
-      "A dense Aran cardigan in undyed wool, knit by a single hand. Irregular, warm, and " +
-      "exactly one of one. Gone to a good home — kept here as part of the record.",
-    specs: {
-      Condition: "Very good",
-      Size: "Oversized L",
-      Material: "Undyed virgin wool",
-      Provenance: "Estate, Hebrides"
-    }
+    id: 'p003',
+    name: 'Placeholder Trouser',
+    price: 120,
+    gender: 'mens',
+    cat: 'bottoms',
+    year: '1980s',
+    origin: 'Italy',
+    size: 'W32 L30',
+    condition: 'Good, minor fade.',
+    note: "A cut that hasn't been made in twenty years and can't be faked.",
+    img: '',
+    sold: false
   },
   {
-    id: "leather-boots-04",
-    name: "Boots, Resoled",
-    year: "c. 1989",
-    origin: "Northampton",
-    status: "RESERVED",
-    price: "$1,150",
-    tags: ["Footwear", "Vintage", "1 of 1"],
-    note: "Goodyear-welted leather boots, resoled in red rubber.",
-    details:
-      "English-made leather boots, decades old, resoled in a single run of red rubber as " +
-      "a quiet SNAFU signature. Broken in, not worn out. Currently on hold.",
-    specs: {
-      Condition: "Good / resoled",
-      Size: "UK 9 / US 10",
-      Material: "Full-grain leather, rubber sole",
-      Provenance: "Northampton workshop"
-    }
+    id: 'p004',
+    name: 'Placeholder Cap',
+    price: 35,
+    gender: 'unisex',
+    cat: 'accessories',
+    year: '1990s',
+    origin: 'USA',
+    size: 'One size',
+    condition: 'Very good.',
+    note: 'A cap the color of dust.',
+    img: '',
+    sold: false
   },
   {
-    id: "silk-scarf-05",
-    name: "Scarf, Over-printed",
-    year: "c. 1970s",
-    origin: "Como",
-    status: "AVAILABLE",
-    price: "$320",
-    tags: ["Accessory", "Shop", "1 of 1"],
-    note: "Vintage silk twill, over-printed with a single redaction mark.",
-    details:
-      "A 1970s Como silk scarf, over-printed by hand with one redaction-red bar — the only " +
-      "intervention. Equal parts heirloom and statement.",
-    specs: {
-      Condition: "Excellent",
-      Size: "90 × 90 cm",
-      Material: "100% silk twill",
-      Provenance: "Deadstock, Como"
-    }
+    id: 'p005',
+    name: 'Placeholder Blouse',
+    price: 85,
+    gender: 'womens',
+    cat: 'tops',
+    year: '1970s',
+    origin: 'France',
+    size: 'S',
+    condition: 'Very good, one small pull at seam.',
+    note: 'A shape that pretends nothing has changed since 1974.',
+    img: '',
+    sold: false
   },
   {
-    id: "wool-trouser-06",
-    name: "Trouser, Patched",
-    year: "c. 1950s",
-    origin: "Naples",
-    status: "AVAILABLE",
-    price: "$540",
-    tags: ["Tailoring", "Vintage", "1 of 1"],
-    note: "Mid-century wool trouser with visible sashiko patching.",
-    details:
-      "High-rise Neapolitan wool trousers, mended with visible sashiko stitching across one " +
-      "knee. The repair is the point — wear it loud.",
-    specs: {
-      Condition: "Good / mended",
-      Size: "32 waist",
-      Material: "Worsted wool",
-      Provenance: "Tailor's estate, Naples"
-    }
+    id: 'p006',
+    name: 'Placeholder Skirt',
+    price: 95,
+    gender: 'womens',
+    cat: 'bottoms',
+    year: '1990s',
+    origin: 'Japan',
+    size: 'S',
+    condition: 'Excellent.',
+    note: 'Weight in the hem you feel when you sit down.',
+    img: '',
+    sold: true
+  },
+  {
+    id: 'p007',
+    name: 'Placeholder Coat',
+    price: 340,
+    gender: 'womens',
+    cat: 'jackets',
+    year: '1980s',
+    origin: 'Italy',
+    size: 'M',
+    condition: 'Very good, lining intact.',
+    note: 'The kind of coat that stops a conversation for a second.',
+    img: '',
+    sold: false
+  },
+  {
+    id: 'p008',
+    name: 'Placeholder Scarf',
+    price: 55,
+    gender: 'womens',
+    cat: 'accessories',
+    year: 'unknown',
+    origin: 'unknown',
+    size: 'One size',
+    condition: 'Good, minor age spots.',
+    note: 'Silk that predates whoever cataloged it.',
+    img: '',
+    sold: false
   }
 ];
-
-// One source of truth, usable in BOTH the browser (window.SNAFU_SHOP) and the
-// Netlify checkout function (require(...) -> module.exports). The server reads
-// prices from here so it never trusts amounts sent by the client.
-if (typeof window !== "undefined") window.SNAFU_SHOP = SNAFU_SHOP;
-if (typeof module !== "undefined" && module.exports) module.exports = SNAFU_SHOP;
