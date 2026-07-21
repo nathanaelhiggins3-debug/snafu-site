@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SNAFU. — Shop</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --px: 3px;
+  --cream: #f2e4c4;
+  --ink: #0c1412;
+  --wheat: #e8d29a;
+  --red: #b8352b;
+  --rose: #d96a5c;
+  --gold: #e3aa4d;
+  /* shop dialect — the trading village */
+  --moss: #6b8a3a;        /* grass, category-bar fill */
+  --loam: #8a5a2b;        /* dirt street, card frames */
+  --sky:  #7fb8d4;        /* the street-scene sky */
+  --display: 'Press Start 2P', monospace;
+  --body: 'Pixelify Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: var(--cream); font-family: var(--body); }
+img { image-rendering: pixelated; image-rendering: -moz-crisp-edges; }
+a { color: inherit; }
+
+/* fixed scene background */
+.scene {
+  position: fixed; inset: 0; z-index: 0;
+  background: url('assets/shop-street.png') center / cover no-repeat, var(--sky);
+  image-rendering: pixelated;
+}
+.scene::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(12,20,18,0) 40%, rgba(12,20,18,.65) 100%);
+  pointer-events: none;
+}
+
+/* ---------- ARRIVAL (framework block) ---------- */
+.arrive {
+  position: relative;
+  z-index: 2;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: clamp(20px, 3vw, 32px);
+}
+
+.path-back {
+  justify-self: start;
+  font-family: var(--display);
+  font-size: clamp(10px, 1vw, 12px);
+  letter-spacing: .18em;
+  color: var(--cream);
+  text-decoration: none;
+  padding: calc(var(--px)*2) calc(var(--px)*3);
+  background: rgba(12,20,18,.6);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+.path-back::before { content: '\25C2  '; color: var(--rose); }
+.path-back:hover { background: var(--cream); color: var(--ink); }
+
+.title { align-self: center; justify-self: center; text-align: center; padding: 0 20px; }
+.title h1 {
+  font-family: var(--display);
+  font-size: clamp(30px, 6.5vw, 88px);
+  line-height: 1;
+  letter-spacing: .04em;
+  color: var(--wheat);
+  text-shadow:
+    calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+    0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+    calc(var(--px)*-1) calc(var(--px)*-1) 0 var(--ink),
+    var(--px) calc(var(--px)*-1) 0 var(--ink),
+    calc(var(--px)*-1) var(--px) 0 var(--ink),
+    var(--px) var(--px) 0 var(--ink),
+    calc(var(--px)*2) calc(var(--px)*2) 0 var(--red),
+    calc(var(--px)*3) calc(var(--px)*3) 0 var(--ink),
+    calc(var(--px)*5) calc(var(--px)*7) 0 rgba(2,2,0,.55);
+  animation: drop .6s steps(4) both;
+}
+.title .lede {
+  display: block;
+  margin-top: calc(var(--px)*6);
+  font-family: var(--body);
+  font-size: clamp(13px, 1.4vw, 17px);
+  color: var(--wheat);
+  letter-spacing: .12em;
+  text-shadow:
+    calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+    0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+    var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+@keyframes drop {
+  from { transform: translateY(calc(var(--px)*-6)); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+.cue {
+  justify-self: center;
+  align-self: end;
+  font-family: var(--display);
+  font-size: clamp(9px, 1vw, 11px);
+  letter-spacing: .2em;
+  color: var(--cream);
+  text-shadow: var(--px) var(--px) 0 var(--ink);
+  animation: blink 1.2s steps(1, end) infinite;
+  padding-bottom: 12px;
+}
+.cue::after { content: '  \25BE'; color: var(--moss); }
+@keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:.2} }
+
+/* ---------- MARKET (product section) ---------- */
+.market {
+  position: relative;
+  z-index: 2;
+  background: var(--ink);
+  padding: 0 0 80px;
+}
+
+/* sticky category bar */
+.filters {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--ink);
+  border-bottom: var(--px) solid var(--cream);
+  padding: 14px clamp(16px, 3vw, 32px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.filters .gender {
+  display: flex; gap: 0;
+  margin-right: 8px;
+  border: var(--px) solid var(--cream);
+}
+.filters .gender button {
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: .16em;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--cream);
+  border: 0;
+  cursor: pointer;
+}
+.filters .gender button.on { background: var(--cream); color: var(--ink); }
+
+.filters .cats { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
+.filters .cats button {
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: .16em;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--cream);
+  border: var(--px) solid var(--cream);
+  cursor: pointer;
+}
+.filters .cats button.on {
+  background: var(--moss); color: var(--ink); border-color: var(--moss);
+}
+.filters .cats button:hover:not(.on) { background: rgba(242,228,196,.12); }
+
+/* grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: clamp(12px, 2vw, 24px);
+  padding: clamp(20px, 3vw, 40px) clamp(16px, 3vw, 32px);
+}
+
+.card {
+  text-decoration: none;
+  color: var(--cream);
+  background: var(--ink);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  display: flex; flex-direction: column;
+  transition: transform 80ms steps(2, end);
+}
+.card:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
+
+.card .thumb {
+  aspect-ratio: 1 / 1;
+  background: var(--wheat);
+  border-bottom: var(--px) solid var(--cream);
+  display: grid; place-items: center;
+  font-family: var(--display);
+  font-size: 10px;
+  color: var(--loam);
+  letter-spacing: .12em;
+  text-align: center;
+  padding: 12px;
+  overflow: hidden;
+}
+.card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.card .info {
+  padding: 12px 14px 14px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.card .name {
+  font-family: var(--body);
+  font-size: 15px;
+  letter-spacing: .02em;
+  color: var(--cream);
+}
+.card .price {
+  font-family: var(--display);
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: .1em;
+}
+.card.sold .thumb { opacity: .45; }
+.card.sold .price { color: var(--rose); }
+.card.sold .price::before { content: 'SOLD  '; }
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 60px 20px;
+  text-align: center;
+  font-family: var(--display);
+  font-size: 11px;
+  color: var(--wheat);
+  letter-spacing: .16em;
+  opacity: .7;
+}
+
+/* ---------- PACK (cart affordance) ---------- */
+.pack {
+  position: fixed;
+  right: 16px; bottom: 16px;
+  z-index: 20;
+  background: var(--ink);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--display);
+  font-size: 11px;
+  color: var(--cream);
+  letter-spacing: .12em;
+  cursor: pointer;
+}
+.pack:hover { background: var(--moss); color: var(--ink); }
+.pack .count {
+  background: var(--red);
+  color: var(--cream);
+  padding: 2px 6px;
+  font-size: 10px;
+}
+.pack.empty-pack .count { background: var(--loam); }
+
+/* ---------- COLOPHON ---------- */
+.colophon {
+  position: relative; z-index: 2;
+  background: var(--ink);
+  border-top: var(--px) solid var(--cream);
+  padding: 40px clamp(16px, 3vw, 32px);
+  display: grid;
+  gap: 8px;
+  font-family: var(--body);
+  font-size: 14px;
+  color: var(--wheat);
+}
+.colophon .row1 {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: .18em;
+  color: var(--cream);
+}
+.colophon a { color: var(--gold); text-decoration: none; }
+.colophon a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .filters { padding: 10px 14px; }
+  .filters .cats button, .filters .gender button { font-size: 9px; padding: 7px 9px; }
+  .pack { right: 10px; bottom: 10px; padding: 10px 12px; font-size: 10px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="scene" aria-hidden="true"></div>
+
+<!-- ARRIVAL -->
+<section class="arrive">
+  <a class="path-back" href="/">Back to the clearing</a>
+  <div class="title">
+    <h1>Shop</h1>
+    <span class="lede">Curated one-offs. What's here is what's here.</span>
+  </div>
+  <span class="cue">Enter</span>
+</section>
+
+<!-- MARKET -->
+<section class="market" id="market">
+
+  <div class="filters">
+    <div class="gender" role="tablist" aria-label="Gender">
+      <button data-gender="all" class="on">ALL</button>
+      <button data-gender="mens">MENS</button>
+      <button data-gender="womens">WOMENS</button>
+    </div>
+    <div class="cats" role="tablist" aria-label="Category">
+      <button data-cat="all" class="on">ALL</button>
+      <button data-cat="tops">TOPS</button>
+      <button data-cat="bottoms">BOTTOMS</button>
+      <button data-cat="jackets">JACKETS</button>
+      <button data-cat="accessories">ACCESSORIES</button>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"><!-- cards inject here --></div>
+
+</section>
+
+<!-- PACK -->
+<a class="pack empty-pack" id="pack" href="/cart">
+  <span>PACK</span>
+  <span class="count" id="packCount">0</span>
+</a>
+
+<!-- COLOPHON -->
+<footer class="colophon">
+  <div class="row1">SNAFU. &nbsp;·&nbsp; SHOP &nbsp;·&nbsp; LOS ANGELES</div>
+  <div>Situation Normal: All Fouled Up.</div>
+  <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
+</footer>
+
+<script>
+/* ---------- PRODUCTS ---------- */
+/* Add a piece: one object. Grid and detail page both read from this. */
+const PRODUCTS = [
+  { id: 'p001', name: 'Placeholder Jacket',      price: 220, gender: 'mens',   cat: 'jackets',     img: '', sold: false },
+  { id: 'p002', name: 'Placeholder Tee',         price: 45,  gender: 'mens',   cat: 'tops',        img: '', sold: false },
+  { id: 'p003', name: 'Placeholder Trouser',     price: 120, gender: 'mens',   cat: 'bottoms',     img: '', sold: false },
+  { id: 'p004', name: 'Placeholder Cap',         price: 35,  gender: 'mens',   cat: 'accessories', img: '', sold: false },
+  { id: 'p005', name: 'Placeholder Blouse',      price: 85,  gender: 'womens', cat: 'tops',        img: '', sold: false },
+  { id: 'p006', name: 'Placeholder Skirt',       price: 95,  gender: 'womens', cat: 'bottoms',     img: '', sold: true  },
+  { id: 'p007', name: 'Placeholder Coat',        price: 340, gender: 'womens', cat: 'jackets',     img: '', sold: false },
+  { id: 'p008', name: 'Placeholder Scarf',       price: 55,  gender: 'womens', cat: 'accessories', img: '', sold: false },
+];
+
+/* ---------- STATE ---------- */
+const state = { gender: 'all', cat: 'all' };
+
+/* ---------- RENDER ---------- */
+const grid = document.getElementById('grid');
+
+function render() {
+  const list = PRODUCTS.filter(p =>
+    (state.gender === 'all' || p.gender === state.gender) &&
+    (state.cat === 'all' || p.cat === state.cat)
+  );
+
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty">Nothing here right now.</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map(p => `
+    <a class="card ${p.sold ? 'sold' : ''}" href="/product?id=${p.id}">
+      <div class="thumb">
+        ${p.img ? `<img src="${p.img}" alt="${p.name}">` : p.name.toUpperCase()}
+      </div>
+      <div class="info">
+        <div class="name">${p.name}</div>
+        <div class="price">$${p.price}</div>
+      </div>
+    </a>
+  `).join('');
+}
+
+/* ---------- FILTERS ---------- */
+document.querySelectorAll('.gender button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.gender button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    state.gender = b.dataset.gender;
+    render();
+  });
+});
+document.querySelectorAll('.cats button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.cats button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    state.cat = b.dataset.cat;
+    render();
+  });
+});
+
+/* ---------- PACK (cart count from localStorage) ---------- */
+function refreshPack() {
+  const cart = JSON.parse(localStorage.getItem('snafu.cart') || '[]');
+  const count = cart.reduce((n, i) => n + (i.qty || 1), 0);
+  document.getElementById('packCount').textContent = count;
+  document.getElementById('pack').classList.toggle('empty-pack', count === 0);
+}
+
+render();
+refreshPack();
+window.addEventListener('storage', refreshPack);
+</script>
+
+</body>
+</html>
