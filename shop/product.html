@@ -155,7 +155,7 @@ a { color: inherit; }
 <body>
 
 <header class="top">
-  <a class="back" href="shop.html">Back to the market</a>
+  <a class="back" href="index.html">Back to the market</a>
   <a class="pack empty-pack" id="pack" href="cart.html">
     PACK <span class="count" id="packCount">0</span>
   </a>
@@ -171,7 +171,7 @@ a { color: inherit; }
   <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
 </footer>
 
-<script src="js/shop-data.js"></script>
+<script src="../js/shop-data.js"></script>
 <script>
 const params = new URLSearchParams(location.search);
 const id = params.get('id');
@@ -179,7 +179,7 @@ const product = (window.SNAFU_SHOP || []).find(p => p.id === id);
 const main = document.getElementById('main');
 
 if (!product) {
-  main.innerHTML = `<div class="notfound">This piece isn't here.<br><br><a href="shop.html" style="color:var(--gold);text-decoration:underline">back to the market</a></div>`;
+  main.innerHTML = `<div class="notfound">This piece isn't here.<br><br><a href="index.html" style="color:var(--gold);text-decoration:underline">back to the market</a></div>`;
 } else {
   main.innerHTML = `
     <article class="piece">
@@ -250,5 +250,8 @@ function showToast(msg) {
 
 refreshPack();
 </script>
+<script src="../js/site.js"></script>
 </body>
 </html>
+
+

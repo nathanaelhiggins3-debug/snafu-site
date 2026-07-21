@@ -1,208 +1,51 @@
-/* ============================================================
-   SNAFU — shared site chrome
-   Builds the broadcast TICKER, the HEADER, and the FOOTER once,
-   here, and injects them into every page. Edit once → every page
-   updates. No frameworks, no build step.
-   ============================================================ */
-
 (function () {
-  // The four sections. Order here = order in the nav.
-  var SECTIONS = [
-    { slug: "news",    label: "News"    },
-    { slug: "gallery", label: "Gallery" },
-    { slug: "shop",    label: "Shop"    },
-    { slug: "goods",   label: "Goods"   },
-    { slug: "play",    label: "Play"    }
-  ];
-
-  // The lines that scroll across the broadcast ticker.
-  // Edit / add freely — they loop forever.
-  var BROADCAST = [
-    "SNAFU — Los Angeles",
-    "New in Shop: three 1/1 pieces filed this week",
-    "Goods drop incoming — sign up for first access",
-    "When it's gone, it's gone"
-  ];
-// Dispatch phrases — one picked at random per page load.
-  // Fragments, not slogans. Add or edit freely.
-  var DISPATCH_PHRASES = [
-    "the second time is the first time again.",
-    "recovered from the field.",
-    "unclassified transmission.",
-    "printed after hours.",
-    "nothing left to argue about.",
-    "still the only one who saw it.",
-    "filed under things worth keeping.",
-    "signal held. static ignored.",
-    "the story before the story.",
-    "walked past it twice before we understood.",
-    "one for the record.",
-    "built on the last day it made sense.",
-    "the paper is still warm.",
-    "notes taken in low light.",
-    "we were the only ones there.",
-    "found, not made.",
-    "no one asked. we filed it anyway.",
-    "the room got quiet for a reason.",
-    "worth the second look.",
-    "held over from the night before."
-  ];
-  // --- Where does this page live? -----------------------------
-  // Inside a one-level subfolder (e.g. /shop/, /cart/) links need
-  // to step up with "../". The homepage needs no prefix. We match by
-  // folder name (substring) so this also works when opened as a local
-  // file:// path, not just on a web server.
-  var path = window.location.pathname;
-  var SUBDIRS = SECTIONS.map(function (s) { return s.slug; })
-    .concat(["cart", "checkout"]); // non-nav subfolders
-  var current = null; // which SECTION nav link to mark active (sections only)
-  for (var i = 0; i < SECTIONS.length; i++) {
-    if (path.indexOf("/" + SECTIONS[i].slug + "/") !== -1) current = SECTIONS[i].slug;
+  if (!document.getElementById('snafu-topnav-styles')) {
+    const style = document.createElement('style');
+    style.id = 'snafu-topnav-styles';
+    style.textContent = `
+      .snafu-topnav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: center;
+        padding: 14px 0 10px;
+        pointer-events: none;
+      }
+      .snafu-topnav a {
+        pointer-events: auto;
+        font-family: var(--display, 'Press Start 2P', monospace);
+        font-size: clamp(16px, 2.4vw, 22px);
+        line-height: 1;
+        letter-spacing: .04em;
+        color: var(--cream, #f2e4c4);
+        text-decoration: none;
+        padding: 8px 14px;
+        text-shadow:
+          calc(var(--px, 3px) * -1) 0 0 var(--ink, #0c1412),
+          var(--px, 3px) 0 0 var(--ink, #0c1412),
+          0 calc(var(--px, 3px) * -1) 0 var(--ink, #0c1412),
+          0 var(--px, 3px) 0 var(--ink, #0c1412),
+          var(--px, 3px) var(--px, 3px) 0 var(--red, #b8352b),
+          calc(var(--px, 3px) * 2) calc(var(--px, 3px) * 2) 0 var(--ink, #0c1412),
+          calc(var(--px, 3px) * 4) calc(var(--px, 3px) * 5) 0 rgba(10,8,5,.45);
+        transition: transform 80ms steps(2, end);
+      }
+      .snafu-topnav a:hover {
+        transform: translateY(calc(var(--px, 3px) * -1));
+      }
+      body.has-snafu-topnav { padding-top: 56px; }
+      @media (max-width: 600px) {
+        body.has-snafu-topnav { padding-top: 48px; }
+      }
+    `;
+    document.head.appendChild(style);
   }
-  var inSubdir = SUBDIRS.some(function (d) { return path.indexOf("/" + d + "/") !== -1; });
-  var base = inSubdir ? "../" : "";
-
-  // --- BROADCAST TICKER ---------------------------------------
-  // Build one run of items, then duplicate it so the scroll loops
-  // seamlessly (the CSS slides exactly one copy's width).
-  var oneRun = BROADCAST.map(function (line) {
-    return '<span class="ticker__item">' + line + '</span>';
-  }).join("");
-  var ticker =
-    '<div class="ticker" aria-hidden="true">' +
-      '<div class="ticker__track">' + oneRun + oneRun + "</div>" +
-    "</div>";
-
-  // --- NAV ----------------------------------------------------
-  var navLinks = SECTIONS.map(function (c) {
-    var here = c.slug === current ? ' aria-current="page"' : "";
-    return '<a href="' + base + c.slug + '/"' + here + ">" + c.label + "</a>";
-  }).join("");
-  // Same links, larger, for the mobile drop-down menu.
-  var navLinksMobile = SECTIONS.map(function (c) {
-    var here = c.slug === current ? ' aria-current="page"' : "";
-    return '<a class="mobile-menu__link" href="' + base + c.slug + '/"' + here + ">" + c.label + "</a>";
-  }).join("");
-
-  // --- CART COUNT ---------------------------------------------
-  // Forward-compatible: reads the cart localStorage that Phase 2's
-  // js/cart.js will manage. Until then it simply reads 0.
-  function cartCount() {
-    try {
-      var c = JSON.parse(localStorage.getItem("snafu_cart") || "[]");
-      return c.reduce(function (n, i) { return n + (i.qty || 1); }, 0);
-    } catch (e) { return 0; }
+  if (!document.querySelector('.snafu-topnav')) {
+    const nav = document.createElement('nav');
+    nav.className = 'snafu-topnav';
+    nav.innerHTML = '<a href="/" aria-label="SNAFU home">SNAFU.</a>';
+    document.body.prepend(nav);
+    document.body.classList.add('has-snafu-topnav');
   }
-
-  // --- HEADER -------------------------------------------------
-  var header =
-    '<header class="site-header">' +
-      '<div class="wrap site-header__bar">' +
-        '<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">' +
-          '<span></span><span></span><span></span>' +
-        "</button>" +
-        '<a class="logo" href="' + base + 'index.html">SNAFU<span>.</span></a>' +
-        '<nav class="nav">' + navLinks + "</nav>" +
-        '<div class="site-header__right">' +
-          '<a class="cart-link" href="' + base + 'cart/">Cart <span class="cart-count" data-cart-count>' + cartCount() + "</span></a>" +
-          '<button class="stamp" type="button" aria-pressed="false">SITUATION: NORMAL</button>' +
-        "</div>" +
-      "</div>" +
-      '<div class="mobile-menu" id="mobile-menu" hidden>' +
-        '<nav class="mobile-menu__nav">' + navLinksMobile + "</nav>" +
-        '<button class="stamp stamp--menu" type="button" aria-pressed="false">SITUATION: NORMAL</button>' +
-      "</div>" +
-    "</header>";
-
-  // --- FOOTER -------------------------------------------------
-  // --- FOOTER -------------------------------------------------
-  var year = new Date().getFullYear();
-  var phrase = DISPATCH_PHRASES[Math.floor(Math.random() * DISPATCH_PHRASES.length)];
-  var footer =
-    '<footer class="site-footer">' +
-      '<div class="wrap">' +
-        '<div class="dispatch-phrase">' + phrase + "</div>" +
-      "</div>" +
-      '<div class="wrap site-footer__bar">' +
-        '<div class="site-footer__logo">SNAFU<span style="color:var(--red)">.</span></div>' +
-        '<div class="code" data-heartbeat="clock">Los Angeles &copy; ' + year + "</div>" +
-      "</div>" +
-    "</footer>";
-  // --- Inject -------------------------------------------------
-  // Ticker first, then header (so the ticker sits above it), footer last.
-  document.body.insertAdjacentHTML("afterbegin", header);
-  document.body.insertAdjacentHTML("afterbegin", ticker);
-  document.body.insertAdjacentHTML("beforeend", footer);
-
-  // --- SITUATION stamp toggle ---------------------------------
-  // There can be two stamps (header bar + mobile menu); keep them in sync.
-  var stamps = document.querySelectorAll(".stamp");
-  var stampOn = false;
-  function paintStamps() {
-    for (var i = 0; i < stamps.length; i++) {
-      stamps[i].classList.toggle("is-snafu", stampOn);
-      stamps[i].textContent = stampOn ? "SITUATION: ALL F'D UP" : "SITUATION: NORMAL";
-      stamps[i].setAttribute("aria-pressed", stampOn ? "true" : "false");
-    }
-  }
-  for (var s = 0; s < stamps.length; s++) {
-    stamps[s].addEventListener("click", function () { stampOn = !stampOn; paintStamps(); });
-  }
-
-  // --- Mobile hamburger menu ----------------------------------
-  var toggle = document.querySelector(".nav-toggle");
-  var menu = document.getElementById("mobile-menu");
-  function closeMenu() {
-    menu.setAttribute("hidden", "");
-    toggle.setAttribute("aria-expanded", "false");
-    toggle.classList.remove("is-open");
-  }
-  function openMenu() {
-    menu.removeAttribute("hidden");
-    toggle.setAttribute("aria-expanded", "true");
-    toggle.classList.add("is-open");
-  }
-  toggle.addEventListener("click", function () {
-    if (menu.hasAttribute("hidden")) openMenu(); else closeMenu();
-  });
-  // Tapping a menu link closes the menu (it then navigates).
-  var mlinks = menu.querySelectorAll("a");
-  for (var m = 0; m < mlinks.length; m++) mlinks[m].addEventListener("click", closeMenu);
-
-  // --- Live cart badge ----------------------------------------
-  // js/cart.js fires "snafu:cart" on add/remove; "storage" fires when
-  // another tab changes the cart. Either way, re-read and update the count.
-  function refreshBadge() {
-    var c = cartCount();
-    var els = document.querySelectorAll("[data-cart-count]");
-    for (var i = 0; i < els.length; i++) els[i].textContent = c;
-  }
-  window.addEventListener("snafu:cart", refreshBadge);
-  window.addEventListener("storage", function (e) {
-    if (e.key === "snafu_cart") refreshBadge();
-  });
-})();/* ============================================================
-   SNAFU heartbeat — live UTC clock
-   Updates every element with data-heartbeat="clock" every second.
-   Runs independently of the main chrome builder.
-   ============================================================ */
-(function () {
-  function pad(n) { return String(n).padStart(2, "0"); }
-
-  function render() {
-    var d = new Date();
-    var stamp =
-      d.getUTCFullYear() + "." +
-      pad(d.getUTCMonth() + 1) + "." +
-      pad(d.getUTCDate()) + " · " +
-      pad(d.getUTCHours()) + ":" +
-      pad(d.getUTCMinutes()) + ":" +
-      pad(d.getUTCSeconds()) + " UTC";
-    var nodes = document.querySelectorAll('[data-heartbeat="clock"]');
-    for (var i = 0; i < nodes.length; i++) nodes[i].textContent = stamp;
-  }
-
-  // Run once immediately, then every second.
-  render();
-  setInterval(render, 1000);
 })();

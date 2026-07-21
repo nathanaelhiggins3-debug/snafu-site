@@ -167,7 +167,7 @@ main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-widt
 <body>
 
 <header class="top">
-  <a class="back" href="shop.html">Back to the market</a>
+  <a class="back" href="index.html">Back to the market</a>
   <h2>YOUR PACK</h2>
   <span style="width: 120px"></span>
 </header>
@@ -180,7 +180,7 @@ main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-widt
   <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
 </footer>
 
-<script src="js/shop-data.js"></script>
+<script src="../js/shop-data.js"></script>
 <script>
 const main = document.getElementById('main');
 
@@ -206,7 +206,7 @@ function render() {
       <div class="empty">
         Your pack is empty.
         <br>
-        <a href="shop.html">back to the market</a>
+        <a href="index.html">back to the market</a>
       </div>`;
     return;
   }
@@ -266,5 +266,8 @@ function removeItem(id) {
 
 render();
 </script>
+<script src="../js/site.js"></script>
 </body>
 </html>
+
+
