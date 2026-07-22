@@ -8,12 +8,14 @@
   var TICK_START = 140, TICK_STEP = 4, TICK_FLOOR = 60;
   var SWIPE_MIN = 30;
   var HI_KEY = 'snafu.play.snake.hi';
+  var LETTERS = 'SNAFU';
 
   // ---- dialect (mirrors css vars, used for canvas draws) ----
   var C = {
     canopy: '#1a3a1e',
     leaf:   '#3d7a3d',
     moss:   '#6b8a3a',
+    vine:   '#8fae55',
     bark:   '#4a3520',
     amber:  '#d4a04c',
     cream:  '#f2e4c4',
@@ -144,28 +146,55 @@
     ctx.stroke();
   }
 
-  function cellRect(x, y, inset) {
-    ctx.fillRect(x * CELL + inset, y * CELL + inset, CELL - inset * 2, CELL - inset * 2);
+  // beveled 16-bit cell: dark outline, base fill, top/left highlight, bottom/right shadow
+  function bevelCell(x, y, base, hi, lo) {
+    var gap = 2;
+    var px = x * CELL + gap, py = y * CELL + gap, sz = CELL - gap * 2; // 28
+    ctx.fillStyle = C.canopy; ctx.fillRect(px, py, sz, sz);           // outline
+    var ix = px + 2, iy = py + 2, is = sz - 4;                        // 24 inner
+    ctx.fillStyle = base; ctx.fillRect(ix, iy, is, is);
+    ctx.fillStyle = hi;
+    ctx.fillRect(ix, iy, is, 4); ctx.fillRect(ix, iy, 4, is);        // top + left
+    ctx.fillStyle = lo;
+    ctx.fillRect(ix, iy + is - 4, is, 4); ctx.fillRect(ix + is - 4, iy, 4, is); // bottom + right
+  }
+
+  function drawLetter(x, y, ch) {
+    ctx.font = '13px "Press Start 2P", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    var cx = x * CELL + CELL / 2, cy = y * CELL + CELL / 2 + 1;
+    ctx.fillStyle = C.ink;   ctx.fillText(ch, cx + 1, cy + 1);
+    ctx.fillStyle = C.cream; ctx.fillText(ch, cx, cy);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
   }
 
   function drawEgg() {
     if (!egg) return;
-    var cx = egg.x * CELL, cy = egg.y * CELL;
-    // body
+    var px = egg.x * CELL, py = egg.y * CELL;
+    // dark shell outline
+    ctx.fillStyle = C.canopy;
+    ctx.fillRect(px + 8, py + 5, 16, 22);
+    ctx.fillRect(px + 6, py + 9, 20, 14);
+    // amber body
     ctx.fillStyle = C.amber;
-    ctx.fillRect(cx + 9, cy + 6, 14, 20);
-    ctx.fillRect(cx + 7, cy + 10, 18, 12);
-    // highlight
+    ctx.fillRect(px + 9, py + 6, 14, 20);
+    ctx.fillRect(px + 7, py + 10, 18, 12);
+    // lower-right shadow
+    ctx.fillStyle = '#a97a2e';
+    ctx.fillRect(px + 16, py + 18, 7, 8);
+    ctx.fillRect(px + 19, py + 12, 4, 10);
+    // top-left highlight
     ctx.fillStyle = C.cream;
-    ctx.fillRect(cx + 12, cy + 9, 4, 4);
+    ctx.fillRect(px + 11, py + 9, 4, 4);
   }
 
   function drawSnake() {
     for (var i = snake.length - 1; i >= 0; i--) {
       var s = snake[i];
       if (i === 0) {
-        ctx.fillStyle = C.canopy; cellRect(s.x, s.y, 1);   // outline
-        ctx.fillStyle = C.moss;   cellRect(s.x, s.y, 4);   // head brighter
+        bevelCell(s.x, s.y, C.moss, C.vine, C.leaf);        // brighter head
         // eyes toward dir
         ctx.fillStyle = C.ink;
         var ex = s.x * CELL, ey = s.y * CELL;
@@ -174,8 +203,11 @@
         ctx.fillRect(ex + 10 + ox, ey + 10 + oy, 4, 4);
         ctx.fillRect(ex + 18 + ox, ey + 10 + oy, 4, 4);
       } else {
-        ctx.fillStyle = C.canopy; cellRect(s.x, s.y, 1);
-        ctx.fillStyle = C.leaf;   cellRect(s.x, s.y, 4);
+        bevelCell(s.x, s.y, C.leaf, C.moss, C.canopy);
+        // one letter per egg eaten, trailing the head, cycling SNAFU
+        if (i <= score) {
+          drawLetter(s.x, s.y, LETTERS.charAt((i - 1) % 5));
+        }
       }
     }
   }
