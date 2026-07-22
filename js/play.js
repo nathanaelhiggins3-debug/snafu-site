@@ -599,6 +599,25 @@
     });
 
     window.addEventListener('resize', fit);
+
+    // on-screen d-pad (mobile)
+    var dpad = document.getElementById('dpad');
+    if (dpad) {
+      var DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+      var dbtns = dpad.querySelectorAll('.dbtn');
+      for (var bi = 0; bi < dbtns.length; bi++) {
+        (function (btn) {
+          btn.addEventListener('pointerdown', function (e) {
+            e.preventDefault();
+            var d = DIRS[btn.getAttribute('data-dir')];
+            if (!d) return;
+            if (state === STATE.READY) { start(); setDir(d[0], d[1]); }
+            else if (state === STATE.PLAYING) { setDir(d[0], d[1]); }
+          });
+        })(dbtns[bi]);
+      }
+    }
+
     fit();
     fetchBoard();               // prime the board on load
     requestAnimationFrame(frame);

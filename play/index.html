@@ -94,6 +94,59 @@ a { color: inherit; text-decoration: none; }
   text-align: center; letter-spacing: 1px;
 }
 
+/* on-screen controls (mobile only) */
+.dpad {
+  display: none;
+  grid-template-columns: repeat(3, 64px);
+  grid-template-rows: repeat(3, 64px);
+  grid-template-areas:
+    ".    up    ."
+    "left .     right"
+    ".    down  .";
+  gap: calc(var(--px) * 2);
+  margin-top: calc(var(--px) * 3);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.dpad-up { grid-area: up; }
+.dpad-down { grid-area: down; }
+.dpad-left { grid-area: left; }
+.dpad-right { grid-area: right; }
+.dbtn {
+  position: relative;
+  width: 64px; height: 64px;
+  padding: 0; margin: 0;
+  background: var(--leaf);
+  border: var(--px) solid var(--bark);
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.dbtn:active { background: var(--moss); }
+.dbtn::before {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 0; height: 0; transform: translate(-50%, -50%);
+}
+.dpad-up::before {
+  border-left: 12px solid transparent; border-right: 12px solid transparent;
+  border-bottom: 18px solid var(--cream);
+}
+.dpad-down::before {
+  border-left: 12px solid transparent; border-right: 12px solid transparent;
+  border-top: 18px solid var(--cream);
+}
+.dpad-left::before {
+  border-top: 12px solid transparent; border-bottom: 12px solid transparent;
+  border-right: 18px solid var(--cream);
+}
+.dpad-right::before {
+  border-top: 12px solid transparent; border-bottom: 12px solid transparent;
+  border-left: 18px solid var(--cream);
+}
+@media (hover: none) and (pointer: coarse) { .dpad { display: grid; } }
+@media (max-width: 640px) { .dpad { display: grid; } }
+
 .colophon {
   position: relative; z-index: 2; background: var(--ink);
   font-family: var(--body); font-size: 13px; color: var(--wheat);
@@ -119,6 +172,12 @@ a { color: inherit; text-decoration: none; }
     <canvas id="play-canvas" width="640" height="480"></canvas>
   </div>
   <div class="play-instructions">ARROWS OR WASD &nbsp;&middot;&nbsp; P TO PAUSE</div>
+  <div class="dpad" id="dpad" aria-hidden="true">
+    <button class="dbtn dpad-up" data-dir="up" aria-label="Up"></button>
+    <button class="dbtn dpad-left" data-dir="left" aria-label="Left"></button>
+    <button class="dbtn dpad-right" data-dir="right" aria-label="Right"></button>
+    <button class="dbtn dpad-down" data-dir="down" aria-label="Down"></button>
+  </div>
 </section>
 
 <footer class="colophon">
