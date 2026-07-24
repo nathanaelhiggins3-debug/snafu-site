@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNAFU. — Interview</title>
+  <meta name="description" content="Interviews — conversations from SNAFU." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script defer src="https://analytics.snafu.quest/script.js" data-website-id="664fa64b-2817-4e3f-9304-bb448b8d09cd"></script>
+
+  <style>
+  /* ============================================================
+     SNAFU — Desk page (Editorial / Field Notes / Interview)
+     Same template. Only differences per desk:
+       - <title>, <meta description>
+       - --scene    (image variable)
+       - --desk-name (title on the scene)
+       - the array of dispatch cards
+     ============================================================ */
+
+  :root {
+    --cream:  #f2e4c4;
+    --paper:  #efe0b8;
+    --ink:    #0c1412;
+    --gold:   #e3aa4d;
+    --wheat:  #e8d29a;
+    --wood:   #624225;
+    --moss:   #3f4726;
+    --floor:  #151f19;
+    --rose:   #814951;
+    --red:    #b8352b;
+    --px: 3px;
+    --display: 'Press Start 2P', monospace;
+    --body: 'Pixelify Sans', monospace;
+
+    /* CHANGE PER DESK */
+    --scene: url('../../assets/interview.png');
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--body);
+    color: var(--cream);
+    background: var(--floor);
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+  }
+
+  /* ---------- SCENE (fixed backdrop) ---------- */
+  .scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: var(--scene) center / cover no-repeat, var(--floor);
+    image-rendering: pixelated;
+  }
+  .scene::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(12,20,18,.4);
+    pointer-events: none;
+  }
+
+  /* ---------- ARRIVAL ---------- */
+  .arrive {
+    position: relative;
+    z-index: 2;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: clamp(20px, 3vw, 32px);
+  }
+
+  .path-back {
+    justify-self: start;
+    font-family: var(--display);
+    font-size: clamp(9px, .9vw, 11px);
+    letter-spacing: .18em;
+    color: var(--cream);
+    text-decoration: none;
+    padding: calc(var(--px)*2) calc(var(--px)*3);
+    background: rgba(12,20,18,.7);
+    border: var(--px) solid var(--cream);
+    box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  }
+  .path-back::before { content: '\25C2  '; color: var(--rose); }
+  .path-back:hover { background: var(--cream); color: var(--ink); }
+
+  .title {
+    align-self: center;
+    justify-self: center;
+    text-align: center;
+    padding: 0 20px;
+  }
+  .title .eyebrow {
+    display: block;
+    font-family: var(--display);
+    font-size: clamp(10px, 1vw, 12px);
+    letter-spacing: .3em;
+    color: var(--gold);
+    margin-bottom: calc(var(--px)*4);
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+  }
+  .title h1 {
+    font-family: var(--display);
+    font-size: clamp(28px, 6vw, 84px);
+    line-height: 1;
+    letter-spacing: .04em;
+    color: var(--wheat);
+    text-shadow:
+      calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+      0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+      calc(var(--px)*-1) calc(var(--px)*-1) 0 var(--ink),
+      var(--px) calc(var(--px)*-1) 0 var(--ink),
+      calc(var(--px)*-1) var(--px) 0 var(--ink),
+      var(--px) var(--px) 0 var(--ink),
+      calc(var(--px)*2) calc(var(--px)*2) 0 var(--red),
+      calc(var(--px)*3) calc(var(--px)*3) 0 var(--ink),
+      calc(var(--px)*5) calc(var(--px)*7) 0 rgba(2,2,0,.55);
+    animation: drop .6s steps(4) both;
+  }
+  @keyframes drop {
+    from { transform: translateY(calc(var(--px)*-6)); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  .cue {
+    justify-self: center;
+    align-self: end;
+    font-family: var(--display);
+    font-size: clamp(9px, 1vw, 11px);
+    letter-spacing: .2em;
+    color: var(--cream);
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+    animation: blink 1.2s steps(1, end) infinite;
+    padding-bottom: 12px;
+  }
+  .cue::after { content: '  \25BE'; color: var(--gold); }
+  @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:.2} }
+
+  /* ============================================================
+     FEED — the movie-poster wall
+     Mobile: one poster fills the viewport, snap-scroll to next
+     Desktop: 3-across grid, still vertical scroll
+     ============================================================ */
+  .feed {
+    position: relative;
+    z-index: 2;
+    padding: 0;
+  }
+
+  /* mobile-first: TikTok-style vertical snap */
+  .feed-inner {
+    display: grid;
+    gap: 0;
+  }
+  .card {
+    /* full viewport per card on mobile */
+    min-height: 100svh;
+    scroll-snap-align: start;
+    display: grid;
+    place-items: center;
+    padding: 6vh 20px;
+    position: relative;
+  }
+
+  /* snap the section, not the whole page — feels smoother */
+  .feed { scroll-snap-type: y mandatory; }
+
+  /* ---------- POSTER CARD ---------- */
+  .poster {
+    position: relative;
+    display: block;
+    width: min(78vw, 340px);
+    /* movie poster ratio 2:3 */
+    aspect-ratio: 2 / 3;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--paper);
+    border: var(--px) solid var(--ink);
+    box-shadow:
+      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.75),
+      0 0 60px 8px rgba(227,170,77,.15);
+    overflow: hidden;
+  }
+  .poster:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
+
+  .poster-art {
+    position: absolute;
+    inset: 0;
+    background: var(--floor);
+  }
+  .poster-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    display: block;
+  }
+
+  /* text plate underneath / over bottom third — image-dominant */
+  .poster-plate {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(12,20,18,.9) 40%),
+      rgba(12,20,18,.9);
+    padding: clamp(16px, 3vw, 22px);
+    border-top: var(--px) solid var(--ink);
+  }
+  .poster-meta {
+    display: flex;
+    gap: 12px;
+    font-family: var(--display);
+    font-size: 8px;
+    letter-spacing: .16em;
+    color: var(--gold);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .poster-meta .desk { color: var(--rose); }
+  .poster h2 {
+    font-family: var(--display);
+    font-size: clamp(14px, 1.6vw, 18px);
+    color: var(--cream);
+    line-height: 1.35;
+    letter-spacing: .02em;
+    text-shadow:
+      calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+      0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink);
+  }
+  .poster-teaser {
+    display: none; /* mobile hides teaser — poster + title only */
+  }
+
+  /* ---------- DESKTOP: 3-across grid ---------- */
+  @media (min-width: 900px) {
+    .feed { scroll-snap-type: none; }
+    .feed-inner {
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(24px, 3vw, 40px);
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 8vh clamp(20px, 4vw, 40px) 12vh;
+    }
+    .card {
+      min-height: 0;
+      padding: 0;
+      scroll-snap-align: none;
+    }
+    .poster { width: 100%; box-shadow: calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.65); }
+    .poster-teaser {
+      display: block;
+      font-family: var(--body);
+      font-size: 14px;
+      color: var(--cream);
+      opacity: .82;
+      margin-top: 10px;
+      line-height: 1.45;
+    }
+  }
+
+  /* ---------- END ---------- */
+  .end {
+    position: relative;
+    z-index: 2;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 8vh 20px 6vh;
+    text-align: center;
+    color: var(--cream);
+  }
+  .end .marker {
+    font-family: var(--display);
+    font-size: 10px;
+    letter-spacing: .3em;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+  }
+  .end .colophon {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 22px;
+    font-family: var(--display);
+    font-size: 9px;
+    letter-spacing: .18em;
+    opacity: .85;
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+  }
+  .end em { color: var(--gold); font-style: normal; }
+  .end a { color: var(--gold); text-decoration: none; }
+  .end a:hover { color: var(--cream); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .cue, .title h1 { animation: none; }
+  }
+  </style>
+</head>
+<body>
+
+  <div class="scene" aria-hidden="true"></div>
+
+  <section class="arrive">
+    <a class="path-back" href="/news/">Back to Dispatches</a>
+    <div class="title">
+      <span class="eyebrow">The Desk</span>
+      <h1>Interview</h1>
+    </div>
+    <span class="cue">Read on</span>
+  </section>
+
+  <!-- ============================================================
+       FEED — one <a class="card"><div class="poster">…</div></a>
+       per dispatch. Duplicate the block below for each article.
+       ============================================================ -->
+  <section class="feed" id="feed">
+    <div class="feed-inner">
+
+      <!-- === DISPATCH CARD (template) === -->
+      <a class="card" href="/news/interview/the-archivist/">
+        <article class="poster">
+          <div class="poster-art">
+            <img src="../../assets/covers/archivist.png" alt="" />
+          </div>
+          <div class="poster-plate">
+            <div class="poster-meta">
+              <span class="desk">Interview</span>
+              <span>13 Jun 2026</span>
+              <span>N. Higgins</span>
+            </div>
+            <h2>The archivist who won't sell to resellers</h2>
+            <p class="poster-teaser">A conversation with a collector building a vault of one-offs.</p>
+          </div>
+        </article>
+      </a>
+
+      <!-- === add more <a class="card">…</a> here === -->
+
+    </div>
+  </section>
+
+  <footer class="end">
+    <div class="marker">\ end of the conversation \</div>
+    <div class="colophon">
+      <span>SNAFU. <em>Interview</em></span>
+      <span>Los Angeles</span>
+      <span>Weekly since 2026</span>
+      <span><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></span>
+    </div>
+  </footer>
+
+</body>
+</html>
