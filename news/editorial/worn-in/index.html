@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNAFU. — Worn In</title>
+  <meta name="description" content="A short piece on individuality, authenticity, and the pieces that fit." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+  <script defer src="https://analytics.snafu.quest/script.js" data-website-id="664fa64b-2817-4e3f-9304-bb448b8d09cd"></script>
+
+  <style>
+  /* ============================================================
+     SNAFU — Article page (template)
+     Reader-first. The world holds the frame; the words hold the room.
+     Per article you edit:
+       - <title>, <meta description>
+       - --scene    (points at the desk's scene image)
+       - --cover    (points at the article's cover)
+       - the whole <article> block
+     ============================================================ */
+
+  :root {
+    --cream:  #f2e4c4;
+    --paper:  #efe0b8;
+    --ink:    #0c1412;
+    --gold:   #e3aa4d;
+    --wheat:  #e8d29a;
+    --wood:   #624225;
+    --moss:   #3f4726;
+    --floor:  #151f19;
+    --rose:   #814951;
+    --red:    #b8352b;
+    --px: 3px;
+    --display: 'Press Start 2P', monospace;
+    --ui:     'Pixelify Sans', monospace;
+    /* body-copy font: a real serif. Reading is not the place for pixels. */
+    --body:   'EB Garamond', 'Iowan Old Style', Georgia, serif;
+
+    /* CHANGE PER ARTICLE */
+    --scene: url('../../../assets/editorial.png');
+    --cover: url('../../../assets/covers/worn-in.png');
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--floor);
+    color: var(--cream);
+    font-family: var(--body);
+    font-size: 19px;
+    line-height: 1.6;
+  }
+
+  /* ---------- SCENE BACKDROP (fixed, subtle) ---------- */
+  .scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: var(--scene) center / cover no-repeat, var(--floor);
+    image-rendering: pixelated;
+  }
+  .scene::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(12,20,18,.72);
+    pointer-events: none;
+  }
+
+  /* ---------- NAV STRIP ---------- */
+  .strip {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 14px clamp(16px, 4vw, 32px);
+    background: rgba(12,20,18,.85);
+    border-bottom: var(--px) solid var(--moss);
+    font-family: var(--display);
+    font-size: 9px;
+    letter-spacing: .18em;
+    color: var(--cream);
+    text-transform: uppercase;
+  }
+  .strip a { color: var(--cream); text-decoration: none; }
+  .strip a:hover { color: var(--gold); }
+  .strip .back::before { content: '\25C2  '; color: var(--rose); }
+  .strip .desk { color: var(--gold); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    z-index: 2;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: clamp(48px, 8vh, 96px) clamp(20px, 5vw, 40px) 32px;
+    text-align: center;
+  }
+
+  .hero .eyebrow {
+    font-family: var(--display);
+    font-size: 10px;
+    letter-spacing: .3em;
+    color: var(--gold);
+    margin-bottom: 24px;
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+  }
+  .hero .eyebrow .dot { color: var(--rose); }
+
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(28px, 5.5vw, 60px);
+    line-height: 1.05;
+    color: var(--wheat);
+    letter-spacing: .04em;
+    text-shadow:
+      calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+      0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+      calc(var(--px)*-1) calc(var(--px)*-1) 0 var(--ink),
+      var(--px) calc(var(--px)*-1) 0 var(--ink),
+      calc(var(--px)*-1) var(--px) 0 var(--ink),
+      var(--px) var(--px) 0 var(--ink),
+      calc(var(--px)*2) calc(var(--px)*2) 0 var(--red),
+      calc(var(--px)*3) calc(var(--px)*3) 0 var(--ink),
+      calc(var(--px)*5) calc(var(--px)*7) 0 rgba(2,2,0,.55);
+  }
+
+  .hero .byline {
+    margin-top: 28px;
+    font-family: var(--ui);
+    font-size: 15px;
+    letter-spacing: .1em;
+    color: var(--cream);
+    opacity: .82;
+  }
+  .hero .byline em { color: var(--gold); font-style: normal; }
+
+  /* ---------- COVER PLATE ---------- */
+  .cover {
+    position: relative;
+    z-index: 2;
+    max-width: 420px;
+    margin: 40px auto 56px;
+    aspect-ratio: 2 / 3;
+    background: var(--cover) center / cover no-repeat, var(--floor);
+    image-rendering: pixelated;
+    border: var(--px) solid var(--ink);
+    box-shadow:
+      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.75),
+      0 0 60px 8px rgba(227,170,77,.15);
+  }
+
+  /* ---------- BODY ---------- */
+  .body {
+    position: relative;
+    z-index: 2;
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 32px);
+  }
+
+  /* The reading surface — a solid cream plate over the darkened forest.
+     Paper in the world. Reading, not exploring. */
+  .paper {
+    background: var(--paper);
+    color: #1a140c;
+    border: var(--px) solid var(--ink);
+    box-shadow:
+      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.7);
+    padding: clamp(32px, 5vw, 56px) clamp(24px, 5vw, 48px);
+  }
+
+  .paper p {
+    margin-bottom: 1.25em;
+  }
+  .paper p:first-of-type::first-letter {
+    /* drop cap — a small piece of grandeur without shouting */
+    font-family: var(--display);
+    font-size: 2.4em;
+    line-height: .9;
+    float: left;
+    margin: 6px 10px 0 0;
+    color: var(--rose);
+  }
+  .paper em, .paper i { font-style: italic; }
+
+  /* Section marker — a rule with a rose diamond, subtle in-world break */
+  .break {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 2em 0;
+    color: var(--rose);
+    font-family: var(--display);
+    font-size: 8px;
+    letter-spacing: .4em;
+  }
+  .break::before, .break::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: rgba(129,73,81,.4);
+  }
+
+  /* ---------- COLOPHON / FOOT ---------- */
+  .foot {
+    position: relative;
+    z-index: 2;
+    max-width: 660px;
+    margin: 40px auto 60px;
+    padding: 24px clamp(20px, 5vw, 32px);
+    text-align: center;
+    color: var(--cream);
+  }
+  .foot .marker {
+    font-family: var(--display);
+    font-size: 9px;
+    letter-spacing: .3em;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+  }
+  .foot .meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 22px;
+    font-family: var(--display);
+    font-size: 8px;
+    letter-spacing: .18em;
+    opacity: .78;
+    text-shadow: var(--px) var(--px) 0 var(--ink);
+  }
+  .foot a { color: var(--gold); text-decoration: none; }
+  .foot a:hover { color: var(--cream); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  </style>
+</head>
+<body>
+
+  <div class="scene" aria-hidden="true"></div>
+
+  <nav class="strip" aria-label="Nav">
+    <a class="back" href="/news/editorial/">Back to Editorial</a>
+    <span class="desk">SNAFU · Editorial</span>
+  </nav>
+
+  <header class="hero">
+    <div class="eyebrow">Editorial <span class="dot">·</span> 21 Jul 2026</div>
+    <h1>Worn In</h1>
+    <div class="byline">by <em>Nathanael Higgins</em></div>
+  </header>
+
+  <figure class="cover" role="img" aria-label="Worn In cover art"></figure>
+
+  <main class="body">
+    <article class="paper">
+
+      <p>I always like to preface these editorials with the same statement: I'm no one special, and my opinion is purely my opinion. That said — I wrote this short piece about individuality, and how I think it's actually achieved, both in what you wear and in how you live. The first point is about being authentic with yourself first.</p>
+
+      <p>It's easy to tell yourself <em>this is what I want</em>. But what about your actual, unapologetic self — the one who might love polka dots and stripes, not all black and bulky boots? It's easy to say you like something because it's all around you. And after reading this, you'll be better equipped to start living as the version of yourself that's brimming with real individuality.</p>
+
+      <div class="break">§</div>
+
+      <p>Look down at what you're wearing right now. What in your outfit do you reach for a couple times a week, or just often in general? What does it take for you to keep wearing a piece even after it's stained — even when little holes and rips start showing up?</p>
+
+      <p>That's the thing. Character, age, and wear are what create pure individuality. There's just something about throwing on your favorite shirt, or a pair of pants that sits on you right, that we forget when we're busy putting outfits together and hunting for pieces that'll last.</p>
+
+      <div class="break">§</div>
+
+      <p>Individuality in clothing goes past just wearing something for a long time and letting it age. It's about finding something that speaks to you the same way it spoke to the person who made it. It's about harnessing that feeling you get when you can't look away from a piece — something so captivating it almost feels like it already belongs on you.</p>
+
+      <p>That's real individuality. That's what we should be reaching for in our day-to-day decisions about what we wear — not just what's new, and not just what might get us a compliment.</p>
+
+      <p>The best stuff doesn't need to shout. It just needs to fit you exactly right.</p>
+
+    </article>
+  </main>
+
+  <footer class="foot">
+    <div class="marker">\ end of the piece \</div>
+    <div class="meta">
+      <span>SNAFU · <em>Editorial</em></span>
+      <span>Los Angeles</span>
+      <span>Weekly since 2026</span>
+      <span><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></span>
+    </div>
+  </footer>
+
+</body>
+</html>
