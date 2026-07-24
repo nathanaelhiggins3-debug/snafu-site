@@ -303,6 +303,68 @@
     html { scroll-behavior: auto; }
     .cue, .title h1 { animation: none; }
   }
+
+  /* ── Tunnel navigation ── */
+  .tunnel {
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    margin: 3rem auto 0;
+    line-height: 0;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .tunnel__art {
+    display: block;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  .tunnel__label {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 3.5vw, 22px);
+    letter-spacing: 0.08em;
+    color: #f8d060;
+    text-shadow:
+       2px 0 0 #f8d060, -2px 0 0 #f8d060,
+       0 2px 0 #f8d060,  0 -2px 0 #f8d060,
+       4px 0 0 rgba(184,134,0,0.4), -4px 0 0 rgba(184,134,0,0.4),
+       0 4px 0 rgba(184,134,0,0.4),  0 -4px 0 rgba(184,134,0,0.4);
+    pointer-events: none;
+    z-index: 2;
+    animation: tunnel-pulse 1.6s steps(2, end) infinite;
+  }
+  .tunnel__glow {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    width: 55%;
+    height: 26%;
+    pointer-events: none;
+    z-index: 1;
+    background: #f8d060;
+    opacity: 0.18;
+    mix-blend-mode: screen;
+    animation: tunnel-pulse 1.6s steps(2, end) infinite;
+    animation-delay: 0.05s;
+  }
+  @keyframes tunnel-pulse {
+    0%   { opacity: 0.55; }
+    100% { opacity: 1;    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tunnel__label,
+    .tunnel__glow { animation: none; }
+    .tunnel__label { opacity: 0.9; }
+    .tunnel__glow  { opacity: 0.18; }
+  }
   </style>
 </head>
 <body>
