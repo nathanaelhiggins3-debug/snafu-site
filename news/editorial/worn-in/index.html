@@ -246,6 +246,59 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
   }
+
+  /* ---------- TUNNEL (Article → Gallery) ---------- */
+  @keyframes tunnel-glow {
+    0%  { filter: brightness(1.0); }
+    25% { filter: brightness(1.18); }
+    50% { filter: brightness(1.07); }
+    75% { filter: brightness(1.22); }
+  }
+
+  .tunnel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 110px;
+    text-decoration: none;
+    /* mobile default: in-flow, pushed to right corner */
+    margin: 32px 0 0 auto;
+  }
+
+  .tunnel img {
+    width: 110px;
+    image-rendering: pixelated;
+    display: block;
+    animation: tunnel-glow 4s steps(4, end) infinite;
+  }
+
+  .tunnel-caption {
+    font-family: var(--display);
+    font-size: 8px;
+    letter-spacing: .18em;
+    color: var(--cream);
+    text-transform: lowercase;
+  }
+
+  .tunnel:hover .tunnel-caption,
+  .tunnel:focus .tunnel-caption {
+    color: var(--gold);
+  }
+
+  /* Desktop: absolute in right margin alongside body text */
+  @media (min-width: 1000px) {
+    .tunnel {
+      position: absolute;
+      left: calc(100% + 20px);
+      top: 42%;
+      margin: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tunnel img { animation: none; }
+  }
   </style>
 </head>
 <body>
@@ -287,6 +340,11 @@
       <p>The best stuff doesn't need to shout. It just needs to fit you exactly right.</p>
 
     </article>
+
+    <a class="tunnel" href="/gallery/" aria-label="Gallery">
+      <img src="../../../assets/tunnels/editorial-to-gallery.png" alt="" />
+      <span class="tunnel-caption">gallery</span>
+    </a>
   </main>
 
   <footer class="foot">
