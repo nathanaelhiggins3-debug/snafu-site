@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SNAFU. — About</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --px: 3px;
+  --cream: #f2e4c4; --ink: #0c1412; --wheat: #e8d29a;
+  --red: #b8352b; --rose: #d96a5c; --gold: #e3aa4d;
+  --moss: #6b8a3a; --loam: #8a5a2b;
+  --display: 'Press Start 2P', monospace;
+  --body: 'Pixelify Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: var(--cream); font-family: var(--body); }
+img { image-rendering: pixelated; image-rendering: -moz-crisp-edges; }
+a { color: inherit; }
+
+/* SCENE — swap `about-room.png` in when RD art is ready.
+   Falls back to forest.png so the page reads correctly today. */
+.scene {
+  position: fixed; inset: 0; z-index: 0;
+  background: url('../assets/about-room.png') center / cover no-repeat,
+              url('../assets/forest.png') center / cover no-repeat,
+              var(--ink);
+  image-rendering: pixelated;
+}
+.scene::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(12,20,18,.3) 0%, rgba(12,20,18,.75) 100%);
+  pointer-events: none;
+}
+
+.arrive {
+  position: relative; z-index: 2; min-height: 100svh;
+  display: grid; grid-template-rows: auto 1fr auto;
+  padding: clamp(20px, 3vw, 32px);
+}
+.path-back {
+  justify-self: start;
+  font-family: var(--display); font-size: clamp(10px, 1vw, 12px);
+  letter-spacing: .18em; color: var(--cream); text-decoration: none;
+  padding: calc(var(--px)*2) calc(var(--px)*3);
+  background: rgba(12,20,18,.6);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+.path-back::before { content: '\25C2  '; color: var(--rose); }
+.path-back:hover { background: var(--cream); color: var(--ink); }
+
+.title { align-self: center; justify-self: center; text-align: center; padding: 0 20px; }
+.title h1 {
+  font-family: var(--display);
+  font-size: clamp(30px, 6.5vw, 88px);
+  line-height: 1; letter-spacing: .04em; color: var(--wheat);
+  text-shadow:
+    calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+    0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+    calc(var(--px)*-1) calc(var(--px)*-1) 0 var(--ink),
+    var(--px) calc(var(--px)*-1) 0 var(--ink),
+    calc(var(--px)*-1) var(--px) 0 var(--ink),
+    var(--px) var(--px) 0 var(--ink),
+    calc(var(--px)*2) calc(var(--px)*2) 0 var(--red),
+    calc(var(--px)*3) calc(var(--px)*3) 0 var(--ink),
+    calc(var(--px)*5) calc(var(--px)*7) 0 rgba(2,2,0,.55);
+  animation: drop .6s steps(4) both;
+}
+.title .lede {
+  display: block; margin-top: calc(var(--px)*6);
+  font-family: var(--body); font-size: clamp(13px, 1.4vw, 17px);
+  color: var(--wheat); letter-spacing: .12em;
+  text-shadow:
+    calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
+    0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
+    var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+@keyframes drop {
+  from { transform: translateY(calc(var(--px)*-6)); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+.cue {
+  justify-self: center; align-self: end;
+  font-family: var(--display); font-size: clamp(9px, 1vw, 11px);
+  letter-spacing: .2em; color: var(--cream);
+  text-shadow: var(--px) var(--px) 0 var(--ink);
+  animation: blink 1.2s steps(1, end) infinite; padding-bottom: 12px;
+}
+.cue::after { content: '  \25BE'; color: var(--moss); }
+@keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:.2} }
+
+.doc { position: relative; z-index: 2; background: var(--ink); padding: 0 0 80px; }
+
+.doc-inner {
+  max-width: 720px; margin: 0 auto;
+  padding: clamp(48px, 6vw, 96px) clamp(20px, 4vw, 40px);
+}
+.eyebrow {
+  font-family: var(--display); font-size: 11px; letter-spacing: .22em;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: clamp(24px, 3vw, 36px);
+}
+.hero-line {
+  font-family: var(--display); font-size: clamp(16px, 2.4vw, 22px);
+  line-height: 1.5; color: var(--wheat); letter-spacing: .04em;
+  margin-bottom: clamp(40px, 5vw, 64px);
+}
+.hero-line em { font-style: italic; color: var(--cream); }
+
+.sec {
+  margin-bottom: clamp(40px, 5vw, 56px);
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: var(--px) solid var(--moss);
+}
+.sec-title {
+  font-family: var(--display); font-size: 12px; letter-spacing: .2em;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.sec p {
+  font-family: var(--body); font-size: clamp(16px, 1.7vw, 19px);
+  line-height: 1.7; color: var(--cream); letter-spacing: .02em;
+  margin-bottom: 16px;
+}
+.sec p:last-child { margin-bottom: 0; }
+.sec em { color: var(--wheat); font-style: italic; }
+
+.sign {
+  margin-top: clamp(56px, 6vw, 88px);
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: var(--px) solid var(--cream);
+  text-align: center;
+  font-family: var(--display); font-size: 11px; letter-spacing: .18em;
+  color: var(--wheat);
+}
+.sign .who { color: var(--gold); }
+
+/* FOOTER */
+.colophon {
+  position: relative; z-index: 2;
+  background: var(--ink);
+  border-top: var(--px) solid var(--cream);
+  padding: 40px clamp(16px, 3vw, 32px);
+  display: grid; gap: 8px;
+  font-family: var(--body); font-size: 14px; color: var(--wheat);
+}
+.colophon .row1 { font-family: var(--display); font-size: 11px; letter-spacing: .18em; color: var(--cream); }
+.colophon a { color: var(--gold); text-decoration: none; }
+.colophon a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="scene" aria-hidden="true"></div>
+
+<section class="arrive">
+  <a class="path-back" href="/">Back to the clearing</a>
+  <div class="title">
+    <h1>About</h1>
+    <span class="lede">A point of view, not an algorithm.</span>
+  </div>
+  <span class="cue">Read</span>
+</section>
+
+<section class="doc">
+  <div class="doc-inner">
+    <div class="eyebrow">Statement · Est. 2026</div>
+
+    <p class="hero-line">
+      SNAFU is a curated archive of vintage garments picked one at a time.
+      Not an algorithm. Not a resale marketplace. <em>A point of view.</em>
+    </p>
+
+    <section class="sec">
+      <div class="sec-title">How it's curated</div>
+      <p>Every piece was pulled by hand — from archives, estates, thrift bins, private collections. Inspected in person. Bought because it deserved to be seen again.</p>
+      <p>A $20 find gets the same set of eyes as a $500 archive piece. The price sorts them into tiers. Nothing else does.</p>
+    </section>
+
+    <section class="sec">
+      <div class="sec-title">Authentication</div>
+      <p>Every item passes a SNAFU authentication check specific to its category. Jackets: original tags, period-correct hardware, lining construction. Tees: stitch construction, tag stock, print method, wear pattern. Denim: selvedge presence, rivet marking, wash consistency with era. And so on.</p>
+      <p>The check is documented per item and shown on its page. The badge is not decoration.</p>
+    </section>
+
+    <section class="sec">
+      <div class="sec-title">Cleaning</div>
+      <p>Every item is thoroughly cleaned before it enters inventory. Ready to wear on arrival. No exceptions for tier.</p>
+    </section>
+
+    <section class="sec">
+      <div class="sec-title">Two tiers, one standard</div>
+      <p>SNAFU SHOP is the mainline — rarer, older, higher price. SNAFU DEALS is the second tier — more accessible pieces at real deal prices, mostly bin finds. Both are picked the same way. Deal items carry a different-colored border so you can tell them apart at a glance, whether they show up on their own page or mixed into the main shop grid.</p>
+    </section>
+
+    <section class="sec">
+      <div class="sec-title">The pixel world</div>
+      <p>The garments are real. The presentation is 16-bit — a world built to hold them. Every product has a cover generated at 256×384 pixels. The forest is where you enter. The shop is a valley over the ridge. The deals are the trading post beyond it.</p>
+      <p>What you're buying is real cotton, real wool, real silk. What you're looking at is SNAFU's way of showing it to you.</p>
+    </section>
+
+    <div class="sign">
+      Built and run by <span class="who">Nate</span>. Los Angeles.
+    </div>
+  </div>
+</section>
+
+<footer class="colophon">
+  <div class="row1">SNAFU. &nbsp;·&nbsp; ABOUT &nbsp;·&nbsp; LOS ANGELES</div>
+  <div>Situation Normal: All Fouled Up.</div>
+  <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
+</footer>
+
+<script src="../js/site.js"></script>
+</body>
+</html>

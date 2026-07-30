@@ -15,6 +15,7 @@
   --cream: #f2e4c4; --ink: #0c1412; --wheat: #e8d29a;
   --red: #b8352b; --rose: #d96a5c; --gold: #e3aa4d;
   --moss: #6b8a3a; --loam: #8a5a2b;
+  --deal: #d4622a; --deal-dim: #7a2f0e;
   --display: 'Press Start 2P', monospace;
   --body: 'Pixelify Sans', sans-serif;
 }
@@ -23,10 +24,13 @@ html, body { background: var(--ink); color: var(--cream); font-family: var(--bod
 img { image-rendering: pixelated; image-rendering: -moz-crisp-edges; }
 a { color: inherit; }
 
+/* ── TOP BAR ── */
 .top {
   display: flex; justify-content: space-between; align-items: center;
   padding: 20px clamp(16px, 3vw, 32px);
   border-bottom: var(--px) solid var(--cream);
+  position: sticky; top: 0; z-index: 20;
+  background: var(--ink);
 }
 .top a {
   font-family: var(--display); font-size: clamp(10px, 1vw, 12px);
@@ -40,75 +44,102 @@ a { color: inherit; }
 .top .pack .count { display: inline-block; margin-left: 8px; background: var(--red); color: var(--cream); padding: 2px 6px; font-size: 10px; }
 .top .pack.empty-pack .count { background: var(--loam); }
 
+/* ── PAGE LAYOUT ── */
 .piece {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(20px, 4vw, 60px);
-  padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px);
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 900px; margin: 0 auto;
+  padding: clamp(32px, 5vw, 64px) clamp(16px, 3vw, 32px) 40px;
+  display: flex; flex-direction: column;
+  gap: clamp(32px, 4vw, 56px);
 }
-@media (max-width: 720px) { .piece { grid-template-columns: 1fr; } }
 
-.hero-img {
-  aspect-ratio: 1 / 1;
+/* ── PIXEL COVER (256×384) ── */
+.cover-wrap {
+  align-self: center;
+  position: relative;
+}
+.cover {
+  width: 256px; height: 384px;
+  background: #0a0a0a;
+  border: var(--px) solid var(--cream);
+  box-shadow: calc(var(--px)*2) calc(var(--px)*2) 0 rgba(2,2,0,.7);
+  display: grid; place-items: center;
+  overflow: hidden;
+  font-family: var(--display); font-size: 10px; color: var(--loam); letter-spacing: .12em; text-align: center; padding: 20px;
+}
+.cover img { width: 100%; height: 100%; object-fit: contain; }
+.is-deal .cover { border-color: var(--deal); box-shadow: calc(var(--px)*2) calc(var(--px)*2) 0 var(--deal-dim); }
+.cover-badge {
+  position: absolute; top: -10px; right: -10px;
+  background: var(--deal); color: var(--ink);
+  font-family: var(--display); font-size: 10px; letter-spacing: .12em;
+  padding: 6px 10px;
+  box-shadow: var(--px) var(--px) 0 var(--deal-dim);
+  transform: rotate(4deg);
+}
+
+/* ── REAL PHOTOS CUE + SCROLL ── */
+.photos-cue {
+  align-self: center;
+  font-family: var(--display); font-size: 10px; letter-spacing: .16em;
+  color: var(--gold);
+  animation: blink 1.4s steps(1, end) infinite;
+}
+.photos-cue::after { content: '  \25BE'; color: var(--moss); }
+@keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .3; } }
+
+.photos {
+  display: flex; gap: 12px;
+  overflow-x: auto; overflow-y: hidden;
+  padding: 4px 4px 14px;
+  scrollbar-color: var(--cream) var(--ink);
+  scrollbar-width: thin;
+}
+.photos::-webkit-scrollbar { height: 8px; }
+.photos::-webkit-scrollbar-track { background: var(--ink); }
+.photos::-webkit-scrollbar-thumb { background: var(--cream); }
+.photos .photo {
+  flex: 0 0 auto; width: clamp(220px, 32vw, 320px); aspect-ratio: 3 / 4;
   background: var(--wheat);
   border: var(--px) solid var(--cream);
   box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  overflow: hidden;
   display: grid; place-items: center;
-  font-family: var(--display); font-size: 12px;
-  color: var(--loam); letter-spacing: .12em;
-  text-align: center; padding: 20px; overflow: hidden;
+  font-family: var(--display); font-size: 10px; color: var(--loam); letter-spacing: .12em; text-align: center; padding: 12px;
 }
-.hero-img img { width: 100%; height: 100%; object-fit: cover; }
+.photos .photo img { width: 100%; height: 100%; object-fit: cover; }
 
-.info { display: flex; flex-direction: column; gap: 20px; }
-.info h1 {
+/* ── HEADLINE (name / sku / brand / era / price) ── */
+.head { display: flex; flex-direction: column; gap: 14px; }
+.head h1 {
   font-family: var(--display);
-  font-size: clamp(18px, 2.6vw, 28px);
+  font-size: clamp(20px, 3vw, 30px);
   line-height: 1.3; color: var(--wheat); letter-spacing: .04em;
 }
-.info .price {
-  font-family: var(--display); font-size: 20px;
+.head .meta-line {
+  font-family: var(--display); font-size: 10px; letter-spacing: .16em;
+  color: var(--cream); opacity: .75;
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+}
+.head .meta-line span::after { content: ' \00B7'; margin-left: 14px; color: var(--loam); }
+.head .meta-line span:last-child::after { content: ''; margin: 0; }
+.head .price-row { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.head .price {
+  font-family: var(--display); font-size: clamp(20px, 2.6vw, 26px);
   color: var(--gold); letter-spacing: .1em;
 }
-.info .price.sold { color: var(--rose); }
-.info .price.sold::before { content: 'SOLD  '; }
+.is-deal .head .price { color: var(--deal); }
+.head .was {
+  font-family: var(--display); font-size: 14px;
+  color: var(--loam); text-decoration: line-through; letter-spacing: .08em;
+}
+.head .price.sold { color: var(--rose); }
+.head .price.sold::before { content: 'SOLD  '; }
 
-.meta {
-  display: grid; grid-template-columns: auto 1fr;
-  gap: 8px 16px;
-  font-family: var(--body); font-size: 15px;
-  padding: 16px;
-  border: var(--px) solid var(--cream);
-  background: rgba(242,228,196,.04);
-}
-.meta dt {
-  font-family: var(--display); font-size: 10px;
-  letter-spacing: .14em; color: var(--wheat);
-  align-self: center;
-}
-.meta dd { color: var(--cream); }
-
-.note {
-  font-family: var(--body); font-size: 17px;
-  line-height: 1.5; color: var(--cream);
-  padding: 16px;
-  border-left: var(--px) solid var(--moss);
-  background: rgba(107,138,58,.08);
-}
-.note::before {
-  content: 'THE SNAFU LINE';
-  display: block;
-  font-family: var(--display); font-size: 9px;
-  letter-spacing: .18em; color: var(--moss);
-  margin-bottom: 8px;
-}
-
+/* ── BUY / ADD ── */
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .actions button {
-  font-family: var(--display); font-size: 11px;
-  letter-spacing: .16em; padding: 14px 20px;
+  font-family: var(--display); font-size: 11px; letter-spacing: .16em;
+  padding: 14px 20px;
   border: var(--px) solid var(--cream);
   cursor: pointer;
   box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
@@ -117,30 +148,166 @@ a { color: inherit; }
 .actions button:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
 .actions .buy { background: var(--moss); color: var(--ink); border-color: var(--moss); }
 .actions .add { background: transparent; color: var(--cream); }
-.actions button:disabled {
-  opacity: .4; cursor: not-allowed; transform: none;
+.is-deal .actions .buy { background: var(--deal); border-color: var(--deal); }
+.actions button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+/* ── AUTH BADGE ── */
+.auth {
+  padding: 20px;
+  border: var(--px) solid var(--moss);
+  background: rgba(107, 138, 58, .1);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.auth .stamp {
+  font-family: var(--display); font-size: 10px; letter-spacing: .2em;
+  color: var(--moss); text-transform: uppercase;
+}
+.auth .stamp::before { content: '\2714  '; color: var(--moss); }
+.auth .body {
+  font-family: var(--body); font-size: 16px;
+  color: var(--cream); line-height: 1.5;
 }
 
+/* ── EDITORIAL LINE (the note) ── */
+.snafu-line {
+  padding: 20px;
+  border-left: var(--px) solid var(--moss);
+  background: rgba(107,138,58,.08);
+  font-family: var(--body); font-size: 17px;
+  line-height: 1.5; color: var(--cream);
+}
+.snafu-line::before {
+  content: 'THE SNAFU LINE';
+  display: block;
+  font-family: var(--display); font-size: 9px;
+  letter-spacing: .18em; color: var(--moss);
+  margin-bottom: 10px;
+}
+
+/* ── SECTION HEADS (Condition / Measurements / Details / Also Listed / You'd Also Like) ── */
+.sec-head {
+  font-family: var(--display); font-size: 10px; letter-spacing: .2em;
+  color: var(--wheat);
+  border-bottom: var(--px) solid var(--cream);
+  padding-bottom: 8px; margin-bottom: 14px;
+}
+.is-deal .sec-head { color: var(--deal); border-bottom-color: var(--deal); }
+
+.condition { font-family: var(--body); font-size: 16px; line-height: 1.6; color: var(--cream); }
+
+/* Measurements table */
+.measurements .mgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.measurements .m {
+  padding: 12px 14px;
+  border: var(--px) solid var(--cream);
+  background: rgba(242,228,196,.04);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.measurements .m dt {
+  font-family: var(--display); font-size: 9px; letter-spacing: .16em;
+  color: var(--wheat); text-transform: uppercase;
+}
+.measurements .m dd {
+  font-family: var(--body); font-size: 18px; color: var(--cream);
+}
+
+/* Details grid */
+.details .dgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.details .d {
+  padding: 12px 14px;
+  border: var(--px) solid var(--cream);
+  background: rgba(242,228,196,.04);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.details .d dt {
+  font-family: var(--display); font-size: 9px; letter-spacing: .16em;
+  color: var(--wheat); text-transform: uppercase;
+}
+.details .d dd {
+  font-family: var(--body); font-size: 16px; color: var(--cream);
+}
+
+/* Also listed on */
+.listed .llist { display: flex; flex-wrap: wrap; gap: 10px; }
+.listed .llist a {
+  font-family: var(--display); font-size: 10px; letter-spacing: .12em;
+  color: var(--cream); text-decoration: none;
+  padding: 10px 14px;
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+.listed .llist a:hover { background: var(--cream); color: var(--ink); }
+.listed .llist a::after { content: '  \2197'; color: var(--gold); }
+
+/* ── YOU'D ALSO LIKE ── */
+.also .agrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: clamp(10px, 2vw, 16px);
+}
+.also .card {
+  text-decoration: none; color: var(--cream); background: var(--ink);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  display: flex; flex-direction: column;
+  transition: transform 80ms steps(2, end);
+  position: relative;
+}
+.also .card:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
+.also .card.card--deal { border-color: var(--deal); box-shadow: var(--px) var(--px) 0 var(--deal-dim); }
+.also .card .deal-badge {
+  position: absolute; top: 0; right: 0;
+  background: var(--deal); color: var(--ink);
+  font-family: var(--display); font-size: 9px; letter-spacing: .1em;
+  padding: 4px 7px; z-index: 2;
+}
+.also .card .thumb {
+  aspect-ratio: 1 / 1; background: var(--wheat);
+  border-bottom: var(--px) solid var(--cream);
+  display: grid; place-items: center;
+  font-family: var(--display); font-size: 9px; color: var(--loam); letter-spacing: .12em;
+  text-align: center; padding: 10px; overflow: hidden;
+}
+.also .card.card--deal .thumb { border-bottom-color: var(--deal); }
+.also .card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.also .card .info { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
+.also .card .name { font-family: var(--body); font-size: 14px; letter-spacing: .02em; }
+.also .card .price { font-family: var(--display); font-size: 10px; color: var(--gold); letter-spacing: .1em; }
+.also .card.card--deal .price { color: var(--deal); }
+.also .card .price-row { display: flex; align-items: baseline; gap: 6px; }
+.also .card .price-was { font-family: var(--display); font-size: 9px; color: var(--loam); text-decoration: line-through; letter-spacing: .06em; }
+
+/* ── TOAST ── */
 .toast {
   position: fixed; bottom: 20px; left: 50%;
   transform: translateX(-50%);
   background: var(--moss); color: var(--ink);
   border: var(--px) solid var(--ink);
   padding: 12px 18px;
-  font-family: var(--display); font-size: 11px;
-  letter-spacing: .16em;
+  font-family: var(--display); font-size: 11px; letter-spacing: .16em;
   opacity: 0; pointer-events: none;
   transition: opacity 200ms steps(3, end);
   z-index: 30;
 }
 .toast.on { opacity: 1; }
 
+/* ── NOT FOUND ── */
 .notfound {
   text-align: center; padding: 100px 20px;
   font-family: var(--display); font-size: 12px;
   color: var(--wheat); letter-spacing: .16em;
 }
+.notfound a { color: var(--gold); text-decoration: underline; }
 
+/* ── FOOTER ── */
 .colophon {
   border-top: var(--px) solid var(--cream);
   padding: 40px clamp(16px, 3vw, 32px);
@@ -150,6 +317,10 @@ a { color: inherit; }
 .colophon .row1 { font-family: var(--display); font-size: 11px; letter-spacing: .18em; color: var(--cream); }
 .colophon a { color: var(--gold); text-decoration: none; }
 .colophon a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .cover { width: 220px; height: 330px; }
+}
 </style>
 </head>
 <body>
@@ -167,7 +338,7 @@ a { color: inherit; }
 
 <footer class="colophon">
   <div class="row1">SNAFU. &nbsp;·&nbsp; SHOP &nbsp;·&nbsp; LOS ANGELES</div>
-  <div>Situation Normal: All Fouled Up.</div>
+  <div>Every item cleaned. Every item authenticated.</div>
   <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
 </footer>
 
@@ -175,39 +346,165 @@ a { color: inherit; }
 <script>
 const params = new URLSearchParams(location.search);
 const id = params.get('id');
-const product = (window.SNAFU_SHOP || []).find(p => p.id === id);
+const ALL = window.SNAFU_SHOP || [];
+const product = ALL.find(p => p.id === id);
 const main = document.getElementById('main');
 
 if (!product) {
-  main.innerHTML = `<div class="notfound">This piece isn't here.<br><br><a href="index.html" style="color:var(--gold);text-decoration:underline">back to the market</a></div>`;
-} else {
   main.innerHTML = `
-    <article class="piece">
-      <div class="hero-img">
-        ${product.img ? `<img src="${product.img}" alt="${product.name}">` : product.name.toUpperCase()}
+    <div class="notfound">
+      This piece isn't here.<br><br>
+      <a href="index.html">back to the market</a>
+    </div>`;
+} else {
+  const isDeal = product.deal === true;
+
+  // Pixel cover slot
+  const coverInner = product.coverImage
+    ? `<img src="${product.coverImage}" alt="${product.name} cover">`
+    : product.name.toUpperCase();
+
+  // Real photos scroll — falls back to a single frame if no images yet
+  const photosHTML = (product.images && product.images.length)
+    ? product.images.map((src, i) => `
+        <div class="photo"><img src="${src}" alt="${product.name} photo ${i+1}"></div>
+      `).join('')
+    : `<div class="photo">REAL PHOTOS<br>PENDING</div>
+       <div class="photo">REAL PHOTOS<br>PENDING</div>
+       <div class="photo">REAL PHOTOS<br>PENDING</div>`;
+
+  // Meta line (SKU · BRAND · ERA · ORIGIN)
+  const metaBits = [];
+  if (product.sku)    metaBits.push(product.sku);
+  if (product.brand)  metaBits.push(product.brand);
+  if (product.year)   metaBits.push(product.year);
+  if (product.origin) metaBits.push(product.origin);
+  const metaLine = metaBits.map(b => `<span>${b}</span>`).join('');
+
+  // Price row (was/now if deal)
+  const priceHTML = isDeal && product.originalPrice
+    ? `<span class="was">$${product.originalPrice}</span>
+       <span class="price ${product.sold ? 'sold' : ''}">$${product.price}</span>`
+    : `<span class="price ${product.sold ? 'sold' : ''}">$${product.price}</span>`;
+
+  // Measurements
+  let measurementsHTML = '';
+  if (product.measurements && Object.keys(product.measurements).length) {
+    const items = Object.entries(product.measurements).map(([k, v]) => `
+      <dl class="m"><dt>${k}</dt><dd>${v}"</dd></dl>
+    `).join('');
+    measurementsHTML = `
+      <section class="measurements">
+        <div class="sec-head">Measurements</div>
+        <div class="mgrid">${items}</div>
+      </section>`;
+  }
+
+  // Details (material / color / closure / size)
+  const detailBits = [];
+  if (product.size)     detailBits.push(['Size (tagged)', product.size]);
+  if (product.material) detailBits.push(['Material', product.material]);
+  if (product.color)    detailBits.push(['Color', product.color]);
+  if (product.closure)  detailBits.push(['Closure', product.closure]);
+  const detailsHTML = detailBits.length ? `
+    <section class="details">
+      <div class="sec-head">Details</div>
+      <div class="dgrid">
+        ${detailBits.map(([k, v]) => `<dl class="d"><dt>${k}</dt><dd>${v}</dd></dl>`).join('')}
       </div>
-      <div class="info">
-        <h1>${product.name}</h1>
-        <div class="price ${product.sold ? 'sold' : ''}">$${product.price}</div>
+    </section>` : '';
 
-        <dl class="meta">
-          <dt>Year</dt><dd>${product.year}</dd>
-          <dt>Origin</dt><dd>${product.origin}</dd>
-          <dt>Size</dt><dd>${product.size}</dd>
-          <dt>Condition</dt><dd>${product.condition}</dd>
-        </dl>
+  // Also listed on
+  const listedHTML = (product.alsoListedOn && product.alsoListedOn.length) ? `
+    <section class="listed">
+      <div class="sec-head">Also Listed On</div>
+      <div class="llist">
+        ${product.alsoListedOn.map(l => `<a href="${l.url}" target="_blank" rel="noopener">${l.platform}</a>`).join('')}
+      </div>
+    </section>` : '';
 
-        ${product.note ? `<div class="note">${product.note}</div>` : ''}
-
-        <div class="actions">
-          <button class="buy" id="buyBtn" ${product.sold ? 'disabled' : ''}>
-            ${product.sold ? 'SOLD' : 'BUY NOW'}
-          </button>
-          <button class="add" id="addBtn" ${product.sold ? 'disabled' : ''}>
-            ADD TO PACK
-          </button>
+  // You'd also like — cross-tier: prefer same category, then same gender, exclude self, cap 4
+  function pickRelated() {
+    const others = ALL.filter(p => p.id !== product.id);
+    const sameCat  = others.filter(p => p.cat === product.cat);
+    const sameGen  = others.filter(p => p.gender === product.gender && p.cat !== product.cat);
+    const rest     = others.filter(p => p.cat !== product.cat && p.gender !== product.gender);
+    return [...sameCat, ...sameGen, ...rest].slice(0, 4);
+  }
+  const related = pickRelated();
+  const relatedCard = p => {
+    const d = p.deal === true;
+    const price = d && p.originalPrice
+      ? `<div class="price-row"><span class="price-was">$${p.originalPrice}</span><span class="price">$${p.price}</span></div>`
+      : `<div class="price">$${p.price}</div>`;
+    const thumb = p.coverImage
+      ? `<img src="${p.coverImage}" alt="${p.name}">`
+      : p.name.toUpperCase();
+    return `
+      <a class="card ${d ? 'card--deal' : ''}" href="product.html?id=${p.id}">
+        ${d ? '<span class="deal-badge">DEAL</span>' : ''}
+        <div class="thumb">${thumb}</div>
+        <div class="info">
+          <div class="name">${p.name}</div>
+          ${price}
         </div>
+      </a>`;
+  };
+  const alsoHTML = related.length ? `
+    <section class="also">
+      <div class="sec-head">You'd Also Like</div>
+      <div class="agrid">${related.map(relatedCard).join('')}</div>
+    </section>` : '';
+
+  main.innerHTML = `
+    <article class="piece ${isDeal ? 'is-deal' : ''}">
+
+      <div class="cover-wrap">
+        ${isDeal ? '<span class="cover-badge">DEAL</span>' : ''}
+        <div class="cover">${coverInner}</div>
       </div>
+
+      <div class="photos-cue">Real photos below</div>
+
+      <div class="photos">${photosHTML}</div>
+
+      <div class="head">
+        <h1>${product.name}</h1>
+        <div class="meta-line">${metaLine}</div>
+        <div class="price-row">${priceHTML}</div>
+      </div>
+
+      <div class="actions">
+        <button class="buy" id="buyBtn" ${product.sold ? 'disabled' : ''}>
+          ${product.sold ? 'SOLD' : 'BUY NOW'}
+        </button>
+        <button class="add" id="addBtn" ${product.sold ? 'disabled' : ''}>
+          ADD TO PACK
+        </button>
+      </div>
+
+      ${product.authNote ? `
+        <div class="auth">
+          <div class="stamp">Authenticated by SNAFU</div>
+          <div class="body">${product.authNote}</div>
+        </div>` : ''}
+
+      ${product.condition ? `
+        <section>
+          <div class="sec-head">Condition</div>
+          <div class="condition">${product.condition}</div>
+        </section>` : ''}
+
+      ${measurementsHTML}
+
+      ${detailsHTML}
+
+      ${product.note ? `<div class="snafu-line">${product.note}</div>` : ''}
+
+      ${listedHTML}
+
+      ${alsoHTML}
+
     </article>
   `;
 
@@ -250,8 +547,5 @@ function showToast(msg) {
 
 refreshPack();
 </script>
-<script src="../js/site.js"></script>
 </body>
 </html>
-
-
