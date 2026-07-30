@@ -23,13 +23,10 @@ html, body { background: var(--ink); color: var(--cream); font-family: var(--bod
 img { image-rendering: pixelated; image-rendering: -moz-crisp-edges; }
 a { color: inherit; }
 
-/* SCENE — swap `about-room.png` in when RD art is ready.
-   Falls back to forest.png so the page reads correctly today. */
+/* SCENE — hollow-tree workshop, RD-generated */
 .scene {
   position: fixed; inset: 0; z-index: 0;
-  background: url('../assets/about-room.png') center / cover no-repeat,
-              url('../assets/forest.png') center / cover no-repeat,
-              var(--ink);
+  background: url('../assets/about-tree.png') center / cover no-repeat, var(--ink);
   image-rendering: pixelated;
 }
 .scene::after {

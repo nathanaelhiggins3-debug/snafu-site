@@ -31,7 +31,7 @@
    Every field except `id`, `name`, `price`, `cat`, `gender` is optional —
    product.html renders whatever's present, skips what isn't.
 */
-window.SNAFU_SHOP = [
+const SNAFU_SHOP = [
   {
     id: 'p001',
     sku: 'SNF-JKT-2607-001',
@@ -219,3 +219,7 @@ window.SNAFU_SHOP = [
     sold: false
   }
 ];
+
+// Isomorphic export — browser gets window.SNAFU_SHOP, Node (Vercel /api/) gets module.exports.
+if (typeof window !== 'undefined') window.SNAFU_SHOP = SNAFU_SHOP;
+if (typeof module !== 'undefined' && module.exports) module.exports = SNAFU_SHOP;

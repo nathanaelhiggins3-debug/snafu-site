@@ -85,7 +85,7 @@
         var note = document.getElementById("checkout-note");
         btn.disabled = true;
         btn.textContent = "Redirecting…";
-        fetch("/.netlify/functions/create-checkout-session", {
+        fetch("/api/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ items: items })
