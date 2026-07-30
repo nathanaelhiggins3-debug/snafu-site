@@ -508,6 +508,123 @@ const SNAFU_SHOP = [
     ],
     alsoListedOn: [],
     sold: false
+  },
+
+  // ── MAINLINE: JACKETS ───────────────────────────────────────
+  // Regular-priced premium archive pieces. coverImage will point at the
+  // 16-bit pixel cover once Nate runs it through Retro Diffusion. Until
+  // then, the card + product hero fall back to the first real photo.
+  {
+    id: 'p017',
+    sku: 'SNF-JKT-2607-007',
+    name: 'JPG Jean Paul Gaultier Denim Jacket',
+    brand: 'Jean Paul Gaultier',
+    price: 340,
+    deal: false,
+    gender: 'unisex',
+    cat: 'jackets',
+    year: '1990s',
+    origin: 'France',
+    size: 'M',
+    measurements: { chest: 21, length: 22, sleeve: 25, shoulder: 17 },
+    material: 'Cotton denim',
+    color: 'Indigo wash',
+    closure: 'Button front',
+    condition: 'Very good. Denim broken in, no repairs.',
+    authNote: 'JPG Jeans label on back yoke, original hardware, French construction.',
+    note: 'Archive JPG. Cut to a specific decade.',
+    coverImage: '',
+    images: [
+      '/assets/mainline/snf-jkt-2607-007_real_01.jpg',
+      '/assets/mainline/snf-jkt-2607-007_real_02.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+  {
+    id: 'p018',
+    sku: 'SNF-JKT-2607-008',
+    name: 'Andrea Jovine Paisley Tapestry Vest',
+    brand: 'Andrea Jovine',
+    price: 165,
+    deal: false,
+    gender: 'womens',
+    cat: 'jackets',
+    year: '1990s',
+    origin: 'USA',
+    size: 'S',
+    measurements: { chest: 18, length: 22, sleeve: 0, shoulder: 14 },
+    material: 'Tapestry cotton blend',
+    color: 'Multi paisley',
+    closure: 'Front frog closures',
+    condition: 'Excellent. Tapestry weave crisp, colors saturated.',
+    authNote: 'Andrea Jovine label present. Original tapestry weave, no repro flags.',
+    note: 'A vest with more happening than most jackets.',
+    coverImage: '',
+    images: [
+      '/assets/mainline/snf-jkt-2607-008_real_01.jpg',
+      '/assets/mainline/snf-jkt-2607-008_real_02.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+
+  // ── MAINLINE: TOPS ──────────────────────────────────────────
+  {
+    id: 'p019',
+    sku: 'SNF-TOP-2607-008',
+    name: 'Acne Studios White Stripe Shirt',
+    brand: 'Acne Studios',
+    price: 220,
+    deal: false,
+    gender: 'mens',
+    cat: 'tops',
+    year: '2010s',
+    origin: 'Morocco',
+    size: 'M',
+    measurements: { chest: 22, length: 30, sleeve: 26, shoulder: 18 },
+    material: 'Cotton',
+    color: 'White on white stripe',
+    closure: 'Button front',
+    condition: 'Excellent. Sharp collar, no yellowing.',
+    authNote: 'Acne Studios interior label ("Made in Morocco"), original construction, monogram embroidery on chest.',
+    note: "Acne Studios' answer to a business meeting.",
+    coverImage: '',
+    images: [
+      '/assets/mainline/snf-top-2607-008_real_01.jpg',
+      '/assets/mainline/snf-top-2607-008_real_02.jpg',
+      '/assets/mainline/snf-top-2607-008_real_03.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+  // ── MAINLINE: KNITS ─────────────────────────────────────────
+  {
+    id: 'p021',
+    sku: 'SNF-KNT-2607-005',
+    name: 'Purple Stripe Mohair Sweater',
+    brand: 'Vintage',
+    price: 180,
+    deal: false,
+    gender: 'unisex',
+    cat: 'knits',
+    year: '1990s',
+    origin: 'unknown',
+    size: 'M',
+    measurements: { chest: 21, length: 25, sleeve: 26, shoulder: 18 },
+    material: 'Mohair blend',
+    color: 'Purple, cream, and gray stripe',
+    closure: 'Pullover',
+    condition: 'Very good. Mohair halo intact, no moth.',
+    authNote: 'Hand-inspected. Mohair fiber confirmed by hand and halo. Original knit construction.',
+    note: 'Warm and luminous — the sweater equivalent of morning light.',
+    coverImage: '',
+    images: [
+      '/assets/mainline/snf-knt-2607-005_real_01.jpg',
+      '/assets/mainline/snf-knt-2607-005_real_02.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
   }
 ];
 

@@ -384,10 +384,12 @@ function render() {
            <span class="price-now">$${p.price}</span>
          </div>`
       : `<div class="price">$${p.price}</div>`;
-    // Deals show real photo; mainline shows 16-bit pixel cover
+    // Deals show real photo; mainline shows 16-bit pixel cover (with
+    // real-photo fallback so mainline items display something until Nate
+    // runs the piece through Retro Diffusion).
     const imgSrc = isDeal
       ? (p.images && p.images[0])
-      : p.coverImage;
+      : (p.coverImage || (p.images && p.images[0]));
     return `
     <a class="card ${p.sold ? 'sold' : ''} ${isDeal ? 'card--deal' : ''}" href="product.html?id=${p.id}" style="position:relative">
       ${isDeal ? '<span class="deal-badge">DEAL</span>' : ''}

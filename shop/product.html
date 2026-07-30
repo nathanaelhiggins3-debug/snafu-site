@@ -360,11 +360,12 @@ if (!product) {
   const isDeal = product.deal === true;
 
   // Hero image slot: mainline uses the 16-bit pixel cover, deals use the first
-  // real photo (only mainline items get pixel covers generated for now).
+  // real photo. Mainline falls back to first real photo until the pixel cover
+  // is generated in Retro Diffusion.
   const heroImg = isDeal
     ? (product.images && product.images[0])
-    : product.coverImage;
-  const heroLabel = isDeal ? 'REAL PHOTO PENDING' : product.name.toUpperCase();
+    : (product.coverImage || (product.images && product.images[0]));
+  const heroLabel = isDeal ? 'REAL PHOTO PENDING' : 'PIXEL COVER PENDING';
   const coverInner = heroImg
     ? `<img src="${heroImg}" alt="${product.name}">`
     : heroLabel;
