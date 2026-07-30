@@ -162,12 +162,21 @@ a { color: inherit; }
 .card--deal .price-was { font-family: var(--display); font-size: 10px; color: var(--loam); text-decoration: line-through; letter-spacing: .06em; }
 .card--deal .price-now { font-family: var(--display); font-size: 12px; color: var(--deal); letter-spacing: .1em; }
 
-/* ── DEALS ENTRY BLOCK — sits between curation and grid, deliberately punchy ── */
+/* ── DEALS ENTRY BLOCK — sits between curation and grid, deliberately punchy.
+   Wrapped in its own solid-ink strip so the fixed shop-street scene image
+   doesn't bleed through the orange tint. ── */
+.deals-strip {
+  position: relative; z-index: 2;
+  background: var(--ink);
+  padding: 0 0 clamp(24px, 3vw, 40px);
+}
 .deals-entry {
   display: grid;
-  margin: 0 clamp(16px, 3vw, 32px) clamp(32px, 4vw, 48px);
+  margin: 0 clamp(16px, 3vw, 32px);
   padding: clamp(20px, 3vw, 28px) clamp(20px, 3vw, 32px);
-  background: rgba(212, 98, 42, 0.08);
+  background:
+    linear-gradient(rgba(212, 98, 42, 0.10), rgba(212, 98, 42, 0.10)),
+    var(--ink);
   border: var(--px) solid var(--deal);
   box-shadow: calc(var(--px)*2) calc(var(--px)*2) 0 var(--deal-dim);
   text-decoration: none;
@@ -177,7 +186,9 @@ a { color: inherit; }
   gap: 20px;
 }
 .deals-entry:hover {
-  background: rgba(212, 98, 42, 0.18);
+  background:
+    linear-gradient(rgba(212, 98, 42, 0.22), rgba(212, 98, 42, 0.22)),
+    var(--ink);
   transform: translate(calc(var(--px)*-1), calc(var(--px)*-1));
 }
 .deals-entry:hover .de-cta { background: #e87a45; }
@@ -310,14 +321,16 @@ a { color: inherit; }
   </div>
 </section>
 
-<a class="deals-entry" href="deals.html">
-  <div class="de-text">
-    <div class="de-eyebrow">SECOND TIER — ALWAYS SNAFU</div>
-    <div class="de-title">SNAFU DEALS</div>
-    <div class="de-body">Same hand. Different math. On a site that doesn't need to discount anything, a deal here is an actual deal — sorted by category, no guessing.</div>
-  </div>
-  <span class="de-cta">ENTER →</span>
-</a>
+<div class="deals-strip">
+  <a class="deals-entry" href="deals.html">
+    <div class="de-text">
+      <div class="de-eyebrow">SECOND TIER — ALWAYS SNAFU</div>
+      <div class="de-title">SNAFU DEALS</div>
+      <div class="de-body">Same hand. Different math. On a site that doesn't need to discount anything, a deal here is an actual deal — sorted by category, no guessing.</div>
+    </div>
+    <span class="de-cta">ENTER →</span>
+  </a>
+</div>
 
 <section class="market" id="market">
   <div class="filters">
