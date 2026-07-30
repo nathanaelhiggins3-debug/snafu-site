@@ -20,7 +20,11 @@
         letter-spacing: .04em;
         color: var(--cream, #f2e4c4);
         text-decoration: none;
-        padding: 8px 14px;
+        padding: 10px 16px;
+        /* Semi-transparent ink pill: blocks scrolling content from bleeding
+           through, but stays subtle over the arrive-scene backgrounds. */
+        background: rgba(12, 20, 18, 0.82);
+        border: 2px solid rgba(241, 234, 216, 0.35);
         text-shadow:
           calc(var(--px, 3px) * -1) 0 0 var(--ink, #0c1412),
           var(--px, 3px) 0 0 var(--ink, #0c1412),
