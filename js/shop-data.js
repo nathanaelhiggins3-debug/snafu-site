@@ -1,220 +1,511 @@
 /* SNAFU shop data.
    One source of truth. Read by shop/index.html, shop/deals.html,
-   shop/product.html, shop/cart.html.
-   Add a piece: paste one object. Grid + detail regenerate.
+   shop/product.html, shop/cart.html, and api/checkout.js (Node).
 
    ── FULL SCHEMA (per brief) ────────────────────────────────────
-   id             'p001'                   internal id, used in URL
-   sku            'SNF-JKT-2607-001'       SNAFU inventory SKU
-   name           'Girbaud Cord Duster'    display name
-   brand          'François Girbaud'       brand/maker
-   year           '1990s'                  era
-   origin         'Japan'                  country
-   price          220                      what buyer pays (deal price if deal)
-   originalPrice  340                      DEAL ONLY: shown struck-through
-   deal           true                     DEAL ONLY: orange border, appears in deals.html
-   gender         'mens' | 'womens' | 'unisex'
-   cat            'jackets' | 'tops' | 'bottoms' | 'knits' | 'accessories'
-   size           'M'                      tagged size
-   measurements   { chest, length, sleeve, shoulder }   in inches
-   material       'Cotton pinwale corduroy'
-   color          'Wheat'
-   closure        'Full zip, dual-slider'
-   condition      'Very good, minor wear at cuffs.'
-   authNote       'Original woven tag, YKK zips, deadstock lining.'
-   note           editorial one-liner (THE SNAFU LINE on the product page)
-   coverImage     'assets/covers/SNF-JKT-2607-001_cover.png'   pixel cover
-   images         ['assets/real/SNF-JKT-2607-001_real_01.jpg', ...]  real photos
-   alsoListedOn   [{ platform: 'Grailed', url: 'https://...' }]
+   id             'p001'                     internal id, used in URL
+   sku            'SNF-JKT-2607-002'         SNAFU inventory SKU
+   name           'Beige Linen Blazer'       display name
+   brand          'Vintage'                  brand/maker
+   year           '2000s'                    era
+   origin         'unknown'                  country
+   price          32                         what buyer pays (deal price if deal)
+   originalPrice  65                         DEAL ONLY: shown struck-through
+   deal           true                       DEAL ONLY: orange border + deals page
+   gender         'mens'|'womens'|'unisex'
+   cat            'tops'|'jackets'|'knits'|'bottoms'|'accessories'
+   size           'M'                        tagged size
+   measurements   { chest, length, sleeve, shoulder }  inches
+   material       'Linen blend'
+   color          'Beige heather'
+   closure        'Button front'
+   condition      'Very good, minor fray at cuffs.'
+   authNote       'Original construction, no repro flags.'
+   note           'The SNAFU line — one editorial sentence.'
+   coverImage     ''                         mainline: 16-bit pixel cover path
+   images         ['/assets/deals/xxx.jpg']  real photos (hero + scroll)
+   alsoListedOn   []                         [{platform, url}, ...]
    sold           false
 
-   Every field except `id`, `name`, `price`, `cat`, `gender` is optional —
-   product.html renders whatever's present, skips what isn't.
+   For deals: coverImage stays '' (deals don't get 16-bit covers — only
+   mainline items do). The card + product page hero pull from images[0].
+
+   Every field except id, name, price, cat, gender is optional — product.html
+   renders whatever's present, skips what isn't.
 */
 const SNAFU_SHOP = [
+
+  // ── DEALS: JACKETS ──────────────────────────────────────────
   {
     id: 'p001',
-    sku: 'SNF-JKT-2607-001',
-    name: 'Placeholder Jacket',
-    brand: 'Unbranded',
-    price: 220,
-    gender: 'mens',
+    sku: 'SNF-JKT-2607-002',
+    name: 'Beige Linen Blazer',
+    brand: 'Vintage',
+    price: 32,
+    originalPrice: 65,
+    deal: true,
+    gender: 'womens',
     cat: 'jackets',
-    year: '1990s',
-    origin: 'Japan',
+    year: '2000s',
+    origin: 'unknown',
     size: 'M',
-    measurements: { chest: 22, length: 28, sleeve: 25, shoulder: 19 },
-    material: 'Cotton twill',
-    color: 'Faded olive',
-    closure: 'Snap front',
-    condition: 'Very good, minor wear at cuffs.',
-    authNote: 'Original woven tag, period-correct hardware, deadstock lining intact.',
-    note: 'A workwear silhouette with the shoulders cut for someone who actually worked.',
+    measurements: { chest: 20, length: 24, sleeve: 24, shoulder: 16 },
+    material: 'Linen blend',
+    color: 'Beige heather',
+    closure: 'Button front',
+    condition: 'Very good. Minor fray at cuff edges — the good kind.',
+    authNote: 'Hand-inspected. Original construction, no repro flags.',
+    note: 'A blazer that looks like it already knows the room.',
     coverImage: '',
-    images: [],
+    images: [
+      '/assets/deals/snf-jkt-2607-002_real_01.jpg',
+      '/assets/deals/snf-jkt-2607-002_real_02.jpg',
+      '/assets/deals/snf-jkt-2607-002_real_03.jpg'
+    ],
     alsoListedOn: [],
     sold: false
   },
   {
     id: 'p002',
-    sku: 'SNF-TOP-2607-001',
-    name: 'Placeholder Tee',
-    brand: 'Unbranded',
-    price: 28,
-    originalPrice: 45,
+    sku: 'SNF-JKT-2607-003',
+    name: 'Rust Polka-Dot Fitted Blazer',
+    brand: '1t',
+    price: 55,
+    originalPrice: 110,
     deal: true,
-    gender: 'mens',
-    cat: 'tops',
-    year: '2001',
-    origin: 'USA',
-    size: 'L',
-    measurements: { chest: 21, length: 29, sleeve: 8, shoulder: 18 },
-    material: 'Cotton jersey',
-    color: 'Washed black',
-    closure: 'Pullover',
-    condition: 'Excellent, soft hand.',
-    authNote: 'Single-stitch hem, original tag, no repro flags.',
-    note: 'The kind of graphic you saw on the floor of a college dorm in 2003.',
+    gender: 'womens',
+    cat: 'jackets',
+    year: '2010s',
+    origin: 'unknown',
+    size: 'S',
+    measurements: { chest: 18, length: 22, sleeve: 24, shoulder: 15 },
+    material: 'Cotton blend',
+    color: 'Rust with charcoal dots',
+    closure: 'Two-button front',
+    condition: 'Excellent. Tailoring intact, lining clean.',
+    authNote: '1t label present. Structured lining and shoulder construction original.',
+    note: 'The label reads "Random Imperfections Are Symptoms Of Life." Then it made this jacket.',
     coverImage: '',
-    images: [],
+    images: [
+      '/assets/deals/snf-jkt-2607-003_real_01.jpg',
+      '/assets/deals/snf-jkt-2607-003_real_02.jpg',
+      '/assets/deals/snf-jkt-2607-003_real_03.jpg',
+      '/assets/deals/snf-jkt-2607-003_real_04.jpg',
+      '/assets/deals/snf-jkt-2607-003_real_05.jpg',
+      '/assets/deals/snf-jkt-2607-003_real_06.jpg'
+    ],
     alsoListedOn: [],
     sold: false
   },
   {
     id: 'p003',
-    sku: 'SNF-BTM-2607-001',
-    name: 'Placeholder Trouser',
-    brand: 'Unbranded',
-    price: 120,
-    gender: 'mens',
-    cat: 'bottoms',
-    year: '1980s',
-    origin: 'Italy',
-    size: 'W32 L30',
-    measurements: { waist: 32, inseam: 30, rise: 11, hem: 8 },
-    material: 'Wool gabardine',
-    color: 'Charcoal',
-    closure: 'Hook + zip, button fly interior',
-    condition: 'Good, minor fade.',
-    authNote: 'Union tag present, original buttons, no re-hem.',
-    note: "A cut that hasn't been made in twenty years and can't be faked.",
+    sku: 'SNF-JKT-2607-004',
+    name: 'Black Asymmetric-Zip Leather Jacket',
+    brand: 'Vintage',
+    price: 65,
+    originalPrice: 135,
+    deal: true,
+    gender: 'womens',
+    cat: 'jackets',
+    year: '2010s',
+    origin: 'unknown',
+    size: 'M',
+    measurements: { chest: 20, length: 23, sleeve: 25, shoulder: 16 },
+    material: 'Leather',
+    color: 'Black',
+    closure: 'Asymmetric YKK zip',
+    condition: 'Very good. Supple leather, no cracks or peeling.',
+    authNote: 'Real leather confirmed. Original YKK hardware, lining intact.',
+    note: 'Cut for movement. Priced like you\'ll actually wear it.',
     coverImage: '',
-    images: [],
+    images: [
+      '/assets/deals/snf-jkt-2607-004_real_01.jpg',
+      '/assets/deals/snf-jkt-2607-004_real_02.jpg',
+      '/assets/deals/snf-jkt-2607-004_real_03.jpg',
+      '/assets/deals/snf-jkt-2607-004_real_04.jpg',
+      '/assets/deals/snf-jkt-2607-004_real_05.jpg'
+    ],
     alsoListedOn: [],
     sold: false
   },
   {
     id: 'p004',
-    sku: 'SNF-ACC-2607-001',
-    name: 'Placeholder Cap',
-    brand: 'Unbranded',
-    price: 18,
-    originalPrice: 35,
+    sku: 'SNF-JKT-2607-005',
+    name: 'Mauve Tweed Cropped Blazer',
+    brand: 'Vintage',
+    price: 42,
+    originalPrice: 85,
     deal: true,
-    gender: 'unisex',
-    cat: 'accessories',
-    year: '1990s',
-    origin: 'USA',
-    size: 'One size',
-    material: 'Cotton canvas',
-    color: 'Dust',
-    closure: 'Snap-back, six panel',
-    condition: 'Very good.',
-    authNote: 'Original snap plate, no fade on interior sweatband.',
-    note: 'A cap the color of dust.',
+    gender: 'womens',
+    cat: 'jackets',
+    year: '2000s',
+    origin: 'unknown',
+    size: 'S',
+    measurements: { chest: 19, length: 21, sleeve: 24, shoulder: 15 },
+    material: 'Wool tweed',
+    color: 'Mauve heather',
+    closure: 'One-button front',
+    condition: 'Very good. Cropped fit holds shape.',
+    authNote: 'Hand-inspected. Original lining and lapel construction.',
+    note: 'A blazer for the version of you that shows up on time.',
     coverImage: '',
-    images: [],
+    images: [
+      '/assets/deals/snf-jkt-2607-005_real_01.jpg',
+      '/assets/deals/snf-jkt-2607-005_real_02.jpg',
+      '/assets/deals/snf-jkt-2607-005_real_03.jpg',
+      '/assets/deals/snf-jkt-2607-005_real_04.jpg'
+    ],
     alsoListedOn: [],
     sold: false
   },
   {
     id: 'p005',
-    sku: 'SNF-TOP-2607-002',
-    name: 'Placeholder Blouse',
-    brand: 'Unbranded',
-    price: 85,
+    sku: 'SNF-JKT-2607-006',
+    name: 'Bronze Metallic Leather Moto',
+    brand: 'Vintage',
+    price: 58,
+    originalPrice: 115,
+    deal: true,
     gender: 'womens',
-    cat: 'tops',
-    year: '1970s',
-    origin: 'France',
+    cat: 'jackets',
+    year: '2010s',
+    origin: 'unknown',
     size: 'S',
-    measurements: { chest: 18, length: 24, sleeve: 22, shoulder: 15 },
-    material: 'Silk crepe',
-    color: 'Cream',
-    closure: 'Full button front, mother-of-pearl',
-    condition: 'Very good, one small pull at seam.',
-    authNote: 'Original French tag, hand-finished hem, period-correct buttons.',
-    note: 'A shape that pretends nothing has changed since 1974.',
+    measurements: { chest: 18, length: 22, sleeve: 25, shoulder: 15 },
+    material: 'Metallic leather',
+    color: 'Bronze / gold',
+    closure: 'Center zip',
+    condition: 'Very good. Metallic finish intact, no flaking.',
+    authNote: 'Real leather confirmed. Metallic coating original, not repainted.',
+    note: 'For when you want to be found.',
     coverImage: '',
-    images: [],
+    images: [
+      '/assets/deals/snf-jkt-2607-006_real_01.jpg',
+      '/assets/deals/snf-jkt-2607-006_real_02.jpg',
+      '/assets/deals/snf-jkt-2607-006_real_03.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+
+  // ── DEALS: TOPS ─────────────────────────────────────────────
+  {
+    id: 'p006',
+    sku: 'SNF-TOP-2607-001',
+    name: 'Chuck E. Cheese Graphic Tee',
+    brand: 'Chuck E. Cheese',
+    price: 22,
+    originalPrice: 40,
+    deal: true,
+    gender: 'unisex',
+    cat: 'tops',
+    year: '2000s',
+    origin: 'USA',
+    size: 'M',
+    measurements: { chest: 20, length: 28, sleeve: 8, shoulder: 17 },
+    material: 'Cotton jersey',
+    color: 'Kelly green',
+    closure: 'Pullover',
+    condition: 'Very good. Broken-in cotton hand, print sharp.',
+    authNote: 'Hand-inspected. Original print, single-stitch hem intact.',
+    note: 'Where a kid can be a kid. Or you.',
+    coverImage: '',
+    images: [
+      '/assets/deals/snf-top-2607-001_real_01.jpg',
+      '/assets/deals/snf-top-2607-001_real_02.jpg'
+    ],
     alsoListedOn: [],
     sold: false
   },
   {
-    id: 'p006',
-    sku: 'SNF-BTM-2607-002',
-    name: 'Placeholder Skirt',
-    brand: 'Unbranded',
-    price: 95,
-    gender: 'womens',
-    cat: 'bottoms',
-    year: '1990s',
-    origin: 'Japan',
-    size: 'S',
-    measurements: { waist: 26, length: 22, hem: 44 },
-    material: 'Wool blend',
-    color: 'Slate',
-    closure: 'Side zip, hook top',
-    condition: 'Excellent.',
-    authNote: 'Original Japanese care label, YKK zip, no alterations.',
-    note: 'Weight in the hem you feel when you sit down.',
-    coverImage: '',
-    images: [],
-    alsoListedOn: [],
-    sold: true
-  },
-  {
     id: 'p007',
-    sku: 'SNF-JKT-2607-002',
-    name: 'Placeholder Coat',
-    brand: 'Unbranded',
-    price: 340,
-    gender: 'womens',
-    cat: 'jackets',
-    year: '1980s',
+    sku: 'SNF-TOP-2607-002',
+    name: 'Fendi Monster-Eyes Polo',
+    brand: 'Fendi',
+    price: 48,
+    originalPrice: 95,
+    deal: true,
+    gender: 'mens',
+    cat: 'tops',
+    year: '2010s',
     origin: 'Italy',
     size: 'M',
-    measurements: { chest: 21, length: 42, sleeve: 24, shoulder: 17 },
-    material: 'Wool melton',
-    color: 'Camel',
-    closure: 'Double-breasted, horn buttons',
-    condition: 'Very good, lining intact.',
-    authNote: 'Original Italian union label, horn buttons original set, hand-tacked lining.',
-    note: 'The kind of coat that stops a conversation for a second.',
+    measurements: { chest: 20, length: 27, sleeve: 9, shoulder: 17 },
+    material: 'Cotton piqué',
+    color: 'Navy',
+    closure: 'Button placket',
+    condition: 'Very good. Collar print sharp, no pilling.',
+    authNote: 'Fendi branding on inner collar, monster-eyes print verified.',
+    note: 'A polo that stares back.',
     coverImage: '',
-    images: [],
+    images: [
+      '/assets/deals/snf-top-2607-002_real_01.jpg',
+      '/assets/deals/snf-top-2607-002_real_02.jpg'
+    ],
     alsoListedOn: [],
     sold: false
   },
   {
     id: 'p008',
-    sku: 'SNF-ACC-2607-002',
-    name: 'Placeholder Scarf',
-    brand: 'Unbranded',
-    price: 55,
+    sku: 'SNF-TOP-2607-003',
+    name: 'Cream Floral Open-Front Blouse',
+    brand: 'Vintage',
+    price: 28,
+    originalPrice: 55,
+    deal: true,
     gender: 'womens',
-    cat: 'accessories',
-    year: 'unknown',
+    cat: 'tops',
+    year: '1980s',
     origin: 'unknown',
-    size: 'One size',
-    material: 'Silk twill',
-    color: 'Multi',
-    closure: '—',
-    condition: 'Good, minor age spots.',
-    authNote: 'Hand-rolled edges, silk hand confirmed, no printed reproductions.',
-    note: 'Silk that predates whoever cataloged it.',
+    size: 'M',
+    measurements: { chest: 20, length: 22, sleeve: 23, shoulder: 15 },
+    material: 'Rayon',
+    color: 'Cream with purple abstract print',
+    closure: 'Hook & eye front',
+    condition: 'Very good. Vintage drape intact.',
+    authNote: 'Hand-inspected. Original construction and print.',
+    note: 'A print that keeps happening.',
     coverImage: '',
-    images: [],
+    images: [
+      '/assets/deals/snf-top-2607-003_real_01.jpg',
+      '/assets/deals/snf-top-2607-003_real_02.jpg',
+      '/assets/deals/snf-top-2607-003_real_03.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+  {
+    id: 'p009',
+    sku: 'SNF-TOP-2607-004',
+    name: 'Blue-Gray Button Henley',
+    brand: 'Vintage',
+    price: 24,
+    originalPrice: 45,
+    deal: true,
+    gender: 'mens',
+    cat: 'tops',
+    year: '2000s',
+    origin: 'unknown',
+    size: 'M',
+    measurements: { chest: 20, length: 27, sleeve: 25, shoulder: 17 },
+    material: 'Cotton knit',
+    color: 'Muted blue-gray',
+    closure: 'Button placket',
+    condition: 'Very good. Buttons all present.',
+    authNote: 'Hand-inspected. Original construction, no repro flags.',
+    note: 'Long sleeve, short opinions.',
+    coverImage: '',
+    images: [
+      '/assets/deals/snf-top-2607-004_real_01.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+  {
+    id: 'p010',
+    sku: 'SNF-TOP-2607-005',
+    name: 'Pink Stripe Rugby Polo',
+    brand: 'Vintage',
+    price: 26,
+    originalPrice: 50,
+    deal: true,
+    gender: 'womens',
+    cat: 'tops',
+    year: '2000s',
+    origin: 'unknown',
+    size: 'M',
+    measurements: { chest: 20, length: 24, sleeve: 24, shoulder: 16 },
+    material: 'Cotton jersey',
+    color: 'Magenta and white stripe',
+    closure: 'Button placket',
+    condition: 'Very good. Bold stripes still saturated.',
+    authNote: 'Hand-inspected. Original construction.',
+    note: 'Ready for a boat you don\'t own.',
+    coverImage: '',
+    images: [
+      '/assets/deals/snf-top-2607-005_real_01.jpg',
+      '/assets/deals/snf-top-2607-005_real_02.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+  {
+    id: 'p011',
+    sku: 'SNF-TOP-2607-006',
+    name: 'American Studies 2005-2006 Fishbowl Tee',
+    brand: 'Vintage',
+    price: 25,
+    originalPrice: 48,
+    deal: true,
+    gender: 'unisex',
+    cat: 'tops',
+    year: '2005',
+    origin: 'USA',
+    size: 'M',
+    measurements: { chest: 20, length: 28, sleeve: 8, shoulder: 17 },
+    material: 'Cotton',
+    color: 'Faded black',
+    closure: 'Pullover',
+    condition: 'Very good. Faded to the right point.',
+    authNote: 'Original print. Handmade-look line art, dated on garment.',
+    note: 'A class you don\'t remember taking.',
+    coverImage: '',
+    images: [
+      '/assets/deals/snf-top-2607-006_real_01.jpg',
+      '/assets/deals/snf-top-2607-006_real_02.jpg',
+      '/assets/deals/snf-top-2607-006_real_03.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+  {
+    id: 'p012',
+    sku: 'SNF-TOP-2607-007',
+    name: 'Dark Gray Silk Button-Up',
+    brand: 'Vintage',
+    price: 30,
+    originalPrice: 62,
+    deal: true,
+    gender: 'mens',
+    cat: 'tops',
+    year: '1990s',
+    origin: 'unknown',
+    size: 'L',
+    measurements: { chest: 22, length: 30, sleeve: 25, shoulder: 18 },
+    material: 'Silk',
+    color: 'Charcoal gray',
+    closure: 'Button front',
+    condition: 'Very good. Silk hand confirmed.',
+    authNote: 'Silk hand and drape verified. Original buttons.',
+    note: 'A shirt for talking quieter.',
+    coverImage: '',
+    images: [
+      '/assets/deals/snf-top-2607-007_real_01.jpg',
+      '/assets/deals/snf-top-2607-007_real_02.jpg',
+      '/assets/deals/snf-top-2607-007_real_03.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+
+  // ── DEALS: KNITS ────────────────────────────────────────────
+  {
+    id: 'p013',
+    sku: 'SNF-KNT-2607-001',
+    name: 'Sky Blue Cashmere V-Neck',
+    brand: 'Vintage',
+    price: 34,
+    originalPrice: 70,
+    deal: true,
+    gender: 'unisex',
+    cat: 'knits',
+    year: '1990s',
+    origin: 'unknown',
+    size: 'M',
+    measurements: { chest: 20, length: 25, sleeve: 24, shoulder: 16 },
+    material: 'Cashmere blend',
+    color: 'Sky blue',
+    closure: 'Pullover',
+    condition: 'Very good. Soft hand, no moth or pilling.',
+    authNote: 'Hand-inspected. Cashmere hand confirmed.',
+    note: 'The color of a good afternoon.',
+    coverImage: '',
+    images: [
+      '/assets/deals/snf-knt-2607-001_real_01.jpg',
+      '/assets/deals/snf-knt-2607-001_real_02.jpg',
+      '/assets/deals/snf-knt-2607-001_real_03.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+  {
+    id: 'p014',
+    sku: 'SNF-KNT-2607-002',
+    name: 'Rust Knit Raglan Crewneck',
+    brand: 'Vintage',
+    price: 30,
+    originalPrice: 60,
+    deal: true,
+    gender: 'unisex',
+    cat: 'knits',
+    year: '1990s',
+    origin: 'unknown',
+    size: 'M',
+    measurements: { chest: 21, length: 25, sleeve: 26, shoulder: 17 },
+    material: 'Wool blend',
+    color: 'Rust orange',
+    closure: 'Pullover',
+    condition: 'Very good. Warm hand, no fade.',
+    authNote: 'Hand-inspected. Original ribbing intact.',
+    note: 'Not the loud kind of orange. The one that means fall.',
+    coverImage: '',
+    images: [
+      '/assets/deals/snf-knt-2607-002_real_01.jpg',
+      '/assets/deals/snf-knt-2607-002_real_02.jpg',
+      '/assets/deals/snf-knt-2607-002_real_03.jpg',
+      '/assets/deals/snf-knt-2607-002_real_04.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+  {
+    id: 'p015',
+    sku: 'SNF-KNT-2607-003',
+    name: 'Gray Color-Block Cowl Sweater',
+    brand: 'Vintage',
+    price: 36,
+    originalPrice: 72,
+    deal: true,
+    gender: 'womens',
+    cat: 'knits',
+    year: '2000s',
+    origin: 'unknown',
+    size: 'M',
+    measurements: { chest: 21, length: 24, sleeve: 22, shoulder: 17 },
+    material: 'Wool blend',
+    color: 'Two-tone gray',
+    closure: 'Pullover, cowl neck with hood',
+    condition: 'Very good. Structured drape.',
+    authNote: 'Hand-inspected. Original knit construction.',
+    note: 'Architectural without saying anything.',
+    coverImage: '',
+    images: [
+      '/assets/deals/snf-knt-2607-003_real_01.jpg',
+      '/assets/deals/snf-knt-2607-003_real_02.jpg',
+      '/assets/deals/snf-knt-2607-003_real_03.jpg',
+      '/assets/deals/snf-knt-2607-003_real_04.jpg',
+      '/assets/deals/snf-knt-2607-003_real_05.jpg'
+    ],
+    alsoListedOn: [],
+    sold: false
+  },
+  {
+    id: 'p016',
+    sku: 'SNF-KNT-2607-004',
+    name: 'Puma Retro Cream Side-Stripe Sweater',
+    brand: 'Puma',
+    price: 32,
+    originalPrice: 65,
+    deal: true,
+    gender: 'unisex',
+    cat: 'knits',
+    year: '2000s',
+    origin: 'unknown',
+    size: 'M',
+    measurements: { chest: 20, length: 25, sleeve: 25, shoulder: 17 },
+    material: 'Cotton knit',
+    color: 'Cream with red and gray side stripe',
+    closure: 'Pullover crewneck',
+    condition: 'Very good. Puma logo embroidered, no fade.',
+    authNote: 'Puma cat logo embroidered, side stripe original panel construction.',
+    note: 'Track-day pullover for people who never track.',
+    coverImage: '',
+    images: [
+      '/assets/deals/snf-knt-2607-004_real_01.jpg',
+      '/assets/deals/snf-knt-2607-004_real_02.jpg',
+      '/assets/deals/snf-knt-2607-004_real_03.jpg',
+      '/assets/deals/snf-knt-2607-004_real_04.jpg'
+    ],
     alsoListedOn: [],
     sold: false
   }
