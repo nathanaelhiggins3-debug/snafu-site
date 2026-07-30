@@ -359,10 +359,15 @@ if (!product) {
 } else {
   const isDeal = product.deal === true;
 
-  // Pixel cover slot
-  const coverInner = product.coverImage
-    ? `<img src="${product.coverImage}" alt="${product.name} cover">`
-    : product.name.toUpperCase();
+  // Hero image slot: mainline uses the 16-bit pixel cover, deals use the first
+  // real photo (only mainline items get pixel covers generated for now).
+  const heroImg = isDeal
+    ? (product.images && product.images[0])
+    : product.coverImage;
+  const heroLabel = isDeal ? 'REAL PHOTO PENDING' : product.name.toUpperCase();
+  const coverInner = heroImg
+    ? `<img src="${heroImg}" alt="${product.name}">`
+    : heroLabel;
 
   // Real photos scroll — falls back to a single frame if no images yet
   const photosHTML = (product.images && product.images.length)
@@ -464,7 +469,7 @@ if (!product) {
         <div class="cover">${coverInner}</div>
       </div>
 
-      <div class="photos-cue">Real photos below</div>
+      ${isDeal ? '' : '<div class="photos-cue">Real photos below</div>'}
 
       <div class="photos">${photosHTML}</div>
 

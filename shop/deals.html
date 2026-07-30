@@ -336,8 +336,10 @@ let activeCat = 'all';
 const sectionsEl = document.getElementById('sections');
 
 function cardHTML(p) {
-  const thumb = p.img
-    ? `<img src="${p.img}" alt="${p.name}">`
+  // Deals: real photos, not 16-bit covers (covers are mainline-only for now)
+  const imgSrc = (p.images && p.images[0]) || p.coverImage;
+  const thumb = imgSrc
+    ? `<img src="${imgSrc}" alt="${p.name}">`
     : p.name.toUpperCase();
   const pricing = p.originalPrice
     ? `<div class="price-row">

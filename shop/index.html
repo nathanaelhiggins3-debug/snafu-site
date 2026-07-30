@@ -162,8 +162,26 @@ a { color: inherit; }
 .card--deal .price-was { font-family: var(--display); font-size: 10px; color: var(--loam); text-decoration: line-through; letter-spacing: .06em; }
 .card--deal .price-now { font-family: var(--display); font-size: 12px; color: var(--deal); letter-spacing: .1em; }
 
-/* ── DEALS ENTRY BLOCK ── */
+/* ── DEALS ENTRY BLOCK — sits between curation and grid, deliberately punchy ── */
 .deals-entry {
+  display: grid;
+  margin: 0 clamp(16px, 3vw, 32px) clamp(32px, 4vw, 48px);
+  padding: clamp(20px, 3vw, 28px) clamp(20px, 3vw, 32px);
+  background: rgba(212, 98, 42, 0.08);
+  border: var(--px) solid var(--deal);
+  box-shadow: calc(var(--px)*2) calc(var(--px)*2) 0 var(--deal-dim);
+  text-decoration: none;
+  transition: transform 80ms steps(2, end), background 80ms steps(2, end);
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 20px;
+}
+.deals-entry:hover {
+  background: rgba(212, 98, 42, 0.18);
+  transform: translate(calc(var(--px)*-1), calc(var(--px)*-1));
+}
+.deals-entry:hover .de-cta { background: #e87a45; }
+.deals-entry-legacy {
   margin: clamp(24px, 4vw, 48px) clamp(16px, 3vw, 32px);
   border: var(--px) solid var(--deal);
   box-shadow: var(--px) var(--px) 0 var(--deal-dim);
@@ -292,6 +310,15 @@ a { color: inherit; }
   </div>
 </section>
 
+<a class="deals-entry" href="deals.html">
+  <div class="de-text">
+    <div class="de-eyebrow">SECOND TIER — ALWAYS SNAFU</div>
+    <div class="de-title">SNAFU DEALS</div>
+    <div class="de-body">Same hand. Different math. On a site that doesn't need to discount anything, a deal here is an actual deal — sorted by category, no guessing.</div>
+  </div>
+  <span class="de-cta">ENTER →</span>
+</a>
+
 <section class="market" id="market">
   <div class="filters">
     <div class="gender">
@@ -314,15 +341,6 @@ a { color: inherit; }
   <span>PACK</span>
   <span class="count" id="packCount">0</span>
 </a>
-
-<div class="deals-entry">
-  <div class="de-text">
-    <div class="de-eyebrow">SECOND TIER — ALWAYS SNAFU</div>
-    <div class="de-title">SNAFU DEALS</div>
-    <div class="de-body">Same hand. Different math. On a site that doesn't need to discount anything, a deal here is an actual deal — sorted by category, no guessing.</div>
-  </div>
-  <a class="de-cta" href="deals.html">ENTER →</a>
-</div>
 
 <footer class="colophon">
   <div class="row1">SNAFU. &nbsp;·&nbsp; SHOP &nbsp;·&nbsp; LOS ANGELES</div>
@@ -352,11 +370,15 @@ function render() {
            <span class="price-now">$${p.price}</span>
          </div>`
       : `<div class="price">$${p.price}</div>`;
+    // Deals show real photo; mainline shows 16-bit pixel cover
+    const imgSrc = isDeal
+      ? (p.images && p.images[0])
+      : p.coverImage;
     return `
     <a class="card ${p.sold ? 'sold' : ''} ${isDeal ? 'card--deal' : ''}" href="product.html?id=${p.id}" style="position:relative">
       ${isDeal ? '<span class="deal-badge">DEAL</span>' : ''}
       <div class="thumb">
-        ${p.img ? `<img src="${p.img}" alt="${p.name}">` : p.name.toUpperCase()}
+        ${imgSrc ? `<img src="${imgSrc}" alt="${p.name}">` : p.name.toUpperCase()}
       </div>
       <div class="info">
         <div class="name">${p.name}</div>
