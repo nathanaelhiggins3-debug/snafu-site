@@ -1,6 +1,11 @@
 /* SNAFU shop data.
-   One source of truth. Read by shop.html, product.html, cart.html.
+   One source of truth. Read by shop/index.html, shop/deals.html, product.html, cart.html.
    Add a piece: paste one object. Both grid and detail regenerate.
+
+   DEAL ITEMS — add these fields to any item for deals tier:
+     deal: true              → marks it as a deal (orange border in main shop; appears in deals.html)
+     originalPrice: 120      → "was" price shown struck through
+     (price stays as the deal price the buyer actually pays)
 */
 window.SNAFU_SHOP = [
   {
@@ -20,7 +25,9 @@ window.SNAFU_SHOP = [
   {
     id: 'p002',
     name: 'Placeholder Tee',
-    price: 45,
+    price: 28,
+    originalPrice: 45,
+    deal: true,
     gender: 'mens',
     cat: 'tops',
     year: '2001',
@@ -48,7 +55,9 @@ window.SNAFU_SHOP = [
   {
     id: 'p004',
     name: 'Placeholder Cap',
-    price: 35,
+    price: 18,
+    originalPrice: 35,
+    deal: true,
     gender: 'unisex',
     cat: 'accessories',
     year: '1990s',

@@ -19,3 +19,6 @@ Thumbs.db
 .DS_Store
 
 index-old.html
+
+# Local Netlify folder
+.netlify
