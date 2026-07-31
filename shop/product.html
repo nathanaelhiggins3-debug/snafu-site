@@ -515,13 +515,29 @@ if (!product) {
     </article>
   `;
 
+  // ── PIXEL: ViewContent — fires once per product page load ──
+  if (typeof snafuTrackViewContent === 'function') {
+    snafuTrackViewContent(product.name, product.sku || product.id, product.price, product.cat);
+  }
+
   if (!product.sold) {
     document.getElementById('addBtn').addEventListener('click', () => {
       addToCart(product.id, 1);
       showToast('ADDED TO PACK');
+      // ── PIXEL: AddToCart ──
+      if (typeof snafuTrackAddToCart === 'function') {
+        snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);
+      }
     });
     document.getElementById('buyBtn').addEventListener('click', () => {
       addToCart(product.id, 1);
+      // ── PIXEL: AddToCart (Buy Now also adds first) + InitiateCheckout ──
+      if (typeof snafuTrackAddToCart === 'function') {
+        snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);
+      }
+      if (typeof snafuTrackInitiateCheckout === 'function') {
+        snafuTrackInitiateCheckout([product.sku || product.id], product.price, 1);
+      }
       location.href = '/checkout';
     });
   }

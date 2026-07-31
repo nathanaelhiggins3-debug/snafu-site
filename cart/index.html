@@ -86,6 +86,13 @@
         var note = document.getElementById("checkout-note");
         btn.disabled = true;
         btn.textContent = "Redirecting…";
+        // ── PIXEL: InitiateCheckout — fires the moment we hand off to Stripe ──
+        if (typeof snafuTrackInitiateCheckout === "function") {
+          var itemIds = items.map(function (i) { return i.id; });
+          var totalUSD = window.SNAFU_CART.subtotal();
+          var numItems = items.reduce(function (n, i) { return n + (i.qty || 1); }, 0);
+          snafuTrackInitiateCheckout(itemIds, totalUSD, numItems);
+        }
         fetch("/api/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

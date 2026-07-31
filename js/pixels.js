@@ -20,10 +20,15 @@ n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
 
-fbq('init', 'REPLACE_WITH_META_PIXEL_ID');
+fbq('init', '1251941453631248');
 fbq('track', 'PageView');
 
 // ===== TIKTOK PIXEL =====
+// TikTok init commented out until Nate has the real Pixel ID.
+// Enable by uncommenting the block below and replacing the placeholder.
+// The helper wrappers below no-op when window.ttq is undefined, so the
+// site works fine with only Meta live.
+/*
 !function (w, d, t) {
   w.TiktokAnalyticsObject = t;
   var ttq = w[t] = w[t] || [];
@@ -59,6 +64,7 @@ fbq('track', 'PageView');
   ttq.load('REPLACE_WITH_TIKTOK_PIXEL_ID');
   ttq.page();
 }(window, document, 'ttq');
+*/
 
 /**
  * OPTIONAL — conversion + engagement event helpers.
