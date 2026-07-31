@@ -193,14 +193,55 @@ body {
 .index-nav a:hover .blurb,
 .index-nav a:focus-visible .blurb { opacity: 1; color: var(--red); }
 
+/* ---------- BOOT (first visit only) ---------- */
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--px)*6);
+  cursor: pointer;
+  transition: opacity .3s steps(3, end);
+}
+.boot.boot-out { opacity: 0; pointer-events: none; }
+.boot-mark {
+  font-family: var(--display);
+  font-size: clamp(28px, 8vw, 72px);
+  color: var(--cream);
+  text-shadow:
+    var(--px) var(--px) 0 var(--red),
+    calc(var(--px)*2) calc(var(--px)*2) 0 rgba(10,8,5,.6);
+  animation: bootin .5s steps(4) both;
+}
+.boot-sys {
+  font-family: var(--body);
+  font-size: clamp(10px, 1.4vw, 13px);
+  letter-spacing: .22em;
+  color: var(--gold);
+  animation: blink 1s steps(1, end) infinite;
+}
+@keyframes bootin {
+  from { transform: scale(.92); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .wordmark, .start { animation: none; }
+  .wordmark, .start, .boot-mark, .boot-sys { animation: none; }
 }
 </style>
 <script src="/js/pixels.js"></script>
 </head>
 <body>
+
+<div class="boot" id="boot" aria-hidden="true">
+  <div class="boot-mark">SNAFU</div>
+  <div class="boot-sys">NOW LOADING</div>
+</div>
 
 <div class="forest" aria-hidden="true">
   <img src="assets/forest.png" alt="">
@@ -231,6 +272,26 @@ body {
 </section>
 
 <script>
+/* Boot beat (per "SNAFU Boot Screen" spec, I1): a quick console-style
+   boot on first visit only. Tap to skip; auto-clears fast so it is a
+   beat, not a barrier. Return visits skip it entirely. */
+(function () {
+  var KEY = 'snafu.booted';
+  var boot = document.getElementById('boot');
+  if (!boot) return;
+  var seen = false;
+  try { seen = !!localStorage.getItem(KEY); } catch (e) {}
+  if (seen) { boot.remove(); return; }
+  try { localStorage.setItem(KEY, '1'); } catch (e) {}
+  function end() {
+    if (!boot) return;
+    boot.classList.add('boot-out');
+    setTimeout(function () { if (boot) { boot.remove(); boot = null; } }, 350);
+  }
+  boot.addEventListener('click', end);
+  setTimeout(end, 1400);
+})();
+
 (function () {
   var index = document.getElementById('index');
   var start = document.getElementById('start');

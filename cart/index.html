@@ -42,7 +42,7 @@
           root.innerHTML =
             '<div class="cart-empty">' +
               '<p class="cart-empty__title">Your cart is empty</p>' +
-              '<p class="code">Nothing claimed yet — the Shop is one-of-one, so move quick.</p>' +
+              '<p class="code">Nothing claimed yet — every piece in the Shop is one-of-one.</p>' +
               '<a class="btn btn--ghost" href="../shop/">Browse the Shop</a>' +
             '</div>';
           return;
@@ -102,7 +102,7 @@
           .catch(function (err) {
             btn.disabled = false;
             btn.innerHTML = "Checkout";
-            note.textContent = "Couldn't start checkout: " + err.message +
+            note.textContent = "Could not start checkout: " + err.message +
               "  (Checkout needs `netlify dev` locally or a deploy — the plain python server has no functions.)";
             note.style.color = "var(--red)";
           });

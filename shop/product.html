@@ -339,7 +339,7 @@ a { color: inherit; }
 
 <footer class="colophon">
   <div class="row1">SNAFU. &nbsp;·&nbsp; SHOP &nbsp;·&nbsp; LOS ANGELES</div>
-  <div>Every item cleaned. Every item authenticated.</div>
+  <div>Every item is cleaned. Every item is authenticated.</div>
   <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
 </footer>
 
@@ -354,7 +354,7 @@ const main = document.getElementById('main');
 if (!product) {
   main.innerHTML = `
     <div class="notfound">
-      This piece isn't here.<br><br>
+      This piece is not here anymore.<br><br>
       <a href="index.html">back to the market</a>
     </div>`;
 } else {
@@ -459,7 +459,7 @@ if (!product) {
   };
   const alsoHTML = related.length ? `
     <section class="also">
-      <div class="sec-head">You'd Also Like</div>
+      <div class="sec-head">You May Also Like</div>
       <div class="agrid">${related.map(relatedCard).join('')}</div>
     </section>` : '';
 
