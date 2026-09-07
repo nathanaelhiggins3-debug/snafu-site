@@ -50,6 +50,22 @@
     document.body.prepend(nav);
     document.body.classList.add('has-snafu-topnav');
   }
+
+  /* Account layer: load the shared auth data + UI once, on every
+     page that includes this file. Order matters — the UI script
+     depends on window.SNAFUAuth, so load auth first, then the UI.
+     Both files guard against double-init. */
+  function loadOnce(id, src, onload) {
+    if (document.getElementById(id)) { if (onload) onload(); return; }
+    const s = document.createElement('script');
+    s.id = id;
+    s.src = src;
+    if (onload) s.addEventListener('load', onload);
+    document.head.appendChild(s);
+  }
+  loadOnce('snafu-auth-js', '/js/snafu-auth.js', function () {
+    loadOnce('snafu-account-js', '/js/snafu-account.js');
+  });
 })();
 
 /* ------------------------------------------------------------------

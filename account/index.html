@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SNAFU. — Account</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --px: 3px;
+  --cream: #f2e4c4; --ink: #0c1412; --wheat: #e8d29a;
+  --red: #b8352b; --rose: #d96a5c; --gold: #e3aa4d;
+  --moss: #6b8a3a; --loam: #8a5a2b;
+  --display: 'Press Start 2P', monospace;
+  --body: 'Pixelify Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: var(--cream); font-family: var(--body); }
+img { image-rendering: pixelated; image-rendering: -moz-crisp-edges; }
+a { color: inherit; }
+
+body {
+  min-height: 100svh;
+  background-image: radial-gradient(rgba(242,228,196,0.05) 1px, transparent 1.4px);
+  background-size: 18px 18px;
+}
+
+.wrap { max-width: 640px; margin: 0 auto; padding: clamp(20px, 3vw, 32px); }
+
+.path-back {
+  display: inline-block;
+  font-family: var(--display); font-size: clamp(10px, 1vw, 12px);
+  letter-spacing: .18em; color: var(--cream); text-decoration: none;
+  padding: calc(var(--px)*2) calc(var(--px)*3);
+  background: rgba(12,20,18,.6);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+.path-back::before { content: '\25C2  '; color: var(--rose); }
+.path-back:hover { background: var(--cream); color: var(--ink); }
+
+.eyebrow {
+  font-family: var(--display); font-size: 11px; letter-spacing: .22em;
+  color: var(--gold); text-transform: uppercase;
+  margin: clamp(28px, 4vw, 40px) 0 20px;
+}
+
+/* status line while we resolve the session */
+.status {
+  font-family: var(--body); font-size: 16px; color: var(--wheat);
+  padding: 24px 0;
+}
+
+/* signed-out gate */
+.gate { padding: 8px 0 40px; }
+.gate h1 {
+  font-family: var(--display); font-size: clamp(18px, 4vw, 26px);
+  line-height: 1.4; color: var(--wheat); margin-bottom: 16px;
+}
+.gate p { font-size: 17px; color: var(--cream); margin-bottom: 24px; max-width: 40ch; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 50px; padding: 12px 20px; cursor: pointer;
+  font-family: var(--display); font-size: 11px; letter-spacing: .06em;
+  color: var(--ink); background: var(--gold);
+  border: var(--px) solid var(--cream); text-decoration: none;
+  box-shadow: 3px 3px 0 rgba(2,2,0,.6);
+}
+.btn:hover { background: var(--cream); }
+.btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.btn--ghost {
+  color: var(--cream); background: rgba(12,20,18,.6);
+  border-color: var(--cream);
+}
+.btn--ghost:hover { background: var(--red); color: var(--cream); }
+.btn:disabled { opacity: .6; cursor: default; }
+
+/* profile card */
+.card { display: none; padding: 8px 0 60px; }
+.identity {
+  display: flex; align-items: center; gap: 18px;
+  padding-bottom: 24px; border-bottom: var(--px) solid var(--moss);
+}
+.identity__av {
+  width: 84px; height: 84px; flex: none;
+  border: var(--px) solid var(--cream); background: var(--ink);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.6);
+}
+.identity__meta { min-width: 0; }
+.identity__handle {
+  font-family: var(--display); font-size: clamp(15px, 3.5vw, 22px);
+  line-height: 1.3; color: var(--wheat); word-break: break-word;
+}
+.identity__joined {
+  font-family: var(--body); font-size: 14px; color: var(--gold);
+  letter-spacing: .04em; margin-top: 8px;
+}
+.identity__role {
+  display: inline-block; margin-top: 8px;
+  font-family: var(--display); font-size: 8px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink); background: var(--rose);
+  padding: 4px 6px;
+}
+
+.block {
+  margin-top: 28px; padding-top: 24px;
+  border-top: var(--px) solid var(--moss);
+}
+.block:first-of-type { border-top: none; padding-top: 8px; }
+.block__title {
+  font-family: var(--display); font-size: 10px; letter-spacing: .2em;
+  color: var(--gold); text-transform: uppercase; margin-bottom: 16px;
+}
+
+/* avatar edit grid */
+.avgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+@media (max-width: 400px) { .avgrid { grid-template-columns: repeat(4, 1fr); } }
+.avgrid button {
+  padding: 0; cursor: pointer; aspect-ratio: 1;
+  background: var(--ink); border: var(--px) solid transparent;
+}
+.avgrid img { width: 100%; height: 100%; display: block; }
+.avgrid button[aria-pressed="true"] { border-color: var(--red); }
+.avgrid button:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+/* bio edit */
+textarea {
+  width: 100%; min-height: 120px; resize: vertical; padding: 12px;
+  font-family: var(--body); font-size: 16px; line-height: 1.5;
+  color: var(--ink); background: var(--cream);
+  border: var(--px) solid var(--cream); border-radius: 0;
+}
+textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.count { font-family: var(--body); font-size: 12px; color: rgba(242,228,196,.6); margin-top: 6px; }
+
+.actions {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  margin-top: 16px;
+}
+.savemsg { font-family: var(--body); font-size: 15px; }
+.savemsg.ok { color: var(--moss); }
+.savemsg.err { color: var(--rose); }
+
+.footer-out {
+  margin-top: 40px; padding-top: 24px;
+  border-top: var(--px) solid var(--cream);
+}
+</style>
+<script src="/js/snafu-auth.js"></script>
+</head>
+<body>
+
+<main class="wrap">
+  <a class="path-back" href="/">Back to the clearing</a>
+  <div class="eyebrow">Account · SNAFU</div>
+
+  <p class="status" id="status">Checking your session…</p>
+
+  <!-- signed out -->
+  <section class="gate" id="gate" hidden>
+    <h1>You are signed out.</h1>
+    <p>Sign in or make an account to set your handle, avatar, and bio.</p>
+    <button class="btn" type="button" id="gate-signin">SIGN IN</button>
+  </section>
+
+  <!-- signed in -->
+  <section class="card" id="card">
+    <div class="identity">
+      <img class="identity__av" id="av-current" alt="" src="">
+      <div class="identity__meta">
+        <div class="identity__handle" id="handle"></div>
+        <div class="identity__joined" id="joined"></div>
+        <span class="identity__role" id="role" hidden></span>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block__title">Avatar</div>
+      <div class="avgrid" id="avgrid"></div>
+    </div>
+
+    <div class="block">
+      <div class="block__title">Bio</div>
+      <textarea id="bio" maxlength="280" placeholder="Say something. Or don't."></textarea>
+      <div class="count"><span id="count">0</span>/280</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="button" id="save">SAVE CHANGES</button>
+      <span class="savemsg" id="savemsg" role="status"></span>
+    </div>
+
+    <div class="footer-out">
+      <button class="btn btn--ghost" type="button" id="logout">SIGN OUT</button>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var Auth = window.SNAFUAuth;
+  var statusEl = document.getElementById('status');
+  var gate = document.getElementById('gate');
+  var card = document.getElementById('card');
+
+  var picked = 1;     // selected avatar id
+  var origBio = '';
+  var origAvatar = 1;
+
+  document.getElementById('gate-signin').addEventListener('click', function () {
+    if (window.SNAFU_openAuth) window.SNAFU_openAuth('login');
+  });
+
+  function fmtDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d)) return '';
+    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function buildAvGrid() {
+    var grid = document.getElementById('avgrid');
+    var out = '';
+    for (var i = 1; i <= 12; i++) {
+      out += '<button type="button" data-id="' + i + '" aria-pressed="false" ' +
+        'aria-label="Avatar ' + i + '"><img alt="" src="' + Auth.avatarSrc(i) + '"></button>';
+    }
+    grid.innerHTML = out;
+    var btns = grid.querySelectorAll('button');
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        picked = Number(b.getAttribute('data-id'));
+        btns.forEach(function (x) {
+          x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
+        });
+      });
+    });
+    // label from API when available
+    Auth.getAvatars().then(function (list) {
+      if (!list || !list.length) return;
+      btns.forEach(function (b, idx) {
+        var name = list[idx] && list[idx].name;
+        if (name) { b.setAttribute('aria-label', name); b.title = name; }
+      });
+    });
+  }
+
+  function selectAvatar(id) {
+    picked = Number(id) || 1;
+    document.getElementById('avgrid').querySelectorAll('button').forEach(function (b) {
+      b.setAttribute('aria-pressed', Number(b.getAttribute('data-id')) === picked ? 'true' : 'false');
+    });
+    document.getElementById('av-current').src = Auth.avatarSrc(picked);
+  }
+
+  function showSignedIn(user) {
+    statusEl.hidden = true;
+    gate.hidden = true;
+    card.style.display = 'block';
+
+    document.getElementById('handle').textContent = user.handle;
+    document.getElementById('joined').textContent = user.created_at
+      ? 'Joined ' + fmtDate(user.created_at) : '';
+    var roleEl = document.getElementById('role');
+    if (user.role && user.role !== 'user') {
+      roleEl.textContent = user.role; roleEl.hidden = false;
+    }
+
+    buildAvGrid();
+    origAvatar = user.avatar_id || 1;
+    selectAvatar(origAvatar);
+
+    var bio = document.getElementById('bio');
+    origBio = user.bio || '';
+    bio.value = origBio;
+    document.getElementById('count').textContent = bio.value.length;
+  }
+
+  function showSignedOut() {
+    statusEl.hidden = true;
+    card.style.display = 'none';
+    gate.hidden = false;
+  }
+
+  // live char count
+  var bioEl = document.getElementById('bio');
+  bioEl.addEventListener('input', function () {
+    document.getElementById('count').textContent = bioEl.value.length;
+  });
+  // current-avatar preview follows selection (handled in selectAvatar)
+
+  // save
+  var saveBtn = document.getElementById('save');
+  var saveMsg = document.getElementById('savemsg');
+  saveBtn.addEventListener('click', function () {
+    var patch = {};
+    if (picked !== origAvatar) patch.avatar_id = picked;
+    var bioVal = bioEl.value;
+    if (bioVal !== origBio) patch.bio = bioVal;
+
+    saveMsg.className = 'savemsg';
+    if (!Object.keys(patch).length) { saveMsg.textContent = 'Nothing to save.'; return; }
+
+    saveBtn.disabled = true;
+    saveMsg.textContent = 'Saving…';
+    Auth.updateProfile(patch).then(function (user) {
+      origAvatar = user.avatar_id || picked;
+      origBio = user.bio || bioVal;
+      saveMsg.textContent = 'Saved.';
+      saveMsg.className = 'savemsg ok';
+      saveBtn.disabled = false;
+    }, function (err) {
+      saveMsg.textContent = (err && err.message) || 'Could not save. Try again.';
+      saveMsg.className = 'savemsg err';
+      saveBtn.disabled = false;
+    });
+  });
+
+  // logout
+  document.getElementById('logout').addEventListener('click', function () {
+    var b = this; b.disabled = true;
+    Auth.logout().then(function () {
+      window.location.href = '/';
+    }, function () {
+      b.disabled = false;
+    });
+  });
+
+  // React to session (and to auth changes triggered by the modal).
+  Auth.subscribe(function (user) {
+    if (user === undefined) return;        // still resolving
+    if (user) showSignedIn(user); else showSignedOut();
+  });
+  Auth.me();
+})();
+</script>
+
+<script src="/js/site.js" defer></script>
+</body>
+</html>
