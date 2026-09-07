@@ -198,6 +198,12 @@
     getUser: getUser,
     subscribe: subscribe,
     avatarSrc: avatarSrc,
+    // Shared credentialed fetch so other features (stars, scores) talk to the
+    // API the same way — same base, same cookie, same {error,message} handling.
+    // Reuse this instead of writing new fetch() calls.
+    api: request,
+    // previous_visit_at rides along on the cached /auth/me user object.
+    previousVisit: function () { return current ? (current.previous_visit_at || null) : null; },
     validate: {
       handle: validateHandle,
       email: validateEmail,

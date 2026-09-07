@@ -42,7 +42,10 @@
       : `<div class="relic-media placeholder" aria-label="${esc(item.name)}"></div>`;
 
     return `
-      <article class="relic ${item.sold ? "sold" : ""}" data-id="${esc(item.id)}">
+      <article class="relic ${item.sold ? "sold" : ""}" data-id="${esc(item.id)}" style="position:relative">
+        <button class="snafu-star snafu-star--corner" data-star-type="product"
+                data-star-ref="/goods/#${esc(item.id)}" data-star-title="${esc(item.name)}"
+                data-star-image="${esc(item.img || "")}" data-star-section="goods"></button>
         ${media}
         <div class="relic-body">
           <div class="relic-eyebrow">SNAFU ORIGINAL</div>

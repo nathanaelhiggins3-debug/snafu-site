@@ -144,6 +144,7 @@
   var mode = 'login';            // 'login' | 'signup'
   var pickedAvatar = 1;
   var lastFocus = null;
+  var contextMsg = null;         // optional prompt line, e.g. "Sign up to save this"
   var overlay = document.createElement('div');
   overlay.className = 'snafu-modal';
   overlay.setAttribute('role', 'dialog');
@@ -158,8 +159,9 @@
     if (e.key === 'Escape' && overlay.classList.contains('is-open')) close();
   });
 
-  function open(which) {
+  function open(which, opts) {
     mode = which === 'signup' ? 'signup' : 'login';
+    contextMsg = (opts && opts.context) || null;
     lastFocus = document.activeElement;
     render();
     overlay.classList.add('is-open');
@@ -181,7 +183,7 @@
       '<button class="snafu-panel__x" type="button" aria-label="Close">×</button>' +
       '<h2>' + (isSignup ? 'JOIN SNAFU' : 'SIGN IN') + '</h2>' +
       '<p class="snafu-panel__sub">' +
-        (isSignup ? 'One step. You are in.' : 'Welcome back.') + '</p>' +
+        escapeHtml(contextMsg || (isSignup ? 'One step. You are in.' : 'Welcome back.')) + '</p>' +
       '<div class="snafu-err" role="alert"></div>' +
       '<form novalidate>';
 
@@ -222,7 +224,7 @@
 
     overlay.querySelector('.snafu-panel__x').addEventListener('click', close);
     overlay.querySelector('.snafu-swap button').addEventListener('click', function () {
-      open(this.getAttribute('data-mode'));
+      open(this.getAttribute('data-mode'), { context: contextMsg }); // keep intent across toggle
     });
     overlay.querySelector('form').addEventListener('submit', onSubmit);
 

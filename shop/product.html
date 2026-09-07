@@ -478,7 +478,12 @@ if (!product) {
       <div class="head">
         <h1>${product.name}</h1>
         <div class="meta-line">${metaLine}</div>
-        <div class="price-row">${priceHTML}</div>
+        <div class="price-row">${priceHTML}
+          <button class="snafu-star" data-star-type="product"
+                  data-star-ref="/shop/product.html?id=${product.id}"
+                  data-star-title="${product.name}" data-star-image="${heroImg || ''}"
+                  data-star-section="${isDeal ? 'deals' : 'shop'}"></button>
+        </div>
       </div>
 
       <div class="actions">
@@ -570,5 +575,6 @@ function showToast(msg) {
 
 refreshPack();
 </script>
+<script src="/js/account-layer.js" defer></script>
 </body>
 </html>

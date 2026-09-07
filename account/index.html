@@ -150,6 +150,54 @@ textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   margin-top: 40px; padding-top: 24px;
   border-top: var(--px) solid var(--cream);
 }
+
+/* shelves — PIECES (wishlist) + READING */
+.shelves { display: none; margin-top: 40px; padding: 8px 0 70px; }
+.shelf-tabs { display: flex; gap: 10px; margin-bottom: 22px; }
+.shelf-tab {
+  flex: 1; min-height: 48px; cursor: pointer;
+  font-family: var(--display); font-size: 10px; letter-spacing: .1em;
+  color: var(--cream); background: rgba(12,20,18,.6);
+  border: var(--px) solid var(--cream); box-shadow: 2px 2px 0 rgba(2,2,0,.5);
+}
+.shelf-tab.is-on { color: var(--ink); background: var(--gold); }
+.shelf-tab:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.shelf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 560px) { .shelf-grid { grid-template-columns: repeat(3, 1fr); } }
+.shelf-item {
+  position: relative; display: flex; flex-direction: column;
+  background: rgba(12,20,18,.5); border: var(--px) solid var(--moss);
+  text-decoration: none; color: var(--cream);
+}
+.shelf-item:hover { border-color: var(--cream); }
+.shelf-thumb {
+  aspect-ratio: 1; background: var(--ink); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.shelf-thumb img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+.shelf-thumb .ph {
+  font-family: var(--display); font-size: 8px; letter-spacing: .08em;
+  color: var(--gold); padding: 10px; text-align: center; line-height: 1.5;
+}
+.shelf-meta { padding: 10px 10px 12px; }
+.shelf-name { font-family: var(--body); font-size: 14px; line-height: 1.3; display: block; }
+.shelf-sec {
+  font-family: var(--display); font-size: 7px; letter-spacing: .12em;
+  color: var(--gold); text-transform: uppercase; margin-top: 8px; display: block;
+}
+.shelf-remove {
+  position: absolute; top: 4px; right: 4px; z-index: 2;
+  min-width: 36px; min-height: 36px; cursor: pointer; line-height: 1;
+  font-family: var(--display); font-size: 12px;
+  color: var(--cream); background: rgba(12,20,18,.85); border: 2px solid var(--cream);
+}
+.shelf-remove:hover { background: var(--red); }
+.shelf-remove:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.shelf-empty {
+  font-family: var(--body); font-size: 16px; color: var(--wheat);
+  padding: 20px 0; line-height: 1.5;
+}
+.shelf-empty a { color: var(--gold); font-family: var(--display); font-size: 11px; letter-spacing: .06em; }
 </style>
 <script src="/js/snafu-auth.js"></script>
 </head>
@@ -198,6 +246,18 @@ textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
     <div class="footer-out">
       <button class="btn btn--ghost" type="button" id="logout">SIGN OUT</button>
     </div>
+  </section>
+
+  <!-- shelves (signed in) -->
+  <section class="shelves" id="shelves" aria-label="Saved">
+    <div class="shelf-tabs" role="tablist">
+      <button class="shelf-tab is-on" type="button" data-shelf="pieces"
+              role="tab" aria-selected="true">PIECES</button>
+      <button class="shelf-tab" type="button" data-shelf="reading"
+              role="tab" aria-selected="false">READING</button>
+    </div>
+    <div class="shelf-panel" id="shelf-pieces" role="tabpanel"></div>
+    <div class="shelf-panel" id="shelf-reading" role="tabpanel" hidden></div>
   </section>
 </main>
 
@@ -279,13 +339,86 @@ textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
     origBio = user.bio || '';
     bio.value = origBio;
     document.getElementById('count').textContent = bio.value.length;
+
+    document.getElementById('shelves').style.display = 'block';
+    loadShelves();
   }
 
   function showSignedOut() {
     statusEl.hidden = true;
     card.style.display = 'none';
+    document.getElementById('shelves').style.display = 'none';
     gate.hidden = false;
   }
+
+  // ---- shelves: PIECES (wishlist) + READING ----
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function emptyState(name) {
+    return name === 'pieces'
+      ? '<div class="shelf-empty">No pieces saved yet — this is your wishlist. ' +
+        '<a href="/shop/">Browse the Shop →</a></div>'
+      : '<div class="shelf-empty">Nothing saved to read yet. ' +
+        '<a href="/news/">Open the News →</a></div>';
+  }
+  function itemHTML(s) {
+    var thumb = s.image
+      ? '<img alt="" src="' + esc(s.image) + '">'
+      : '<span class="ph">' + esc((s.title || s.item_ref || '').toUpperCase()) + '</span>';
+    return '<a class="shelf-item" href="' + esc(s.item_ref) + '">' +
+      '<button class="shelf-remove" type="button" data-type="' + esc(s.item_type) +
+        '" data-ref="' + esc(s.item_ref) + '" aria-label="Remove from shelf" title="Remove">×</button>' +
+      '<span class="shelf-thumb">' + thumb + '</span>' +
+      '<span class="shelf-meta"><span class="shelf-name">' + esc(s.title || s.item_ref) + '</span>' +
+        (s.section ? '<span class="shelf-sec">' + esc(s.section) + '</span>' : '') +
+      '</span></a>';
+  }
+  function wireRemove(panel, name) {
+    panel.querySelectorAll('.shelf-remove').forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        b.disabled = true;
+        Auth.api('DELETE', '/stars', {
+          item_type: b.getAttribute('data-type'), item_ref: b.getAttribute('data-ref')
+        }).then(function () {
+          var item = b.closest('.shelf-item');
+          if (item) item.remove();
+          if (!panel.querySelector('.shelf-item')) panel.innerHTML = emptyState(name);
+        }, function () { b.disabled = false; });
+      });
+    });
+  }
+  function renderShelf(name) {
+    var panel = document.getElementById('shelf-' + name);
+    panel.innerHTML = '<div class="shelf-empty">Loading…</div>';
+    Auth.api('GET', '/stars?shelf=' + name).then(function (res) {
+      var stars = (res && res.stars) || [];
+      if (!stars.length) { panel.innerHTML = emptyState(name); return; }
+      panel.innerHTML = '<div class="shelf-grid">' + stars.map(itemHTML).join('') + '</div>';
+      wireRemove(panel, name);
+    }, function () {
+      panel.innerHTML = '<div class="shelf-empty">Could not load your shelf. Refresh to try again.</div>';
+    });
+  }
+  function loadShelves() {
+    renderShelf('pieces');
+    renderShelf('reading');
+  }
+  document.querySelectorAll('.shelf-tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      var name = t.getAttribute('data-shelf');
+      document.querySelectorAll('.shelf-tab').forEach(function (x) {
+        var on = x === t;
+        x.classList.toggle('is-on', on);
+        x.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      document.getElementById('shelf-pieces').hidden = name !== 'pieces';
+      document.getElementById('shelf-reading').hidden = name !== 'reading';
+    });
+  });
 
   // live char count
   var bioEl = document.getElementById('bio');

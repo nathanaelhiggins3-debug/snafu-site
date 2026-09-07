@@ -15,6 +15,16 @@
   var BOARD_LIMIT = 10;
   var ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+  // signed-in players don't type initials — the server derives them from the
+  // session. window.SNAFUAuth is loaded alongside this file by site.js.
+  function currentUser() { return (window.SNAFUAuth && window.SNAFUAuth.current) || null; }
+  function avatarSrc(id) {
+    var n = Number(id); if (!n || n < 1) n = 1; if (n > 12) n = 12;
+    return '/assets/avatars/av-' + (n < 10 ? '0' + n : n) + '.png';
+  }
+  function shortHandle(h) { h = String(h || ''); return h.length > 9 ? h.slice(0, 9) : h; }
+  var avatarImgs = {};        // id -> preloaded Image for board rows
+
   // ---- dialect (mirrors css vars, used for canvas draws) ----
   var C = {
     canopy: '#1a3a1e',
@@ -61,7 +71,7 @@
     var done = false;
     var to = setTimeout(function () { done = true; }, 4500);
     try {
-      fetch(API_BASE + '/scores?limit=' + BOARD_LIMIT)
+      fetch(API_BASE + '/scores?limit=' + BOARD_LIMIT, { credentials: 'include' })
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) {
           clearTimeout(to);
@@ -83,12 +93,18 @@
   function submitScore() {
     if (submitting || submitted) return;
     submitting = true;
-    var ini = ALPHA.charAt(initials[0]) + ALPHA.charAt(initials[1]) + ALPHA.charAt(initials[2]);
+    // Signed in: send only the score; the server derives handle/initials from
+    // the session cookie. Signed out: send the typed initials as before.
+    var body = { score: score };
+    if (!currentUser()) {
+      body.initials = ALPHA.charAt(initials[0]) + ALPHA.charAt(initials[1]) + ALPHA.charAt(initials[2]);
+    }
     try {
       fetch(API_BASE + '/scores', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ initials: ini, score: score })
+        body: JSON.stringify(body)
       })
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) {
@@ -187,7 +203,13 @@
       initSlot = 0;
       submitting = false;
       lastRank = 0;
-      state = STATE.ENTER_INITIALS;
+      if (currentUser()) {
+        // signed in: no initials screen — go to the board and submit directly
+        state = STATE.OVER;
+        submitScore();
+      } else {
+        state = STATE.ENTER_INITIALS;
+      }
     } else {
       state = STATE.OVER;
     }
@@ -366,11 +388,22 @@
     for (var i = 0; i < board.length; i++) {
       var row = board[i];
       var r = String(row.rank); while (r.length < 2) r = ' ' + r;
-      var line = r + '  ' + row.initials + '  ' + pad(row.score);
+      // signed-in rows carry a handle; anonymous rows fall back to initials
+      var label = row.handle ? shortHandle(row.handle) : (row.initials || '???');
+      var line = r + '  ' + label + '  ' + pad(row.score);
       var hot = submitted && row.rank === lastRank;
-      ctx.fillStyle = C.ink;               ctx.fillText(line, W / 2 + 1, y + 1);
+      var tw = ctx.measureText(line).width;
+      ctx.fillStyle = C.ink;                   ctx.fillText(line, W / 2 + 1, y + 1);
       ctx.fillStyle = hot ? C.amber : C.cream; ctx.fillText(line, W / 2, y);
-      y += 22;
+      // avatar sprite to the left of the row, if this player has one
+      if (row.handle && row.avatar_id != null) {
+        var im = avatarImgs[Number(row.avatar_id)];
+        if (im && im.complete && im.naturalWidth) {
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(im, W / 2 - tw / 2 - 24, y - 9, 18, 18);
+        }
+      }
+      y += 24;
     }
   }
 
@@ -584,6 +617,11 @@
     boardImg.onload = function () { boardReady = true; };
     boardImg.onerror = function () { boardReady = false; };
     boardImg.src = '/assets/play-board.png';
+
+    // preload avatar sprites so signed-in leaderboard rows can draw instantly
+    for (var ai = 1; ai <= 12; ai++) {
+      var im = new Image(); im.src = avatarSrc(ai); avatarImgs[ai] = im;
+    }
 
     document.addEventListener('keydown', onKey, { passive: false });
     canvas.addEventListener('touchstart', onTouchStart, { passive: false });

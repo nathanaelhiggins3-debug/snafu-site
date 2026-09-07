@@ -1,0 +1,9 @@
+#!/bin/sh
+# SNAFU: regenerate content-manifest.json from article/exhibit pages, then
+# stage it so it's always current in the commit. Never blocks the commit.
+if command -v node >/dev/null 2>&1; then
+  node scripts/gen-manifest.mjs >/dev/null 2>&1 && git add content-manifest.json
+else
+  echo "snafu: node not found — skipped content-manifest regen" >&2
+fi
+exit 0
