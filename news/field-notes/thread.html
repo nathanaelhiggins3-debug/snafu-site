@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNAFU. — Field Notes thread</title>
+  <meta name="description" content="A Field Notes thread on SNAFU." />
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/forum.css" />
+
+  <script defer src="https://analytics.snafu.quest/script.js" data-website-id="664fa64b-2817-4e3f-9304-bb448b8d09cd"></script>
+
+  <style>
+  /* ============================================================
+     SNAFU — Field Notes thread
+     A reading page, so it drops the desk's photo backdrop for the
+     dotted ink ground used on /account/. Everything in the thread
+     itself is css/forum.css.
+     ============================================================ */
+  :root {
+    --cream: #f2e4c4; --ink: #0c1412; --wheat: #e8d29a;
+    --gold: #e3aa4d; --red: #b8352b; --rose: #d96a5c;
+    --floor: #151f19;
+    --px: 3px;
+    --display: 'Press Start 2P', monospace;
+    --body: 'Pixelify Sans', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100svh;
+    font-family: var(--body);
+    color: var(--cream);
+    background: var(--ink);
+    background-image: radial-gradient(rgba(242,228,196,0.05) 1px, transparent 1.4px);
+    background-size: 18px 18px;
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+  }
+  img { image-rendering: pixelated; }
+  a { color: inherit; }
+
+  .topline { max-width: 720px; margin: 0 auto; padding: clamp(18px,4vw,28px) clamp(14px,4vw,24px) 0; }
+  .path-back {
+    display: inline-block;
+    font-family: var(--display); font-size: clamp(9px,1vw,11px);
+    letter-spacing: .18em; color: var(--cream); text-decoration: none;
+    padding: calc(var(--px)*2) calc(var(--px)*3);
+    background: rgba(12,20,18,.6);
+    border: var(--px) solid var(--cream);
+    box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+    min-height: 44px;
+  }
+  .path-back::before { content: '\25C2  '; color: var(--rose); }
+  .path-back:hover { background: var(--cream); color: var(--ink); }
+
+  .end {
+    max-width: 780px; margin: 0 auto;
+    padding: 2vh 20px 6vh; text-align: center;
+  }
+  .end .colophon {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px;
+    font-family: var(--display); font-size: 9px; letter-spacing: .18em; opacity: .8;
+  }
+  .end em { color: var(--gold); font-style: normal; }
+  .end a { color: var(--gold); text-decoration: none; }
+  .end a:hover { color: var(--cream); }
+  </style>
+<script src="/js/pixels.js"></script>
+</head>
+<body>
+
+  <div class="topline">
+    <a class="path-back" href="/news/field-notes/">Back to Field Notes</a>
+  </div>
+
+  <main class="fm-wrap" id="main">
+    <p class="fm-note" id="status">Pulling the thread&hellip;</p>
+
+    <article class="fm-panel" id="op" hidden></article>
+
+    <section id="reply-block" hidden>
+      <div class="fm-rule"></div>
+      <p class="fm-eyebrow" id="count-label">Replies</p>
+      <div id="lock-note"></div>
+      <form class="fm-composer" id="top-composer">
+        <label class="fm-field">
+          <span>Add to the thread</span>
+          <textarea class="fm-textarea" id="t-body" maxlength="4000"
+                    placeholder="Keep it sharp."></textarea>
+        </label>
+        <p class="fm-err" id="t-err" role="alert"></p>
+        <div class="fm-row">
+          <button class="fm-btn fm-btn--primary" type="submit" id="t-post">POST REPLY</button>
+        </div>
+      </form>
+      <ul class="fm-comments" id="comments"></ul>
+    </section>
+  </main>
+
+  <footer class="end">
+    <div class="colophon">
+      <span>SNAFU. <em>Field Notes</em></span>
+      <span>Los Angeles</span>
+      <span><a href="/privacy/">Privacy</a></span>
+      <span><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></span>
+    </div>
+  </footer>
+
+  <script id="snafu-auth-js" src="/js/snafu-auth.js"></script>
+  <script id="snafu-account-js" src="/js/snafu-account.js"></script>
+  <script src="/js/snafu-forum.js"></script>
+  <script src="/js/account-layer.js"></script>
+
+  <script>
+  /* ============================================================
+     Thread page. Two levels of comments, no more: a reply to a
+     reply is sent with that reply's id and the server re-parents it,
+     so after the refetch it lands as a sibling. The UI never draws
+     a third indent because there can never be a third level.
+     ============================================================ */
+  (function () {
+    var F = window.SNAFUForum;
+    var Auth = window.SNAFUAuth;
+    if (!F || !Auth) return;
+
+    var THREAD_ID = new URLSearchParams(window.location.search).get('id');
+    var statusEl  = document.getElementById('status');
+    var opEl      = document.getElementById('op');
+    var blockEl   = document.getElementById('reply-block');
+    var listEl    = document.getElementById('comments');
+    var lockNote  = document.getElementById('lock-note');
+    var countLbl  = document.getElementById('count-label');
+    var composer  = document.getElementById('top-composer');
+    var tBody     = document.getElementById('t-body');
+    var tErr      = document.getElementById('t-err');
+    var tPost     = document.getElementById('t-post');
+
+    var thread = null;
+    var comments = [];
+    var locked = false;
+    // Downvotes are off server-side. We keep the flag so that if it ever
+    // flips true, this is the one place that has to grow a second arrow.
+    var downvotesEnabled = false;
+    var wasSignedIn;
+
+    if (!THREAD_ID) {
+      statusEl.textContent = 'No thread named. Head back to the desk.';
+      return;
+    }
+
+    F.wireVotes(document.getElementById('main'), 'Sign up to vote');
+
+    load();
+
+    function load() {
+      return Promise.all([Auth.me(), F.getThread(THREAD_ID)]).then(function (out) {
+        var data = out[1];
+        thread = data.thread;
+        comments = data.comments || [];
+        locked = !!(thread && thread.locked);
+        downvotesEnabled = !!data.downvotes_enabled;
+        render();
+      }, function (err) {
+        statusEl.hidden = false;
+        statusEl.textContent = (err && err.status === 404)
+          ? 'That thread is gone.'
+          : 'Could not open that thread. Reload in a bit.';
+      });
+    }
+
+    /* ---------- render ---------- */
+    function render() {
+      var me = Auth.current;
+      statusEl.hidden = true;
+      opEl.hidden = false;
+      blockEl.hidden = false;
+
+      document.title = 'SNAFU. — ' + thread.title;
+
+      var tags = '';
+      if (thread.pinned) tags += '<span class="fm-tag fm-tag--pinned">Pinned</span>';
+      if (locked) tags += '<span class="fm-tag fm-tag--locked">Locked</span>';
+
+      opEl.innerHTML =
+        '<div class="fm-op__head">' +
+          F.byline(thread.author_handle, thread.author_avatar, thread.author_role) +
+          '<span class="fm-time">' + F.esc(F.relTime(thread.created_at)) + '</span>' +
+          tags +
+        '</div>' +
+        '<h1 class="fm-op__title">' + F.esc(thread.title) + '</h1>' +
+        '<div class="fm-body">' + F.esc(thread.body) + '</div>' +
+        '<div class="fm-op__foot">' +
+          F.voteButton('thread', thread.id, thread.score, thread.my_vote) +
+          '<div class="fm-actions" style="margin:0">' +
+            (isMine(thread.author_handle, me)
+              ? ''
+              : '<button class="fm-act" type="button" data-report="thread">Report</button>') +
+          '</div>' +
+        '</div>' +
+        '<div class="fm-slot"></div>';
+
+      var total = comments.length;
+      countLbl.textContent = total === 1 ? '1 Reply' : total + ' Replies';
+
+      if (locked) {
+        composer.hidden = true;
+        lockNote.innerHTML = '<p class="fm-note fm-note--boxed">' +
+          'This thread is locked. You can read it and vote, but no new replies.</p>';
+      } else {
+        composer.hidden = false;
+        lockNote.innerHTML = '';
+      }
+
+      listEl.innerHTML = tree().map(function (node) {
+        return commentHTML(node.c, node.kids, me);
+      }).join('');
+
+      if (!total) {
+        listEl.innerHTML = '<li><p class="fm-note">No replies yet.' +
+          (locked ? '' : ' Go first.') + '</p></li>';
+      }
+    }
+
+    // Flatten to exactly two levels. A comment whose parent is itself a
+    // reply is hoisted to that reply's parent — the same rule the server
+    // applies, so a stale payload still renders correctly.
+    function tree() {
+      var byId = {};
+      comments.forEach(function (c) { byId[c.id] = c; });
+
+      var sorted = comments.slice().sort(function (a, b) {
+        return new Date(a.created_at) - new Date(b.created_at);
+      });
+
+      var tops = [], kids = {};
+      sorted.forEach(function (c) {
+        if (c.parent_id == null) { tops.push(c); return; }
+        var parent = byId[c.parent_id];
+        var hops = 0;
+        while (parent && parent.parent_id != null && byId[parent.parent_id] && hops++ < 8) {
+          parent = byId[parent.parent_id];
+        }
+        if (!parent || parent.id === c.id) { tops.push(c); return; }
+        (kids[parent.id] = kids[parent.id] || []).push(c);
+      });
+
+      return tops.map(function (c) { return { c: c, kids: kids[c.id] || [] }; });
+    }
+
+    function commentHTML(c, kids, me) {
+      var out = '<li class="fm-c' + (c.deleted ? ' fm-c--tomb' : '') +
+        (isMine(c.author_handle, me) ? ' fm-c--mine' : '') +
+        '" data-id="' + F.esc(c.id) + '">' + commentInner(c, me);
+
+      if (kids && kids.length) {
+        out += '<ul class="fm-replies">' + kids.map(function (k) {
+          return '<li class="fm-c' + (k.deleted ? ' fm-c--tomb' : '') +
+            (isMine(k.author_handle, me) ? ' fm-c--mine' : '') +
+            '" data-id="' + F.esc(k.id) + '">' + commentInner(k, me) + '</li>';
+        }).join('') + '</ul>';
+      }
+      return out + '</li>';
+    }
+
+    function commentInner(c, me) {
+      // a removed comment keeps its slot so the replies under it still parse
+      if (c.deleted) {
+        return '<div class="fm-c__head">' +
+            '<span class="fm-tomb-handle">[removed]</span>' +
+            '<span class="fm-time">' + F.esc(F.relTime(c.created_at)) + '</span>' +
+          '</div>' +
+          '<div class="fm-c__main"><div class="fm-c__col">' +
+            '<div class="fm-body">[removed]</div>' +
+          '</div></div>';
+      }
+
+      var mine = isMine(c.author_handle, me);
+      var acts = '';
+      if (!locked) acts += '<button class="fm-act" type="button" data-reply="' + F.esc(c.id) + '">Reply</button>';
+      if (mine) {
+        acts += '<button class="fm-act" type="button" data-edit="' + F.esc(c.id) + '">Edit</button>' +
+                '<button class="fm-act fm-act--danger" type="button" data-del="' + F.esc(c.id) + '">Delete</button>';
+      } else {
+        acts += '<button class="fm-act" type="button" data-report="comment" data-id="' + F.esc(c.id) + '">Report</button>';
+      }
+
+      return '<div class="fm-c__head">' +
+          F.byline(c.author_handle, c.author_avatar, c.author_role) +
+          '<span class="fm-time">' + F.esc(F.relTime(c.created_at)) + '</span>' +
+          (c.edited_at ? '<span class="fm-edited">edited</span>' : '') +
+        '</div>' +
+        '<div class="fm-c__main">' +
+          F.voteButton('comment', c.id, c.score, c.my_vote) +
+          '<div class="fm-c__col">' +
+            '<div class="fm-body">' + F.esc(c.body) + '</div>' +
+            '<div class="fm-actions">' + acts + '</div>' +
+            '<div class="fm-slot"></div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function isMine(handle, me) {
+      return !!(me && handle && me.handle &&
+        String(handle).toLowerCase() === String(me.handle).toLowerCase());
+    }
+
+    /* ---------- top-level composer ---------- */
+    composer.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var body = tBody.value.trim();
+      tErr.textContent = '';
+      if (!body) { tErr.textContent = 'Say something first.'; tBody.focus(); return; }
+
+      F.requireAuth('Sign up to reply').then(function () {
+        tPost.disabled = true;
+        F.addComment(THREAD_ID, body, null).then(function () {
+          tBody.value = '';
+          tPost.disabled = false;
+          load();
+        }, function (err) {
+          tPost.disabled = false;
+          tErr.textContent = err.message || 'Could not post that. Try again.';
+        });
+      });
+    });
+
+    /* ---------- inline actions (delegated) ---------- */
+    document.getElementById('main').addEventListener('click', function (e) {
+      var el = e.target.closest ? e.target.closest('[data-reply],[data-edit],[data-del],[data-report]') : null;
+      if (!el) return;
+      e.preventDefault();
+
+      if (el.hasAttribute('data-reply'))  return openReply(el);
+      if (el.hasAttribute('data-edit'))   return openEdit(el);
+      if (el.hasAttribute('data-del'))    return confirmDelete(el);
+      if (el.hasAttribute('data-report')) return openReport(el);
+    });
+
+    function slotFor(el) {
+      var host = el.closest('.fm-c__col') || el.closest('#op');
+      return host ? host.querySelector('.fm-slot') : null;
+    }
+    function clearSlots() {
+      var slots = document.querySelectorAll('.fm-slot');
+      for (var i = 0; i < slots.length; i++) slots[i].innerHTML = '';
+    }
+
+    function openReply(el) {
+      var id = el.getAttribute('data-reply');
+      F.requireAuth('Sign up to reply').then(function () {
+        var slot = slotFor(el);
+        if (!slot) return;
+        clearSlots();
+        slot.innerHTML =
+          '<form class="fm-composer">' +
+            '<label class="fm-field"><span>Your reply</span>' +
+              '<textarea class="fm-textarea" maxlength="4000"></textarea></label>' +
+            '<p class="fm-err" role="alert"></p>' +
+            '<div class="fm-row">' +
+              '<button class="fm-btn fm-btn--primary fm-btn--sm" type="submit">POST</button>' +
+              '<button class="fm-btn fm-btn--sm" type="button" data-close>CANCEL</button>' +
+            '</div>' +
+          '</form>';
+        var form = slot.querySelector('form');
+        var ta = form.querySelector('textarea');
+        var err = form.querySelector('.fm-err');
+        ta.focus();
+        form.querySelector('[data-close]').addEventListener('click', clearSlots);
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          var body = ta.value.trim();
+          err.textContent = '';
+          if (!body) { err.textContent = 'Say something first.'; return; }
+          var btn = form.querySelector('button[type=submit]');
+          btn.disabled = true;
+          // send the target's own id — the server re-parents a reply-to-a-reply
+          F.addComment(THREAD_ID, body, id).then(load, function (e2) {
+            btn.disabled = false;
+            err.textContent = e2.message || 'Could not post that. Try again.';
+          });
+        });
+      });
+    }
+
+    function openEdit(el) {
+      var id = el.getAttribute('data-edit');
+      var col = el.closest('.fm-c__col');
+      var bodyEl = col && col.querySelector('.fm-body');
+      var slot = slotFor(el);
+      if (!slot || !bodyEl) return;
+      clearSlots();
+      slot.innerHTML =
+        '<form class="fm-composer">' +
+          '<label class="fm-field"><span>Edit</span>' +
+            '<textarea class="fm-textarea" maxlength="4000"></textarea></label>' +
+          '<p class="fm-err" role="alert"></p>' +
+          '<div class="fm-row">' +
+            '<button class="fm-btn fm-btn--primary fm-btn--sm" type="submit">SAVE</button>' +
+            '<button class="fm-btn fm-btn--sm" type="button" data-close>CANCEL</button>' +
+          '</div>' +
+        '</form>';
+      var form = slot.querySelector('form');
+      var ta = form.querySelector('textarea');
+      var err = form.querySelector('.fm-err');
+      ta.value = bodyEl.textContent;
+      ta.focus();
+      form.querySelector('[data-close]').addEventListener('click', clearSlots);
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var body = ta.value.trim();
+        err.textContent = '';
+        if (!body) { err.textContent = 'An empty edit is a delete. Use Delete.'; return; }
+        var btn = form.querySelector('button[type=submit]');
+        btn.disabled = true;
+        F.editComment(id, body).then(load, function (e2) {
+          btn.disabled = false;
+          err.textContent = e2.message || 'Could not save that. Try again.';
+        });
+      });
+    }
+
+    // Two-step inline confirm — never a browser dialog.
+    function confirmDelete(el) {
+      var id = el.getAttribute('data-del');
+      var slot = slotFor(el);
+      if (!slot) return;
+      clearSlots();
+      slot.innerHTML =
+        '<div class="fm-note fm-note--boxed">Delete this comment?' +
+          '<div class="fm-row" style="margin-top:10px">' +
+            '<button class="fm-btn fm-btn--sm" type="button" data-yes>DELETE IT</button>' +
+            '<button class="fm-btn fm-btn--sm" type="button" data-close>KEEP IT</button>' +
+          '</div>' +
+          '<p class="fm-err" role="alert"></p>' +
+        '</div>';
+      slot.querySelector('[data-close]').addEventListener('click', clearSlots);
+      slot.querySelector('[data-yes]').addEventListener('click', function () {
+        var btn = this;
+        btn.disabled = true;
+        F.deleteComment(id).then(load, function (e2) {
+          btn.disabled = false;
+          slot.querySelector('.fm-err').textContent =
+            e2.message || 'Could not delete that. Try again.';
+        });
+      });
+    }
+
+    function openReport(el) {
+      var type = el.getAttribute('data-report');
+      var id = type === 'thread' ? THREAD_ID : el.getAttribute('data-id');
+      F.requireAuth('Sign up to report this').then(function () {
+        var slot = slotFor(el);
+        if (!slot) return;
+        clearSlots();
+        slot.innerHTML =
+          '<form class="fm-composer">' +
+            '<label class="fm-field"><span>Report &mdash; what is wrong with it?</span>' +
+              '<input class="fm-input" maxlength="300" placeholder="Optional"></label>' +
+            '<p class="fm-err" role="alert"></p>' +
+            '<div class="fm-row">' +
+              '<button class="fm-btn fm-btn--sm" type="submit">SEND REPORT</button>' +
+              '<button class="fm-btn fm-btn--sm" type="button" data-close>CANCEL</button>' +
+            '</div>' +
+          '</form>';
+        var form = slot.querySelector('form');
+        var err = form.querySelector('.fm-err');
+        form.querySelector('input').focus();
+        form.querySelector('[data-close]').addEventListener('click', clearSlots);
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          var btn = form.querySelector('button[type=submit]');
+          btn.disabled = true;
+          F.report(type, id, form.querySelector('input').value.trim())
+            .then(function () {
+              slot.innerHTML = '<p class="fm-note fm-note--boxed">Reported. ' +
+                'Someone will look at it.</p>';
+            }, function (e2) {
+              btn.disabled = false;
+              err.textContent = e2.message || 'Could not send that. Try again.';
+            });
+        });
+      });
+    }
+
+    /* ---------- re-render when the session changes ----------
+       Deferred a tick on purpose: signing in from an inline Reply
+       resolves the held intent as a microtask, which opens the form.
+       Re-rendering synchronously would wipe the box the reader just
+       earned, so we wait, then leave any open form alone. */
+    Auth.subscribe(function (user) {
+      if (user === undefined) return;
+      var signedIn = !!user;
+      var changed = wasSignedIn !== undefined && signedIn !== wasSignedIn;
+      wasSignedIn = signedIn;
+      if (!changed || !thread) return;
+      setTimeout(function () {
+        if (document.querySelector('.fm-slot > *')) return;
+        load();
+      }, 0);
+    });
+  })();
+  </script>
+</body>
+</html>

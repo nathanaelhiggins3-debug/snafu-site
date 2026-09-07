@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNAFU. — Desk Tools</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/forum.css" />
+
+  <style>
+  /* ============================================================
+     SNAFU — /admin/
+     Only renders for role "admin". Everyone else gets a dead end,
+     with no hint that there was ever anything to see. The real
+     gate is server-side; this just refuses to draw the furniture.
+     ============================================================ */
+  :root {
+    --cream: #f2e4c4; --ink: #0c1412; --wheat: #e8d29a;
+    --gold: #e3aa4d; --red: #b8352b; --rose: #d96a5c;
+    --px: 3px;
+    --display: 'Press Start 2P', monospace;
+    --body: 'Pixelify Sans', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100svh;
+    font-family: var(--body);
+    color: var(--cream);
+    background: var(--ink);
+    background-image: radial-gradient(rgba(242,228,196,0.05) 1px, transparent 1.4px);
+    background-size: 18px 18px;
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+  }
+  img { image-rendering: pixelated; }
+  a { color: inherit; }
+
+  .topline { max-width: 720px; margin: 0 auto; padding: clamp(18px,4vw,28px) clamp(14px,4vw,24px) 0; }
+  .path-back {
+    display: inline-block;
+    font-family: var(--display); font-size: clamp(9px,1vw,11px);
+    letter-spacing: .18em; color: var(--cream); text-decoration: none;
+    padding: calc(var(--px)*2) calc(var(--px)*3);
+    background: rgba(12,20,18,.6);
+    border: var(--px) solid var(--cream);
+    box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  }
+  .path-back::before { content: '\25C2  '; color: var(--rose); }
+  .path-back:hover { background: var(--cream); color: var(--ink); }
+
+  h1.desk {
+    font-family: var(--display);
+    font-size: clamp(18px, 5vw, 26px);
+    line-height: 1.4;
+    letter-spacing: .04em;
+    color: var(--wheat);
+    margin: 0 0 6px;
+    text-shadow: var(--px) var(--px) 0 var(--red), calc(var(--px)*2) calc(var(--px)*2) 0 var(--ink);
+  }
+  .who { font-size: 15px; color: rgba(242,228,196,.6); margin: 0 0 clamp(24px,5vw,34px); }
+
+  /* stack the ban form on a phone, side by side once there's room */
+  .ban-grid { display: grid; gap: 10px; grid-template-columns: 1fr; }
+  @media (min-width: 480px) { .ban-grid { grid-template-columns: 2fr 1fr; } }
+  </style>
+</head>
+<body>
+
+  <div class="topline">
+    <a class="path-back" href="/news/field-notes/">Back to Field Notes</a>
+  </div>
+
+  <main class="fm-wrap">
+    <p class="fm-note" id="gate">Checking the badge&hellip;</p>
+
+    <div id="tools" hidden>
+      <h1 class="desk">Desk Tools</h1>
+      <p class="who" id="who"></p>
+
+      <!-- ---------- reports ---------- -->
+      <section class="fm-admin-sec">
+        <h2>Open reports</h2>
+        <div id="reports"><p class="fm-note">Loading&hellip;</p></div>
+      </section>
+
+      <!-- ---------- threads ---------- -->
+      <section class="fm-admin-sec">
+        <h2>Field Notes threads</h2>
+        <div id="threads"><p class="fm-note">Loading&hellip;</p></div>
+      </section>
+
+      <!-- ---------- ban ---------- -->
+      <section class="fm-admin-sec">
+        <h2>Ban a user</h2>
+        <form class="fm-panel" id="ban-form">
+          <div class="ban-grid">
+            <label class="fm-field" style="margin:0">
+              <span>Handle</span>
+              <input class="fm-input" id="ban-handle" autocapitalize="none"
+                     spellcheck="false" maxlength="20" placeholder="handle">
+            </label>
+            <label class="fm-field" style="margin:0">
+              <span>Days (0 unbans)</span>
+              <input class="fm-input" id="ban-days" type="number" min="0" max="3650"
+                     inputmode="numeric" value="7">
+            </label>
+          </div>
+          <p class="fm-err" id="ban-err" role="alert"></p>
+          <div class="fm-row" style="margin-top:12px">
+            <button class="fm-btn" type="submit" id="ban-go">APPLY</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ---------- new take ---------- -->
+      <section class="fm-admin-sec">
+        <h2>Post a new take</h2>
+        <form class="fm-panel" id="take-form">
+          <label class="fm-field">
+            <span>The statement</span>
+            <textarea class="fm-textarea" id="take-body" maxlength="280"
+                      placeholder="One line. Something people can disagree with."></textarea>
+          </label>
+          <p class="fm-err" id="take-err" role="alert"></p>
+          <div class="fm-row">
+            <button class="fm-btn fm-btn--primary" type="submit" id="take-go">PUT IT UP</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script id="snafu-auth-js" src="/js/snafu-auth.js"></script>
+  <script id="snafu-account-js" src="/js/snafu-account.js"></script>
+  <script src="/js/snafu-forum.js"></script>
+  <script src="/js/account-layer.js"></script>
+
+  <script>
+  (function () {
+    var F = window.SNAFUForum;
+    var Auth = window.SNAFUAuth;
+    if (!F || !Auth) return;
+
+    var gate  = document.getElementById('gate');
+    var tools = document.getElementById('tools');
+
+    Auth.me().then(function (user) {
+      if (!user || user.role !== 'admin') {
+        gate.textContent = 'Nothing here.';
+        return;
+      }
+      gate.hidden = true;
+      tools.hidden = false;
+      document.getElementById('who').textContent = 'Signed in as ' + user.handle + '.';
+      loadReports();
+      loadThreads();
+    });
+
+    /* ---------- reports queue ---------- */
+    var reportsEl = document.getElementById('reports');
+
+    function loadReports() {
+      F.admin.reports().then(function (res) {
+        var list = (res && res.reports) || [];
+        if (!list.length) {
+          reportsEl.innerHTML = '<p class="fm-note">Queue is clear.</p>';
+          return;
+        }
+        reportsEl.innerHTML = list.map(reportHTML).join('');
+      }, function (err) {
+        reportsEl.innerHTML = '<p class="fm-err">' +
+          F.esc(err.message || 'Could not load the queue.') + '</p>';
+      });
+    }
+
+    function reportHTML(r) {
+      // link straight to the thread when we can work out which one it is
+      var threadId = r.thread_id || (r.target_type === 'thread' ? r.target_id : null);
+      var link = threadId
+        ? '<a href="/news/field-notes/thread.html?id=' + F.esc(threadId) + '">open thread</a>'
+        : '';
+
+      return '<div class="fm-report" data-report="' + F.esc(r.id) + '">' +
+        '<div class="fm-report__meta">' +
+          '<span>' + F.esc(r.target_type || 'item') + ' #' + F.esc(r.target_id) + '</span>' +
+          (r.reporter_handle ? '<span>by ' + F.esc(r.reporter_handle) + '</span>' : '') +
+          '<span>' + F.esc(F.relTime(r.created_at)) + '</span>' +
+        '</div>' +
+        '<p class="fm-report__reason">' +
+          F.esc(r.reason || 'No reason given.') + '</p>' +
+        '<p class="fm-err" role="alert"></p>' +
+        '<div class="fm-row" style="margin-top:10px">' +
+          (link ? '<a class="fm-btn fm-btn--sm" href="/news/field-notes/thread.html?id=' +
+                  F.esc(threadId) + '">OPEN</a>' : '') +
+          '<button class="fm-btn fm-btn--sm" type="button" data-status="actioned">ACTIONED</button>' +
+          '<button class="fm-btn fm-btn--sm" type="button" data-status="dismissed">DISMISS</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    reportsEl.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('[data-status]') : null;
+      if (!btn) return;
+      var card = btn.closest('.fm-report');
+      var id = card.getAttribute('data-report');
+      var err = card.querySelector('.fm-err');
+      err.textContent = '';
+      btn.disabled = true;
+      F.admin.resolveReport(id, btn.getAttribute('data-status')).then(function () {
+        card.remove();
+        if (!reportsEl.querySelector('.fm-report')) {
+          reportsEl.innerHTML = '<p class="fm-note">Queue is clear.</p>';
+        }
+      }, function (e2) {
+        btn.disabled = false;
+        err.textContent = e2.message || 'Could not update that report.';
+      });
+    });
+
+    /* ---------- thread moderation ---------- */
+    var threadsEl = document.getElementById('threads');
+
+    function loadThreads() {
+      F.getThreads('field-notes').then(function (res) {
+        var list = (res && res.threads) || [];
+        if (!list.length) {
+          threadsEl.innerHTML = '<p class="fm-note">No threads yet.</p>';
+          return;
+        }
+        list.sort(function (a, b) {
+          if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+          return new Date(b.last_activity || b.created_at) -
+                 new Date(a.last_activity || a.created_at);
+        });
+        threadsEl.innerHTML = '<div class="fm-panel">' + list.map(modRow).join('') + '</div>';
+      }, function (err) {
+        threadsEl.innerHTML = '<p class="fm-err">' +
+          F.esc(err.message || 'Could not load threads.') + '</p>';
+      });
+    }
+
+    function modRow(t) {
+      return '<div class="fm-modrow" data-thread="' + F.esc(t.id) + '"' +
+        ' data-pinned="' + (t.pinned ? '1' : '0') + '"' +
+        ' data-locked="' + (t.locked ? '1' : '0') + '">' +
+        '<span class="fm-modrow__t">' +
+          '<a href="/news/field-notes/thread.html?id=' + F.esc(t.id) + '">' +
+            F.esc(t.title) + '</a>' +
+          (t.author_handle ? ' <span class="fm-time">' + F.esc(t.author_handle) + '</span>' : '') +
+        '</span>' +
+        '<span class="fm-modrow__acts">' +
+          '<button class="fm-btn fm-btn--sm" type="button" data-act="pin">' +
+            (t.pinned ? 'UNPIN' : 'PIN') + '</button>' +
+          '<button class="fm-btn fm-btn--sm" type="button" data-act="lock">' +
+            (t.locked ? 'UNLOCK' : 'LOCK') + '</button>' +
+          '<button class="fm-btn fm-btn--sm" type="button" data-act="del">DELETE</button>' +
+        '</span>' +
+        '<span class="fm-err" role="alert"></span>' +
+      '</div>';
+    }
+
+    threadsEl.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('[data-act]') : null;
+      if (!btn) return;
+      var row = btn.closest('.fm-modrow');
+      var id = row.getAttribute('data-thread');
+      var err = row.querySelector('.fm-err');
+      var act = btn.getAttribute('data-act');
+      err.textContent = '';
+
+      // delete asks once, inline — never a browser dialog
+      if (act === 'del' && btn.getAttribute('data-armed') !== '1') {
+        btn.setAttribute('data-armed', '1');
+        btn.textContent = 'SURE?';
+        setTimeout(function () {
+          if (btn.getAttribute('data-armed') === '1') {
+            btn.removeAttribute('data-armed');
+            btn.textContent = 'DELETE';
+          }
+        }, 4000);
+        return;
+      }
+
+      var patch;
+      if (act === 'pin')  patch = { pinned: row.getAttribute('data-pinned') !== '1' };
+      if (act === 'lock') patch = { locked: row.getAttribute('data-locked') !== '1' };
+      if (act === 'del')  patch = { deleted: true };
+
+      btn.disabled = true;
+      F.admin.patchThread(id, patch).then(function () {
+        if (act === 'del') { row.remove(); return; }
+        loadThreads();
+      }, function (e2) {
+        btn.disabled = false;
+        if (act === 'del') { btn.removeAttribute('data-armed'); btn.textContent = 'DELETE'; }
+        err.textContent = e2.message || 'Could not apply that.';
+      });
+    });
+
+    /* ---------- ban ---------- */
+    var banForm = document.getElementById('ban-form');
+    banForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var handle = document.getElementById('ban-handle').value.trim();
+      var days = Number(document.getElementById('ban-days').value);
+      var err = document.getElementById('ban-err');
+      var go = document.getElementById('ban-go');
+      err.textContent = '';
+      err.classList.remove('is-ok');
+      if (!handle) { err.textContent = 'Which handle?'; return; }
+      if (!(days >= 0)) { err.textContent = 'Days must be 0 or more.'; return; }
+
+      go.disabled = true;
+      F.admin.banUser(handle, days).then(function () {
+        go.disabled = false;
+        err.classList.add('is-ok');
+        err.textContent = days === 0
+          ? handle + ' is unbanned.'
+          : handle + ' is banned for ' + days + ' day' + (days === 1 ? '' : 's') + '.';
+      }, function (e2) {
+        go.disabled = false;
+        err.classList.remove('is-ok');
+        err.textContent = e2.message || 'Could not apply that ban.';
+      });
+    });
+
+    /* ---------- new take ---------- */
+    var takeForm = document.getElementById('take-form');
+    takeForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var body = document.getElementById('take-body').value.trim();
+      var err = document.getElementById('take-err');
+      var go = document.getElementById('take-go');
+      err.textContent = '';
+      err.classList.remove('is-ok');
+      if (!body) { err.textContent = 'Write the take first.'; return; }
+
+      go.disabled = true;
+      F.admin.postTake(body).then(function () {
+        go.disabled = false;
+        document.getElementById('take-body').value = '';
+        err.classList.add('is-ok');
+        err.textContent = 'Up on the desk.';
+      }, function (e2) {
+        go.disabled = false;
+        err.classList.remove('is-ok');
+        err.textContent = e2.message || 'Could not post that take.';
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -4,22 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SNAFU. — Field Notes</title>
-  <meta name="description" content="Field Notes — on-location reporting from SNAFU." />
+  <meta name="description" content="Field Notes — the SNAFU discussion desk. Take a side on this week's take, or start a thread." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/forum.css" />
 
   <script defer src="https://analytics.snafu.quest/script.js" data-website-id="664fa64b-2817-4e3f-9304-bb448b8d09cd"></script>
 
   <style>
   /* ============================================================
-     SNAFU — Desk page (Editorial / Field Notes / Interview)
-     Same template. Only differences per desk:
-       - <title>, <meta description>
-       - --scene    (image variable)
-       - --desk-name (title on the scene)
-       - the array of dispatch cards
+     SNAFU — Field Notes, the discussion desk
+     Keeps the desk arrival (scene + title) shared with Editorial
+     and Interview, then drops into the forum. Everything below the
+     fold is styled by css/forum.css so this page, the thread page,
+     and /admin/ cannot drift apart.
      ============================================================ */
 
   :root {
@@ -37,7 +37,6 @@
     --display: 'Press Start 2P', monospace;
     --body: 'Pixelify Sans', monospace;
 
-    /* CHANGE PER DESK */
     --scene: url('../../assets/field-notes.png');
   }
 
@@ -144,126 +143,16 @@
   .cue::after { content: '  \25BE'; color: var(--gold); }
   @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:.2} }
 
-  /* ============================================================
-     FEED — the movie-poster wall
-     Mobile: one poster fills the viewport, snap-scroll to next
-     Desktop: 3-across grid, still vertical scroll
-     ============================================================ */
-  .feed {
+  /* ---------- THE FLOOR ----------
+     A scrim under the discussion so long threads stay readable
+     over the fixed scene photo. Fades in from the arrival. */
+  .floor-plate {
     position: relative;
     z-index: 2;
-    padding: 0;
-  }
-
-  /* mobile-first: TikTok-style vertical snap */
-  .feed-inner {
-    display: grid;
-    gap: 0;
-  }
-  .card {
-    /* full viewport per card on mobile */
-    min-height: 100svh;
-    scroll-snap-align: start;
-    display: grid;
-    place-items: center;
-    padding: 6vh 20px;
-    position: relative;
-  }
-
-  /* snap the section, not the whole page — feels smoother */
-  .feed { scroll-snap-type: y mandatory; }
-
-  /* ---------- POSTER CARD ---------- */
-  .poster {
-    position: relative;
-    display: block;
-    width: min(78vw, 340px);
-    /* movie poster ratio 2:3 */
-    aspect-ratio: 2 / 3;
-    text-decoration: none;
-    color: var(--ink);
-    background: var(--paper);
-    border: var(--px) solid var(--ink);
-    box-shadow:
-      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.75),
-      0 0 60px 8px rgba(227,170,77,.15);
-    overflow: hidden;
-  }
-  .poster:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
-
-  .poster-art {
-    position: absolute;
-    inset: 0;
-    background: var(--floor);
-  }
-  .poster-art img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    image-rendering: pixelated;
-    display: block;
-  }
-
-  /* text plate underneath / over bottom third — image-dominant */
-  .poster-plate {
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    background:
-      linear-gradient(180deg, transparent 0%, rgba(12,20,18,.9) 40%),
-      rgba(12,20,18,.9);
-    padding: clamp(16px, 3vw, 22px);
-    border-top: var(--px) solid var(--ink);
-  }
-  .poster-meta {
-    display: flex;
-    gap: 12px;
-    font-family: var(--display);
-    font-size: 8px;
-    letter-spacing: .16em;
-    color: var(--gold);
-    margin-bottom: 10px;
-    text-transform: uppercase;
-  }
-  .poster-meta .desk { color: var(--rose); }
-  .poster h2 {
-    font-family: var(--display);
-    font-size: clamp(14px, 1.6vw, 18px);
-    color: var(--cream);
-    line-height: 1.35;
-    letter-spacing: .02em;
-    text-shadow:
-      calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
-      0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink);
-  }
-  .poster-teaser {
-    display: none; /* mobile hides teaser — poster + title only */
-  }
-
-  /* ---------- DESKTOP: 3-across grid ---------- */
-  @media (min-width: 900px) {
-    .feed { scroll-snap-type: none; }
-    .feed-inner {
-      grid-template-columns: repeat(3, 1fr);
-      gap: clamp(24px, 3vw, 40px);
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 8vh clamp(20px, 4vw, 40px) 12vh;
-    }
-    .card {
-      min-height: 0;
-      padding: 0;
-      scroll-snap-align: none;
-    }
-    .poster { width: 100%; box-shadow: calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.65); }
-    .poster-teaser {
-      display: block;
-      font-family: var(--body);
-      font-size: 14px;
-      color: var(--cream);
-      opacity: .82;
-      margin-top: 10px;
-      line-height: 1.45;
-    }
+    background: linear-gradient(180deg,
+      rgba(12,20,18,.45) 0%,
+      rgba(12,20,18,.93) 9%,
+      rgba(12,20,18,.96) 100%);
   }
 
   /* ---------- END ---------- */
@@ -272,7 +161,7 @@
     z-index: 2;
     max-width: 780px;
     margin: 0 auto;
-    padding: 8vh 20px 6vh;
+    padding: 2vh 20px 6vh;
     text-align: center;
     color: var(--cream);
   }
@@ -316,49 +205,261 @@
       <span class="eyebrow">The Desk</span>
       <h1>Field Notes</h1>
     </div>
-    <span class="cue">Read on</span>
+    <span class="cue">Take a side</span>
   </section>
 
-  <!-- ============================================================
-       FEED — one <a class="card"><div class="poster">…</div></a>
-       per dispatch. Duplicate the block below for each article.
-       ============================================================ -->
-  <section class="feed" id="feed">
-    <div class="feed-inner">
+  <div class="floor-plate">
+    <main class="fm-wrap">
 
-      <!-- === DISPATCH CARD (template) === -->
-      <a class="card" href="/news/field-notes/what-la-is-wearing/">
-        <article class="poster">
-          <div class="poster-art">
-            <img src="../../assets/covers/la-wearing.png" alt="" />
+      <!-- ============================================================
+           THE TAKE — hidden until /take says there is one this week
+           ============================================================ -->
+      <section class="fm-take fm-panel" id="take" hidden aria-labelledby="take-label">
+        <p class="fm-eyebrow" id="take-label">The Take</p>
+        <p class="fm-take__body" id="take-body"></p>
+
+        <div class="fm-take__sides">
+          <button class="fm-side fm-side--agree" type="button" id="side-agree" aria-pressed="false">
+            <span class="fm-side__k">AGREE</span>
+            <span class="fm-side__n" id="n-agree">0</span>
+          </button>
+          <button class="fm-side fm-side--nah" type="button" id="side-nah" aria-pressed="false">
+            <span class="fm-side__k">NAH</span>
+            <span class="fm-side__n" id="n-nah">0</span>
+          </button>
+        </div>
+
+        <div class="fm-split" id="split" role="img" aria-label="Split of the vote">
+          <span class="fm-split__a" id="split-a"></span>
+          <span class="fm-split__n" id="split-n"></span>
+        </div>
+
+        <p class="fm-take__meta" id="take-meta"></p>
+        <p class="fm-err" id="take-err" role="alert"></p>
+      </section>
+
+      <div class="fm-rule" id="take-rule" hidden></div>
+
+      <!-- ============================================================
+           THE FLOOR — composer + thread list
+           ============================================================ -->
+      <section aria-labelledby="floor-label">
+        <p class="fm-eyebrow" id="floor-label">The Floor</p>
+
+        <button class="fm-btn fm-btn--primary fm-btn--wide" type="button" id="start-thread">
+          + START A THREAD
+        </button>
+
+        <form class="fm-composer fm-panel" id="composer" hidden>
+          <label class="fm-field">
+            <span>Title</span>
+            <input class="fm-input" name="title" id="c-title" maxlength="120"
+                   autocomplete="off" placeholder="Say it in one line">
+          </label>
+          <label class="fm-field">
+            <span>What's the note?</span>
+            <textarea class="fm-textarea" name="body" id="c-body" maxlength="4000"
+                      placeholder="Field notes, receipts, arguments."></textarea>
+          </label>
+          <p class="fm-err" id="c-err" role="alert"></p>
+          <div class="fm-row">
+            <button class="fm-btn fm-btn--primary" type="submit" id="c-post">POST IT</button>
+            <button class="fm-btn" type="button" id="c-cancel">CANCEL</button>
           </div>
-          <div class="poster-plate">
-            <div class="poster-meta">
-              <span class="desk">Field Notes</span>
-              <span>16 Jun 2026</span>
-              <span>N. Higgins</span>
-            </div>
-            <h2>Field notes: what Los Angeles is actually wearing</h2>
-            <p class="poster-teaser">We skipped the runways and walked the east side, logging what people are actually wearing.</p>
-          </div>
-        </article>
-      </a>
+        </form>
 
-      <!-- === add more <a class="card">…</a> here === -->
+        <div id="threads">
+          <p class="fm-note">Opening the floor&hellip;</p>
+        </div>
+      </section>
 
-    </div>
-  </section>
+    </main>
 
-  <footer class="end">
-    <div class="marker">\ end of the trail \</div>
-    <div class="colophon">
-      <span>SNAFU. <em>Field Notes</em></span>
-      <span>Los Angeles</span>
-      <span>Weekly since 2026</span>
-      <span><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></span>
-    </div>
-  </footer>
+    <footer class="end">
+      <div class="marker">\ end of the trail \</div>
+      <div class="colophon">
+        <span>SNAFU. <em>Field Notes</em></span>
+        <span>Los Angeles</span>
+        <span>Weekly since 2026</span>
+        <span><a href="/privacy/">Privacy</a></span>
+        <span><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></span>
+      </div>
+    </footer>
+  </div>
 
-  <script src="/js/account-layer.js" defer></script>
+  <!-- Load order matters: auth → account (modal) → forum, then the
+       account layer picks up stars + NEW badges. The ids are the ones
+       js/account-layer.js looks for, so nothing is fetched twice. -->
+  <script id="snafu-auth-js" src="/js/snafu-auth.js"></script>
+  <script id="snafu-account-js" src="/js/snafu-account.js"></script>
+  <script src="/js/snafu-forum.js"></script>
+  <script src="/js/account-layer.js"></script>
+
+  <script>
+  /* ============================================================
+     Field Notes desk logic. Data + helpers come from SNAFUForum;
+     this file only decides what goes on screen.
+     ============================================================ */
+  (function () {
+    var F = window.SNAFUForum;
+    if (!F) return;
+    var SECTION = 'field-notes';
+
+    /* ---------- THE TAKE ---------- */
+    var takeEl   = document.getElementById('take');
+    var takeRule = document.getElementById('take-rule');
+    var bodyEl   = document.getElementById('take-body');
+    var metaEl   = document.getElementById('take-meta');
+    var errEl    = document.getElementById('take-err');
+    var btnAgree = document.getElementById('side-agree');
+    var btnNah   = document.getElementById('side-nah');
+    var nAgree   = document.getElementById('n-agree');
+    var nNah     = document.getElementById('n-nah');
+    var splitEl  = document.getElementById('split');
+    var splitA   = document.getElementById('split-a');
+    var splitN   = document.getElementById('split-n');
+    var take = null;
+
+    F.getTake().then(function (res) {
+      take = res && res.take;
+      if (!take) return;              // no take this week — card stays hidden
+      bodyEl.textContent = take.body;
+      takeEl.hidden = false;
+      takeRule.hidden = false;
+      paintTake(take);
+    }, function () { /* leave the card hidden if the take can't load */ });
+
+    function paintTake(t) {
+      var agree = Number(t.agree) || 0;
+      var nah   = Number(t.nah) || 0;
+      var total = Number(t.total) || (agree + nah);
+
+      nAgree.textContent = agree;
+      nNah.textContent = nah;
+      btnAgree.setAttribute('aria-pressed', t.my_side === 'agree' ? 'true' : 'false');
+      btnNah.setAttribute('aria-pressed', t.my_side === 'nah' ? 'true' : 'false');
+
+      var pct = total ? Math.round((agree / total) * 100) : 50;
+      splitA.style.width = pct + '%';
+      splitN.style.width = (100 - pct) + '%';
+      splitEl.classList.toggle('fm-split--empty', !total);
+      splitEl.setAttribute('aria-label', total
+        ? pct + '% agree, ' + (100 - pct) + '% nah'
+        : 'No votes yet');
+
+      var replies = Number(t.replies) || 0;
+      var arguing = replies + ' arguing about it';
+      metaEl.innerHTML = F.esc(total + ' took a side') + ' &middot; ' +
+        (t.thread_id
+          ? '<a href="thread.html?id=' + F.esc(t.thread_id) + '">' + F.esc(arguing) + '</a>'
+          : F.esc(arguing));
+    }
+
+    function pickSide(side) {
+      errEl.textContent = '';
+      F.requireAuth('Sign up to take a side').then(function () {
+        btnAgree.disabled = btnNah.disabled = true;
+        F.setSide(side).then(function (res) {
+          btnAgree.disabled = btnNah.disabled = false;
+          take.agree = res.agree; take.nah = res.nah;
+          take.total = res.total; take.my_side = res.my_side;
+          paintTake(take);
+        }, function (err) {
+          btnAgree.disabled = btnNah.disabled = false;
+          errEl.textContent = err.message || 'Could not record that. Try again.';
+        });
+      });
+    }
+    btnAgree.addEventListener('click', function () { pickSide('agree'); });
+    btnNah.addEventListener('click', function () { pickSide('nah'); });
+
+    /* ---------- COMPOSER ---------- */
+    var startBtn = document.getElementById('start-thread');
+    var composer = document.getElementById('composer');
+    var cTitle   = document.getElementById('c-title');
+    var cBody    = document.getElementById('c-body');
+    var cErr     = document.getElementById('c-err');
+    var cPost    = document.getElementById('c-post');
+
+    startBtn.addEventListener('click', function () {
+      F.requireAuth('Sign up to start a thread').then(function () {
+        composer.hidden = false;
+        startBtn.hidden = true;
+        cTitle.focus();
+      });
+    });
+    document.getElementById('c-cancel').addEventListener('click', function () {
+      composer.hidden = true;
+      startBtn.hidden = false;
+      cErr.textContent = '';
+      startBtn.focus();
+    });
+
+    composer.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var title = cTitle.value.trim();
+      var body = cBody.value.trim();
+      cErr.textContent = '';
+      if (!title) { cErr.textContent = 'Give it a title.'; cTitle.focus(); return; }
+      if (!body)  { cErr.textContent = 'Say something in the body.'; cBody.focus(); return; }
+
+      cPost.disabled = true;
+      F.createThread({ title: title, body: body, section: SECTION }).then(function (res) {
+        window.location.href = 'thread.html?id=' + encodeURIComponent(res.thread_id);
+      }, function (err) {
+        cPost.disabled = false;
+        cErr.textContent = err.message || 'Could not post that. Try again.';
+      });
+    });
+
+    /* ---------- THREAD LIST ---------- */
+    var listEl = document.getElementById('threads');
+    F.wireVotes(listEl, 'Sign up to vote');
+
+    F.getThreads(SECTION).then(function (res) {
+      var threads = (res && res.threads) || [];
+      if (!threads.length) {
+        listEl.innerHTML = '<p class="fm-note">Nothing on the floor yet. ' +
+          'Start the first thread.</p>';
+        return;
+      }
+      // pinned first, then most recently active — sorted here too so the
+      // page is right no matter what order the API hands back
+      threads.sort(function (a, b) {
+        if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+        return new Date(b.last_activity || b.created_at) -
+               new Date(a.last_activity || a.created_at);
+      });
+      listEl.innerHTML = '<ul class="fm-list">' + threads.map(row).join('') + '</ul>';
+    }, function () {
+      listEl.innerHTML = '<p class="fm-note">The floor is not answering. Reload in a bit.</p>';
+    });
+
+    function row(t) {
+      var replies = Number(t.reply_count) || 0;
+      var tags = '';
+      if (t.pinned) tags += '<span class="fm-tag fm-tag--pinned">Pinned</span>';
+      if (t.locked) tags += '<span class="fm-tag fm-tag--locked">Locked</span>';
+
+      return '<li class="fm-thread' + (t.pinned ? ' fm-thread--pinned' : '') + '">' +
+        F.voteButton('thread', t.id, t.score, t.my_vote) +
+        '<div class="fm-thread__main">' +
+          '<div class="fm-thread__head">' +
+            F.byline(t.author_handle, t.author_avatar, t.author_role) +
+            '<span class="fm-time">' + F.esc(F.relTime(t.created_at)) + '</span>' +
+          '</div>' +
+          '<a class="fm-thread__title" href="thread.html?id=' + F.esc(t.id) + '">' +
+            F.esc(t.title) + '</a>' +
+          '<div class="fm-thread__foot">' + tags +
+            '<span>' + F.esc(F.plural(replies, 'reply', 'replies')) + '</span>' +
+            (t.last_activity
+              ? '<span>active ' + F.esc(F.relTime(t.last_activity)) + '</span>'
+              : '') +
+          '</div>' +
+        '</div>' +
+      '</li>';
+    }
+  })();
+  </script>
 </body>
 </html>

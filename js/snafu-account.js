@@ -77,6 +77,8 @@
       '  outline-offset: 2px; }',
       '.snafu-hint { font-family: var(--body, "Pixelify Sans", sans-serif);',
       '  font-size: 12px; color: rgba(242,228,196,.6); margin: -7px 0 12px; }',
+      '.snafu-hint a { color: var(--gold, #e3aa4d); }',
+      '.snafu-hint--terms { margin: 12px 0 12px; line-height: 1.5; }',
 
       /* avatar picker */
       '.snafu-avpick { margin: 4px 0 14px; }',
@@ -202,6 +204,9 @@
         '<div class="snafu-avpick"><span class="snafu-field" ' +
           'style="margin:0"><span>Pick an avatar</span></span>' +
           '<div class="snafu-avgrid"></div></div>' +
+        '<p class="snafu-hint snafu-hint--terms">We store your account, what you ' +
+          'star, and what you post. We do not sell it. ' +
+          '<a href="/privacy/">Privacy</a>.</p>' +
         '<button class="snafu-submit" type="submit">CREATE ACCOUNT</button>';
     } else {
       html +=
