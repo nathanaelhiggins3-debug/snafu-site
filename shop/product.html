@@ -150,6 +150,40 @@ a { color: inherit; }
 .actions .add { background: transparent; color: var(--cream); }
 .is-deal .actions .buy { background: var(--deal); border-color: var(--deal); }
 .actions button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+/* Checkout is not connected yet. The pending state reads as "not open yet"
+   rather than as a dead go-button. */
+.actions .buy.pending {
+  background: transparent; color: var(--wheat);
+  border-color: var(--wheat); border-style: dashed;
+  box-shadow: none; opacity: .8;
+}
+
+/* ── CLAIM CHECK ──
+   A calm, plain-language checkpoint immediately before the deeper product
+   record. It makes the one-of-one purchase model legible without flattening
+   the rest of the page into generic ecommerce language. */
+.claim-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 14px;
+  padding: 18px 20px;
+  border: var(--px) solid var(--gold);
+  background: rgba(227,170,77,.07);
+}
+.claim-check__mark {
+  color: var(--gold);
+  font-family: var(--display);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.claim-check__title {
+  font-family: var(--display); font-size: 9px; letter-spacing: .16em;
+  color: var(--gold); margin-bottom: 7px;
+}
+.claim-check__body {
+  font-family: var(--body); font-size: 15px; line-height: 1.5;
+  color: var(--cream);
+}
 
 /* ── AUTH BADGE ── */
 .auth {
@@ -328,8 +362,8 @@ a { color: inherit; }
 
 <header class="top">
   <a class="back" href="index.html">Back to the market</a>
-  <a class="pack empty-pack" id="pack" href="cart.html">
-    PACK <span class="count" id="packCount">0</span>
+  <a class="pack empty-pack" id="pack" data-cart-badge href="/cart/">
+    PACK <span class="count" id="packCount" data-cart-count>0</span>
   </a>
 </header>
 
@@ -345,6 +379,7 @@ a { color: inherit; }
 </footer>
 
 <script src="../js/shop-data.js"></script>
+<script src="../js/cart.js"></script>
 <script>
 const params = new URLSearchParams(location.search);
 const id = params.get('id');
@@ -488,13 +523,23 @@ if (!product) {
       </div>
 
       <div class="actions">
-        <button class="buy" id="buyBtn" ${product.sold ? 'disabled' : ''}>
-          ${product.sold ? 'SOLD' : 'BUY NOW'}
+        <button class="buy${product.sold ? '' : ' pending'}" id="buyBtn" disabled
+                title="${product.sold ? 'This piece is gone.' : 'Checkout is not open yet — add it to your pack and it will keep.'}">
+          ${product.sold ? 'SOLD' : 'CHECKOUT SOON'}
         </button>
         <button class="add" id="addBtn" ${product.sold ? 'disabled' : ''}>
           ADD TO PACK
         </button>
       </div>
+
+      ${product.sold ? '' : `
+        <aside class="claim-check" aria-label="Before you claim this piece">
+          <div class="claim-check__mark" aria-hidden="true">01</div>
+          <div>
+            <div class="claim-check__title">Before you claim it</div>
+            <p class="claim-check__body">One piece, one buyer. Review the condition and measurements below; fit is personal. Every item is cleaned and ready to wear. Shipping is calculated at checkout.</p>
+          </div>
+        </aside>`}
 
       ${product.authNote ? `
         <div class="auth">
@@ -528,41 +573,14 @@ if (!product) {
 
   if (!product.sold) {
     document.getElementById('addBtn').addEventListener('click', () => {
-      addToCart(product.id, 1);
-      showToast('ADDED TO PACK');
+      const added = window.SNAFU_CART.add(product.id, 'shop');
+      showToast(added ? 'ADDED TO PACK' : 'ALREADY IN YOUR PACK');
       // ── PIXEL: AddToCart ──
-      if (typeof snafuTrackAddToCart === 'function') {
+      if (added && typeof snafuTrackAddToCart === 'function') {
         snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);
       }
-    });
-    document.getElementById('buyBtn').addEventListener('click', () => {
-      addToCart(product.id, 1);
-      // ── PIXEL: AddToCart (Buy Now also adds first) + InitiateCheckout ──
-      if (typeof snafuTrackAddToCart === 'function') {
-        snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);
-      }
-      if (typeof snafuTrackInitiateCheckout === 'function') {
-        snafuTrackInitiateCheckout([product.sku || product.id], product.price, 1);
-      }
-      location.href = '/checkout';
     });
   }
-}
-
-function addToCart(pid, qty) {
-  const cart = JSON.parse(localStorage.getItem('snafu.cart') || '[]');
-  const existing = cart.find(i => i.id === pid);
-  if (existing) existing.qty = (existing.qty || 1) + qty;
-  else cart.push({ id: pid, qty });
-  localStorage.setItem('snafu.cart', JSON.stringify(cart));
-  refreshPack();
-}
-
-function refreshPack() {
-  const cart = JSON.parse(localStorage.getItem('snafu.cart') || '[]');
-  const count = cart.reduce((n, i) => n + (i.qty || 1), 0);
-  document.getElementById('packCount').textContent = count;
-  document.getElementById('pack').classList.toggle('empty-pack', count === 0);
 }
 
 let toastTimer;
@@ -574,7 +592,6 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('on'), 1500);
 }
 
-refreshPack();
 </script>
 <script src="/js/account-layer.js" defer></script>
 </body>

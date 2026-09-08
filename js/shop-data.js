@@ -1,6 +1,6 @@
 /* SNAFU shop data.
    One source of truth. Read by shop/index.html, shop/deals.html,
-   shop/product.html, shop/cart.html, and api/checkout.js (Node).
+   shop/product.html, cart/index.html, and api/checkout.js (Node).
 
    ── FULL SCHEMA (per brief) ────────────────────────────────────
    id             'p001'                     internal id, used in URL

@@ -1,135 +1,311 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>SNAFU. — Cart</title>
-  <meta name="description" content="Your SNAFU cart." />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SNAFU. — Pack</title>
+<meta name="description" content="Your SNAFU pack — pieces from the Shop and the Goods hoard.">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../css/styles.css?v=10" />
+<style>
+:root {
+  --px: 3px;
+  --cream: #f2e4c4; --ink: #0c1412; --wheat: #e8d29a;
+  --red: #b8352b; --rose: #d96a5c; --gold: #e3aa4d;
+  --moss: #6b8a3a; --loam: #8a5a2b;
+  --display: 'Press Start 2P', monospace;
+  --body: 'Pixelify Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: var(--cream); font-family: var(--body); min-height: 100vh; display: flex; flex-direction: column; }
+img { image-rendering: pixelated; image-rendering: -moz-crisp-edges; }
+a { color: inherit; }
 
-  <script defer src="https://analytics.snafu.quest/script.js" data-website-id="664fa64b-2817-4e3f-9304-bb448b8d09cd"></script>
+.top {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 20px clamp(16px, 3vw, 32px);
+  border-bottom: var(--px) solid var(--cream);
+}
+.top a.back {
+  font-family: var(--display); font-size: clamp(10px, 1vw, 12px);
+  letter-spacing: .18em; color: var(--cream); text-decoration: none;
+  padding: calc(var(--px)*2) calc(var(--px)*3);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+.top a.back::before { content: '\25C2  '; color: var(--rose); }
+.top a.back:hover { background: var(--cream); color: var(--ink); }
+.top h2 {
+  font-family: var(--display); font-size: clamp(12px, 1.4vw, 16px);
+  letter-spacing: .18em; color: var(--wheat);
+}
+.top .spacer { width: 120px; }
+@media (max-width: 600px) { .top .spacer { display: none; } }
+
+main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-width: 900px; margin: 0 auto; width: 100%; }
+
+.empty {
+  text-align: center; padding: 80px 20px;
+  font-family: var(--display); font-size: 12px;
+  color: var(--wheat); letter-spacing: .16em; line-height: 2.2;
+}
+.empty a { display: inline-block; margin-top: 20px; color: var(--gold); text-decoration: underline; }
+
+.rows { display: flex; flex-direction: column; gap: 12px; }
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 80px 1fr auto auto;
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+  border: var(--px) solid var(--cream);
+  background: rgba(242,228,196,.03);
+}
+.row .thumb {
+  width: 80px; height: 80px;
+  background: var(--wheat);
+  border: var(--px) solid var(--cream);
+  display: grid; place-items: center;
+  font-family: var(--display); font-size: 7px;
+  color: var(--loam); letter-spacing: .1em;
+  text-align: center; padding: 6px; overflow: hidden;
+}
+.row .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.row .name-block { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.row .name { font-family: var(--body); font-size: 16px; color: var(--cream); text-decoration: none; }
+.row .name:hover { color: var(--gold); }
+.row .sub { font-family: var(--display); font-size: 9px; color: var(--wheat); letter-spacing: .12em; }
+
+/* where an item came from — Shop one-offs vs SNAFU's own production */
+.row .origin-tag {
+  align-self: flex-start;
+  font-family: var(--display); font-size: 7px; letter-spacing: .14em;
+  padding: 3px 5px; border: 2px solid currentColor;
+}
+.row .origin-tag.shop  { color: var(--rose); }
+.row .origin-tag.goods { color: var(--moss); }
+
+.row .qty {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--display); font-size: 11px;
+  color: var(--cream);
+}
+.row .qty button {
+  width: 28px; height: 28px;
+  background: transparent;
+  border: var(--px) solid var(--cream);
+  color: var(--cream); cursor: pointer;
+  font-family: var(--display); font-size: 12px;
+}
+.row .qty button:hover { background: var(--cream); color: var(--ink); }
+
+/* One-of-one: no stepper at all. The rule is stated, not silently enforced
+   by a control that refuses to move. */
+.row .unique {
+  font-family: var(--display); font-size: 8px;
+  letter-spacing: .14em; line-height: 1.8;
+  color: var(--gold);
+  text-align: right;
+}
+.row .unique small { display: block; color: var(--wheat); opacity: .75; font-size: 7px; }
+
+.row .line-price {
+  font-family: var(--display); font-size: 12px;
+  color: var(--gold); letter-spacing: .1em;
+  min-width: 70px; text-align: right;
+}
+.row .remove {
+  background: transparent; border: 0;
+  color: var(--rose); cursor: pointer;
+  font-family: var(--display); font-size: 9px;
+  letter-spacing: .16em;
+  padding: 4px 6px; align-self: flex-start;
+}
+.row .remove:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .row { grid-template-columns: 60px 1fr; grid-template-areas: 'thumb name' 'thumb qty' 'thumb price'; gap: 8px 12px; }
+  .row .thumb { width: 60px; height: 60px; grid-area: thumb; }
+  .row .name-block { grid-area: name; }
+  .row .qty, .row .unique { grid-area: qty; text-align: left; }
+  .row .line-price { grid-area: price; text-align: left; }
+}
+
+.summary {
+  margin-top: 24px;
+  padding: 20px;
+  border: var(--px) solid var(--cream);
+  background: rgba(107,138,58,.06);
+  display: flex; flex-direction: column; gap: 16px;
+}
+.summary .total {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--display); color: var(--wheat);
+  font-size: 14px; letter-spacing: .16em;
+}
+.summary .total .amt { color: var(--gold); font-size: 16px; }
+
+/* Checkout is deliberately off — Stripe is not connected yet. This is a
+   real disabled button, not a link to a page that does not exist. */
+.summary .checkout {
+  font-family: var(--display); font-size: 12px;
+  letter-spacing: .18em;
+  padding: 16px 24px;
+  background: transparent; color: var(--wheat);
+  border: var(--px) dashed var(--wheat);
+  text-align: center;
+  cursor: not-allowed;
+  opacity: .75;
+}
+.summary .note {
+  font-family: var(--body); font-size: 13px;
+  color: var(--wheat); text-align: center;
+  opacity: .8; line-height: 1.5;
+}
+.summary .note strong { color: var(--gold); font-weight: 600; }
+
+.colophon {
+  border-top: var(--px) solid var(--cream);
+  padding: 40px clamp(16px, 3vw, 32px);
+  display: grid; gap: 8px;
+  font-family: var(--body); font-size: 14px; color: var(--wheat);
+}
+.colophon .row1 { font-family: var(--display); font-size: 11px; letter-spacing: .18em; color: var(--cream); }
+.colophon a { color: var(--gold); text-decoration: none; }
+.colophon a:hover { text-decoration: underline; }
+</style>
 <script src="/js/pixels.js"></script>
 </head>
 <body>
 
-  <section class="page-head wrap">
-    <h1 class="page-head__title">Cart</h1>
-    <a class="backlink" href="../shop/">&larr; Back to the Shop</a>
-  </section>
+<header class="top">
+  <a class="back" href="/shop/">Back to the market</a>
+  <h2>YOUR PACK</h2>
+  <span class="spacer"></span>
+</header>
 
-  <section class="wrap">
-    <div id="cart-root"></div>
-  </section>
+<main id="main"></main>
 
-  <script src="../js/cart.js"></script>
-  <script>
-    (function () {
-      var root = document.getElementById("cart-root");
+<footer class="colophon">
+  <div class="row1">SNAFU. &nbsp;·&nbsp; PACK &nbsp;·&nbsp; LOS ANGELES</div>
+  <div>Situation Normal: All Fouled Up.</div>
+  <div><a href="/privacy/">Privacy</a></div>
+  <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
+</footer>
 
-      function money(n) {
-        return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 2 });
-      }
+<!-- Both catalogs: the pack holds Shop one-offs and Goods together, and
+     every price/name/image on this page is resolved from them at render
+     time. js/cart.js is the only thing that touches storage. -->
+<script src="/js/shop-data.js"></script>
+<script src="/js/goods-data.js"></script>
+<script src="/js/cart.js"></script>
+<script>
+(function () {
+  var main = document.getElementById('main');
 
-      function render() {
-        var items = window.SNAFU_CART.read();
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
 
-        if (!items.length) {
-          root.innerHTML =
-            '<div class="cart-empty">' +
-              '<p class="cart-empty__title">Your cart is empty</p>' +
-              '<p class="code">Nothing claimed yet — every piece in the Shop is one-of-one.</p>' +
-              '<a class="btn btn--ghost" href="../shop/">Browse the Shop</a>' +
-            '</div>';
-          return;
-        }
+  function money(n) {
+    return '$' + Number(n).toLocaleString('en-US');
+  }
 
-        var rows = items.map(function (it) {
-          var line = window.SNAFU_CART.priceToNumber(it.price) * (it.qty || 1);
-          return (
-            '<div class="cart-row">' +
-              '<div class="cart-row__thumb"><span class="product__id">' + it.id + '</span></div>' +
-              '<div class="cart-row__info">' +
-                '<h2 class="cart-row__title">' + it.title + '</h2>' +
-                '<div class="cart-row__brand code">' + (it.brand || "") + '</div>' +
-              '</div>' +
-              '<div class="cart-row__qty code">Qty ' + (it.qty || 1) + '</div>' +
-              '<div class="cart-row__price">' + money(line) + '</div>' +
-              '<button class="cart-row__remove" type="button" data-remove="' + it.id + '">Remove</button>' +
-            '</div>'
-          );
-        }).join("");
+  function row(i) {
+    // Shop pieces are one-of-one, so they get a stated rule instead of a
+    // stepper. Goods are a production run and step freely.
+    var qtyCell = i.unique
+      ? '<div class="unique">ONE OF ONE<small>only one exists</small></div>'
+      : '<div class="qty">' +
+          '<button type="button" data-dec="' + esc(i.id) + '" aria-label="One fewer ' + esc(i.name) + '">&minus;</button>' +
+          '<span>' + i.qty + '</span>' +
+          '<button type="button" data-inc="' + esc(i.id) + '" aria-label="One more ' + esc(i.name) + '">+</button>' +
+        '</div>';
 
-        root.innerHTML =
-          '<div class="cart-list">' + rows + '</div>' +
-          '<div class="cart-foot">' +
-            '<div class="cart-foot__sub">' +
-              '<span class="code">Subtotal</span>' +
-              '<span class="cart-foot__total">' + money(window.SNAFU_CART.subtotal()) + '</span>' +
-            '</div>' +
-            '<button class="btn" type="button" id="checkout-btn">Checkout</button>' +
-            '<p class="code cart-foot__note" id="checkout-note">Secure payment via Stripe (test mode). Test card: 4242 4242 4242 4242, any future date / CVC.</p>' +
-          '</div>';
-      }
+    var tag = i.source === 'goods'
+      ? '<span class="origin-tag goods">SNAFU ORIGINAL</span>'
+      : '<span class="origin-tag shop">SHOP &mdash; 1 OF 1</span>';
 
-      // Send the cart to the Netlify function, then redirect to Stripe.
-      function startCheckout() {
-        var items = window.SNAFU_CART.read().map(function (i) {
-          return { id: i.id, qty: i.qty || 1 };
-        });
-        if (!items.length) return;
-        var btn = document.getElementById("checkout-btn");
-        var note = document.getElementById("checkout-note");
-        btn.disabled = true;
-        btn.textContent = "Redirecting…";
-        // ── PIXEL: InitiateCheckout — fires the moment we hand off to Stripe ──
-        if (typeof snafuTrackInitiateCheckout === "function") {
-          var itemIds = items.map(function (i) { return i.id; });
-          var totalUSD = window.SNAFU_CART.subtotal();
-          var numItems = items.reduce(function (n, i) { return n + (i.qty || 1); }, 0);
-          snafuTrackInitiateCheckout(itemIds, totalUSD, numItems);
-        }
-        fetch("/api/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items: items })
-        })
-          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
-          .then(function (res) {
-            if (res.ok && res.data && res.data.url) {
-              window.location.href = res.data.url; // Stripe-hosted checkout
-            } else {
-              throw new Error((res.data && res.data.error) || "Checkout failed.");
-            }
-          })
-          .catch(function (err) {
-            btn.disabled = false;
-            btn.innerHTML = "Checkout";
-            note.textContent = "Could not start checkout: " + err.message +
-              "  (Checkout needs `netlify dev` locally or a deploy — the plain python server has no functions.)";
-            note.style.color = "var(--red)";
-          });
-      }
+    return '' +
+      '<div class="row">' +
+        '<div class="thumb">' +
+          (i.image ? '<img src="' + esc(i.image) + '" alt="' + esc(i.name) + '">' : esc(i.name.toUpperCase())) +
+        '</div>' +
+        '<div class="name-block">' +
+          '<a class="name" href="' + esc(i.href) + '">' + esc(i.name) + '</a>' +
+          (i.sub ? '<span class="sub">' + esc(i.sub) + '</span>' : '') +
+          tag +
+          '<button class="remove" type="button" data-remove="' + esc(i.id) + '">REMOVE</button>' +
+        '</div>' +
+        qtyCell +
+        '<div class="line-price">' + money(i.price * i.qty) + '</div>' +
+      '</div>';
+  }
 
-      // Event-delegated clicks (work after every re-render).
-      root.addEventListener("click", function (e) {
-        if (e.target.closest("#checkout-btn")) { startCheckout(); return; }
-        var rm = e.target.closest("[data-remove]");
-        if (!rm) return;
-        window.SNAFU_CART.remove(rm.getAttribute("data-remove"));
-        render();
-      });
+  function render() {
+    var items = window.SNAFU_CART.resolve();
 
-      // Re-render if the cart changes elsewhere (e.g. another tab).
-      window.addEventListener("snafu:cart", render);
+    if (!items.length) {
+      main.innerHTML =
+        '<div class="empty">' +
+          'Your pack is empty.' +
+          '<br>' +
+          '<a href="/shop/">back to the market</a>' +
+          '<br>' +
+          '<a href="/goods/">or into the hoard</a>' +
+        '</div>';
+      return;
+    }
 
-      render();
-    })();
-  </script>
-  <script src="../js/site.js"></script>
+    var total = items.reduce(function (s, i) { return s + i.price * i.qty; }, 0);
+
+    main.innerHTML =
+      '<div class="rows">' + items.map(row).join('') + '</div>' +
+      '<div class="summary">' +
+        '<div class="total"><span>TOTAL</span><span class="amt">' + money(total) + '</span></div>' +
+        '<div class="checkout" role="status" aria-disabled="true">CHECKOUT OPENING SOON</div>' +
+        '<div class="note">Your pack is saved and will keep. ' +
+          '<strong>Purchasing is not open yet</strong> — nothing here charges you, ' +
+          'and nothing is reserved. Email ' +
+          '<a href="mailto:nate@snafu.quest">nate@snafu.quest</a> about a piece in the meantime.' +
+        '</div>' +
+      '</div>';
+  }
+
+  main.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-remove], [data-inc], [data-dec]');
+    if (!t) return;
+    var C = window.SNAFU_CART;
+    if (t.hasAttribute('data-remove')) {
+      C.remove(t.getAttribute('data-remove'));
+    } else if (t.hasAttribute('data-inc')) {
+      var incId = t.getAttribute('data-inc');
+      C.setQty(incId, qtyOf(incId) + 1);
+    } else {
+      var decId = t.getAttribute('data-dec');
+      var next = qtyOf(decId) - 1;
+      if (next < 1) C.remove(decId); else C.setQty(decId, next);
+    }
+  });
+
+  function qtyOf(id) {
+    var found = window.SNAFU_CART.read().filter(function (i) { return i.id === id; })[0];
+    return found ? found.qty : 1;
+  }
+
+  // Re-render on every cart change, wherever it came from (this page,
+  // another tab, the pack badge).
+  window.addEventListener('snafu:cart', render);
+  render();
+})();
+</script>
+<script src="/js/site.js"></script>
 </body>
 </html>

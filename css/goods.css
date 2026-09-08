@@ -166,6 +166,34 @@ a { color: var(--gold); }
 .btn.secondary { background: transparent; color: var(--wheat); border-color: var(--gold-deep); box-shadow: var(--px) var(--px) 0 var(--gold-deep); }
 
 .relic.sold .btn { opacity: .35; pointer-events: none; }
+
+/* Checkout is not connected yet — this reads as "not open yet", not as a
+   dead gold button. */
+.btn.pending {
+  background: transparent; color: var(--wheat);
+  border-color: var(--wheat); border-style: dashed;
+  box-shadow: none; opacity: .8; cursor: not-allowed;
+}
+.btn.pending:hover { transform: none; box-shadow: none; }
+
+/* Pack badge — same furniture as the Shop, so the count follows you
+   between the market and the hoard. */
+.pack-badge {
+  position: fixed; right: 16px; bottom: 16px; z-index: 20;
+  background: var(--ink); border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--display); font-size: 11px;
+  color: var(--cream); letter-spacing: .12em; cursor: pointer;
+  text-decoration: none;
+}
+.pack-badge:hover { background: var(--gold); color: var(--ink); }
+.pack-badge .count { background: var(--red); color: var(--cream); padding: 2px 6px; font-size: 10px; }
+.pack-badge.empty-pack .count { background: var(--stone); }
+@media (max-width: 600px) {
+  .pack-badge { right: 10px; bottom: 10px; padding: 10px 12px; font-size: 10px; }
+}
 .relic.sold::after {
   content: "CLAIMED";
   position: absolute; top: 12px; right: 12px; z-index: 3;

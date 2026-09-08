@@ -1,5 +1,4 @@
 ﻿(function () {
-  const CART_KEY = "snafu.cart";
   const items = Array.isArray(window.GOODS) ? window.GOODS : [];
   const mount = document.getElementById("relics");
   const empty = document.getElementById("empty");
@@ -14,19 +13,6 @@
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
   const money = (n) => "$" + Number(n).toLocaleString("en-US");
-
-  function readCart() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-    catch { return []; }
-  }
-  function writeCart(c) { localStorage.setItem(CART_KEY, JSON.stringify(c)); }
-  function addToCart(item) {
-    const cart = readCart();
-    const found = cart.find(x => x.id === item.id);
-    if (found) { found.qty = (found.qty || 1) + 1; }
-    else { cart.push({ id: item.id, name: item.name, price: item.price, qty: 1, source: "goods" }); }
-    writeCart(cart);
-  }
 
   function relicCard(item) {
     const stats = [
@@ -56,7 +42,8 @@
           </dl>
           ${item.note ? `<p class="relic-note">${esc(item.note)}</p>` : ""}
           <div class="relic-actions">
-            <button class="btn buy" data-id="${esc(item.id)}" ${item.sold ? "disabled" : ""}>BUY NOW</button>
+            <button class="btn buy pending" data-id="${esc(item.id)}" disabled
+                    title="Checkout is not open yet — add it to your pack and it will keep.">CHECKOUT SOON</button>
             <button class="btn secondary pack" data-id="${esc(item.id)}" ${item.sold ? "disabled" : ""}>ADD TO PACK</button>
           </div>
         </div>
@@ -73,15 +60,15 @@
     const item = items.find(x => x.id === id);
     if (!item || item.sold) return;
 
-    addToCart(item);
+    if (!btn.classList.contains("pack")) return;
 
-    if (btn.classList.contains("buy")) {
-      window.location.href = "/checkout";
-    } else if (btn.classList.contains("pack")) {
-      const original = btn.textContent;
-      btn.textContent = "ADDED";
-      btn.disabled = true;
-      setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1200);
-    }
+    // Goods are a production run, so this increments. js/cart.js owns storage
+    // and fires "snafu:cart", which keeps the pack badge live.
+    window.SNAFU_CART.add(item.id, "goods");
+
+    const original = btn.textContent;
+    btn.textContent = "ADDED";
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1200);
   });
 })();

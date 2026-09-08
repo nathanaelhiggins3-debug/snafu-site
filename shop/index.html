@@ -352,9 +352,9 @@ a { color: inherit; }
   <div class="grid" id="grid"></div>
 </section>
 
-<a class="pack empty-pack" id="pack" href="cart.html">
+<a class="pack empty-pack" id="pack" data-cart-badge href="/cart/">
   <span>PACK</span>
-  <span class="count" id="packCount">0</span>
+  <span class="count" id="packCount" data-cart-count>0</span>
 </a>
 
 <footer class="colophon">
@@ -365,6 +365,7 @@ a { color: inherit; }
 </footer>
 
 <script src="../js/shop-data.js"></script>
+<script src="../js/cart.js"></script>
 <script>
 const state = { gender: 'all', cat: 'all' };
 const grid = document.getElementById('grid');
@@ -422,15 +423,7 @@ document.querySelectorAll('.cats button').forEach(b => {
   });
 });
 
-function refreshPack() {
-  const cart = JSON.parse(localStorage.getItem('snafu.cart') || '[]');
-  const count = cart.reduce((n, i) => n + (i.qty || 1), 0);
-  document.getElementById('packCount').textContent = count;
-  document.getElementById('pack').classList.toggle('empty-pack', count === 0);
-}
 render();
-refreshPack();
-window.addEventListener('storage', refreshPack);
 </script>
 <script src="../js/site.js"></script>
 </body>
