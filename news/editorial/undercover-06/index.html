@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SNAFU. — Undercover Records</title>
+<meta name="description" content="Undercover Spring/Summer 2006 'T' — merch for a record label that never existed." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<script defer src="https://analytics.snafu.quest/script.js" data-website-id="664fa64b-2817-4e3f-9304-bb448b8d09cd"></script>
+<style>
+/* SNAFU editorial article — cover system + feature layout. Edit: --cover, cover copy, <article> body. */
+:root{
+  --cream:#f2e4c4;--paper:#efe0b8;--ink:#0c1412;--gold:#e3aa4d;--wheat:#e8d29a;--wood:#624225;
+  --moss:#3f4726;--floor:#151f19;--rose:#814951;--red:#b8352b;--px:3px;
+  --display:'Press Start 2P',monospace;--ui:'Pixelify Sans',monospace;--body:'EB Garamond','Iowan Old Style',Georgia,serif;
+  --measure:680px;
+  --scene:url('../../../assets/editorial.png');
+  --cover:url('../../../assets/covers/undercover-records.png');
+}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--floor);color:var(--cream);font-family:var(--body);font-size:20px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.scene{position:fixed;inset:0;z-index:0;background:var(--scene) center/cover no-repeat,var(--floor);image-rendering:pixelated}
+.scene::after{content:'';position:absolute;inset:0;background:rgba(12,20,18,.82)}
+.strip{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px clamp(16px,4vw,32px);background:rgba(12,20,18,.9);border-bottom:var(--px) solid var(--moss);font-family:var(--display);font-size:9px;letter-spacing:.18em;color:var(--cream);text-transform:uppercase}
+.strip a{color:var(--cream);text-decoration:none}.strip a:hover{color:var(--gold)}
+.strip .back::before{content:'\25C2  ';color:var(--rose)}.strip .desk{color:var(--gold)}
+.cover{position:relative;z-index:2;min-height:88vh;display:grid;grid-template-rows:auto 1fr auto;padding:clamp(20px,4vw,40px);overflow:hidden;isolation:isolate}
+.cover__img{position:absolute;inset:0;z-index:0;background:var(--cover) center/cover no-repeat,var(--floor);filter:grayscale(1) contrast(1.06) brightness(.94)}
+.cover__tone{position:absolute;inset:0;z-index:1;pointer-events:none;background:var(--gold);mix-blend-mode:multiply;opacity:.5}
+.cover__floor{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(12,20,18,.25) 0%,rgba(12,20,18,0) 34%,rgba(12,20,18,.55) 70%,rgba(12,20,18,.95) 100%)}
+.cover__grain{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.05;background:repeating-linear-gradient(0deg,#000 0 1px,transparent 1px 3px)}
+.cover__masthead{position:relative;z-index:4;display:flex;justify-content:space-between;align-items:center;font-family:var(--display);font-size:9px;letter-spacing:.16em;color:var(--cream);text-shadow:var(--px) var(--px) 0 rgba(0,0,0,.7)}
+.cover__masthead .desk{color:var(--gold)}
+.cover__copy{position:relative;z-index:4;align-self:end;max-width:960px;margin:0 auto;width:100%}
+.cover__eyebrow{font-family:var(--display);font-size:9px;letter-spacing:.28em;color:var(--gold);margin-bottom:18px;text-shadow:2px 2px 0 var(--ink)}
+.cover__eyebrow .dot{color:var(--rose)}
+.cover h1{font-family:var(--display);font-size:clamp(26px,5vw,58px);line-height:1.1;color:var(--wheat);letter-spacing:.02em;max-width:16ch;text-shadow:calc(var(--px)*-1) 0 0 var(--ink),var(--px) 0 0 var(--ink),0 calc(var(--px)*-1) 0 var(--ink),0 var(--px) 0 var(--ink),calc(var(--px)*2) calc(var(--px)*2) 0 var(--red),calc(var(--px)*3) calc(var(--px)*3) 0 var(--ink),calc(var(--px)*5) calc(var(--px)*7) 0 rgba(2,2,0,.55)}
+.cover .standfirst{font-family:var(--body);font-style:italic;font-size:clamp(18px,2vw,24px);color:var(--cream);max-width:44ch;margin-top:22px;line-height:1.45}
+.cover .byline{margin-top:22px;font-family:var(--ui);font-size:14px;letter-spacing:.06em;color:var(--cream);opacity:.85;display:flex;flex-wrap:wrap;gap:6px 16px}
+.cover .byline em{color:var(--gold);font-style:normal}
+.cover .credit{margin-top:14px;font-family:var(--display);font-size:7px;letter-spacing:.14em;color:#e6d3a4;opacity:.8}
+.article{position:relative;z-index:2;background:var(--paper);color:#1a140c;max-width:1180px;margin:0 auto;padding:clamp(40px,6vw,80px) 0 0;border:var(--px) solid var(--ink);box-shadow:calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.7)}
+.col{max-width:var(--measure);margin:0 auto;padding:0 clamp(22px,5vw,40px)}
+.col p{margin:0 0 1.15em}.col p.drop:first-letter{font-family:var(--display);font-size:2.3em;line-height:.9;float:left;margin:8px 12px 0 0;color:var(--rose)}
+.col em,.col i{font-style:italic}
+.sub{font-family:var(--display);font-size:13px;letter-spacing:.06em;color:var(--ink);margin:2.2em 0 1em;padding-top:1.4em;border-top:var(--px) solid rgba(12,20,18,.18);line-height:1.5}
+.sub.b{font-size:11px}.sub .n{color:var(--rose);margin-right:.6em}
+.pull{font-family:var(--body);font-style:italic;font-size:clamp(24px,3vw,34px);line-height:1.28;color:var(--ink);max-width:18ch;margin:1.1em auto;padding:.3em 0;border-top:var(--px) solid var(--rose);border-bottom:var(--px) solid var(--rose);text-align:center}
+figure{margin:2.2em auto}
+figure .ph,figure img{display:block;width:100%;border:var(--px) solid var(--ink);background:#0f1a15}figure img{height:auto}
+.ph{aspect-ratio:3/2;display:grid;place-items:center;text-align:center;padding:20px;background:repeating-linear-gradient(45deg,#1b2820 0 14px,#17231c 14px 28px);color:var(--wheat);font-family:var(--ui);font-size:14px}
+.ph b{display:block;font-family:var(--display);font-size:10px;color:var(--gold);letter-spacing:.14em;margin-bottom:10px}
+.ph.tall{aspect-ratio:2/3}.ph.square{aspect-ratio:1/1}
+figcaption{margin-top:10px;font-family:var(--ui);font-size:14px;line-height:1.45;color:#4a3b2a}
+figcaption .credit{display:block;margin-top:3px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a7350}
+figure.fig{max-width:var(--measure)}figure.fig.wide{max-width:940px}figure.fig.full{max-width:1180px}
+figure.fig.full .ph,figure.fig.full img{border-left:0;border-right:0}
+.duo{max-width:940px;margin:2.2em auto;display:grid;grid-template-columns:1fr 1fr;gap:14px}.duo figure{margin:0}
+@media(max-width:640px){.duo{grid-template-columns:1fr}}
+.roster-wrap{max-width:940px;margin:2.4em auto}
+.roster-head{font-family:var(--display);font-size:12px;letter-spacing:.1em;color:var(--ink);text-align:center;margin-bottom:6px}
+.roster-sub{font-family:var(--ui);font-size:14px;color:#6a5638;text-align:center;margin-bottom:20px}
+.roster{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.roster figure{margin:0}.roster .ph{aspect-ratio:1/1}
+.roster figcaption{text-align:center;font-family:var(--display);font-size:9px;color:var(--ink);margin-top:8px}
+@media(max-width:820px){.roster{grid-template-columns:repeat(2,1fr)}}
+.foot{position:relative;z-index:2;max-width:1180px;margin:0 auto;background:var(--paper);border:var(--px) solid var(--ink);border-top:0;box-shadow:calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.7);padding:2.4em clamp(22px,5vw,40px) 2.8em;text-align:center;color:#1a140c}
+.foot .marker{font-family:var(--display);font-size:9px;letter-spacing:.3em;color:var(--rose);margin-bottom:14px}
+.foot .credits{font-family:var(--ui);font-size:13px;color:#6a5638;max-width:60ch;margin:0 auto 18px;line-height:1.55}
+.foot .meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 20px;font-family:var(--display);font-size:8px;letter-spacing:.16em;color:var(--ink);opacity:.7}
+.foot a{color:var(--rose);text-decoration:none}.spacer{height:60px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="scene" aria-hidden="true"></div>
+<nav class="strip"><a class="back" href="/news/editorial/">Back to Editorial</a><span class="desk">SNAFU · Editorial</span></nav>
+
+<!-- ===== COVER ===== -->
+<header class="cover">
+  <div class="cover__img"></div><div class="cover__tone"></div><div class="cover__floor"></div><div class="cover__grain"></div>
+  <div class="cover__masthead"><span>SNAFU · DISPATCH</span><span class="desk">EDITORIAL</span></div>
+  <div class="cover__copy">
+    <div class="cover__eyebrow">No. 002 <span class="dot">·</span> UNDERCOVER SS06 &ldquo;T&rdquo;</div>
+    <h1>[TITLE — e.g. Undercover Records]</h1>
+    <p class="standfirst">[Standfirst — one sentence. e.g. Merch for a label that never existed.]</p>
+    <div class="byline"><span>by <em>Nathanael Higgins</em></span><span>SNAFU Dispatch</span><span>[x] min read</span></div>
+    <div class="credit">IMG 01 — RUNWAY / CREDIT HERE</div>
+  </div>
+</header>
+
+<article class="article">
+  <div class="col">
+    <p class="drop">[OPENING — the hook. Drop cap kicks it off. Land the thesis + "situation normal" fast.]</p>
+    <p>[Second paragraph of the cold open before the first image.]</p>
+
+    <h2 class="sub"><span class="n">01</span> The store before the runway</h2>
+    <p>[Short history funnel — Nowhere/Nigo, Kawakubo &rarr; Paris, "Scab", the But Beautiful run. Every beat points at "T".]</p>
+  </div>
+
+  <figure class="fig wide"><div class="ph"><span><b>IMG 02 · WIDE</b>Takahashi portrait / early-2000s runway</span></div>
+    <figcaption>[caption] <span class="credit">credit / source</span></figcaption></figure>
+
+  <div class="col">
+    <h2 class="sub"><span class="n">02</span> The people in the room</h2>
+    <p>[Collaborators &rarr; end on Kitamura (Hysteric Glamour) as the bridge into the collection.]</p>
+
+    <h2 class="sub"><span class="n">03</span> The label that never was</h2>
+    <p>[The concept — Undercover Records, kosmische musik, the "musicians' own ethnic dress" idea, the screening. The Takahashi origin quote lands here.]</p>
+    <p class="pull">[Pull-quote — e.g. He chased the feeling of a band, then manufactured the evidence.]</p>
+  </div>
+
+  <figure class="fig full"><div class="ph"><span><b>IMG 03 · FULL-BLEED</b>the runway — the fiction assembled</span></div>
+    <figcaption>Undercover Spring/Summer 2006, Paris. <span class="credit">runway — credit</span></figcaption></figure>
+
+  <div class="col">
+    <h2 class="sub"><span class="n">04</span> Side B: the roster</h2>
+    <p>[One or two lines introducing the label's five acts.]</p>
+  </div>
+
+  <div class="roster-wrap">
+    <div class="roster-head">UNDERCOVER RECORDS — ARTISTS</div>
+    <div class="roster-sub">Five bands. No songs. One wardrobe each.</div>
+    <div class="roster">
+      <figure><div class="ph square"><span><b>KLAUS</b></span></div><figcaption>Klaus</figcaption></figure>
+      <figure><div class="ph square"><span><b>THEE CROUH</b></span></div><figcaption>Thee Crouh</figcaption></figure>
+      <figure><div class="ph square"><span><b>THEO BURP</b></span></div><figcaption>Theo Burp</figcaption></figure>
+      <figure><div class="ph square"><span><b>THE SSSSS</b></span></div><figcaption>The Sssss</figcaption></figure>
+      <figure><div class="ph square"><span><b>CHUUUT</b></span></div><figcaption>Chuuut</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="col">
+    <h3 class="sub b"><span class="n">—</span> Klaus</h3>
+    <p>[Named for Klaus Schulze, on the real soundtrack; the "Live Tour" tee, the screening.]</p>
+  </div>
+  <div class="duo">
+    <figure><div class="ph tall"><span><b>IMG 04</b>Klaus "Live Tour" tee</span></div><figcaption>[cap] <span class="credit">credit</span></figcaption></figure>
+    <figure><div class="ph tall"><span><b>IMG 05</b>Klaus denim / leather</span></div><figcaption>[cap] <span class="credit">credit</span></figcaption></figure>
+  </div>
+
+  <div class="col">
+    <h3 class="sub b"><span class="n">—</span> Thee Crouh</h3>
+    <p>["to crouch"; the Zamiang saga — narrative, not just logos.]</p>
+  </div>
+  <figure class="fig"><div class="ph"><span><b>IMG 06</b>"House of Zamiang" tee</span></div><figcaption>[cap] <span class="credit">credit</span></figcaption></figure>
+
+  <div class="col">
+    <h3 class="sub b"><span class="n">—</span> Theo Burp</h3>
+    <p>["belch"; the Parrot + Young Martyr graphics, the comic register.]</p>
+  </div>
+  <figure class="fig"><div class="ph"><span><b>IMG 07</b>"Theo Burp Parrot" tee</span></div><figcaption>[cap] <span class="credit">credit</span></figcaption></figure>
+
+  <div class="col">
+    <h3 class="sub b"><span class="n">—</span> The Sssss &amp; Chuuut</h3>
+    <p>[The hiss and the shush — pair them; The Sssss bomber, Chuuut / Kosmische Musik tee.]</p>
+  </div>
+  <div class="duo">
+    <figure><div class="ph"><span><b>IMG 08</b>"The Sssss" bomber</span></div><figcaption>[cap] <span class="credit">credit</span></figcaption></figure>
+    <figure><div class="ph"><span><b>IMG 09</b>"Chuuut / Kosmische Musik" tee</span></div><figcaption>[cap] <span class="credit">credit</span></figcaption></figure>
+  </div>
+
+  <div class="col">
+    <h2 class="sub"><span class="n">05</span> How it was built</h2>
+    <p>[T-shirt as raw cloth, 3D draping from pre-'97, sleeves set as bodice panels.]</p>
+  </div>
+  <figure class="fig wide"><div class="ph"><span><b>IMG 10 · WIDE</b>reconstructed dress — construction detail</span></div>
+    <figcaption>[cap] <span class="credit">credit</span></figcaption></figure>
+
+  <div class="col">
+    <h2 class="sub"><span class="n">06</span> The records that were real</h2>
+    <p>[Kosmische primer — Can, Amon Düül II, Klaus Schulze, Popol Vuh, Tangerine Dream, the commune origin.]</p>
+  </div>
+  <figure class="fig"><div class="ph square"><span><b>IMG 11</b>kosmische reference (album art © — small/fair-use or pixel)</span></div>
+    <figcaption>[cap] <span class="credit">album art © respective labels</span></figcaption></figure>
+
+  <div class="col">
+    <h2 class="sub"><span class="n">07</span> What it became</h2>
+    <p>[2017 Undercover Records revival — where the MA-1 actually lives — collector regard, why it's quoted now.]</p>
+  </div>
+  <figure class="fig wide"><div class="ph"><span><b>IMG 12 · WIDE</b>2017 revival — fake-band MA-1</span></div>
+    <figcaption>[cap] <span class="credit">Fashion Press / Undercover</span></figcaption></figure>
+
+  <div class="col">
+    <p>[Closing — return to the thesis; SNAFU sign-off.]</p>
+    <p class="pull">[Closing pull-quote — e.g. The bands never played, and you can still buy the shirt.]</p>
+  </div>
+  <div class="spacer"></div>
+</article>
+
+<footer class="foot">
+  <div class="marker">\ end of the piece \</div>
+  <div class="credits">Images: [credits]. Words by Nathanael Higgins. Sources: mae-nishi, GSC-RINKAN, Fashion Press.</div>
+  <div class="meta"><span>SNAFU · Editorial</span><span>Los Angeles</span><span>Weekly since 2026</span><span><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></span></div>
+</footer>
+</body>
+</html>
