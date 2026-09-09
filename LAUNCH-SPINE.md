@@ -125,6 +125,29 @@ orders, inventory state, Stripe webhook events, moderation, and audit logs.
 The static site should stay fast and simple; Stripe should process payment;
 transactional email and image storage can remain specialist services.
 
+## Provisional commerce decisions — 2026-09-08
+
+These are founder decisions already made for the launch direction. They are not
+implemented customer promises yet, and must not switch checkout on by themselves.
+
+- Public storefront and serverless edge: **Vercel**.
+- Durable inventory, orders, and webhook event records: **DigitalOcean API/database**.
+- First commerce release: **Shop and Goods Drop 001 together**. Goods remains
+  asset-incomplete until its real imagery is added.
+- Shipping scope: intent is **US and international**, with a flat-rate model.
+- Every shipped order should include **tracking**.
+- Product-issue support: email.
+
+Still required before public policy or payment activation: the actual domestic
+and international flat rates (or country zones), the carrier/shipping service,
+dispatch promise, returns/damage/lost-parcel rules, support response-time
+promise, sales-tax setup, and the exact shipping-platform account/API.
+
+International flat shipping should not mean an unbounded "rest of world" rate
+by default. Once the shipping platform is identified, define supported countries
+or zones, customs/duties treatment, and a flat amount that cannot lose money on
+heavy or distant packages.
+
 ## Build order
 
 ### Sprint 1 — Launch Spine (now)

@@ -123,7 +123,19 @@
       '  background: var(--red, #b8352b);',
       '  border-color: var(--cream, #f2e4c4); }',
       '.snafu-crt-btn:focus-visible { outline: 2px solid',
-      '  var(--gold, #e3aa4d); outline-offset: 2px; }'
+      '  var(--gold, #e3aa4d); outline-offset: 2px; }',
+      /* hover/focus tooltip so CRT is not a mystery button. */
+      '.snafu-crt-btn::after { content: attr(data-tip); position: absolute;',
+      '  right: 0; bottom: calc(100% + 8px); width: max-content; max-width: 62vw;',
+      '  font-family: var(--body, "Pixelify Sans", monospace); font-size: 11px;',
+      '  letter-spacing: 0; line-height: 1.4; text-align: left; text-transform: none;',
+      '  color: var(--cream, #f2e4c4); background: rgba(12,10,7,.96);',
+      '  border: 2px solid var(--cream, #f2e4c4); padding: 8px 10px;',
+      '  box-shadow: 2px 2px 0 rgba(10,8,5,.6);',
+      '  opacity: 0; transform: translateY(4px); pointer-events: none;',
+      '  transition: opacity .12s steps(2), transform .12s steps(2); }',
+      '.snafu-crt-btn:hover::after, .snafu-crt-btn:focus-visible::after {',
+      '  opacity: 1; transform: translateY(0); }'
     ].join('\n');
     document.head.appendChild(style);
   }
@@ -138,7 +150,9 @@
     btn.className = 'snafu-crt-btn';
     btn.type = 'button';
     btn.textContent = 'CRT';
-    btn.setAttribute('aria-label', 'Toggle CRT mode');
+    btn.setAttribute('aria-label', 'Toggle CRT mode — retro-TV filter over the site');
+    btn.title = 'CRT mode — retro-TV filter: scanlines + glow over the whole site. Tap to toggle.';
+    btn.setAttribute('data-tip', 'CRT mode — retro-TV filter: scanlines + glow over the whole site. Tap to toggle.');
 
     function apply() {
       document.body.classList.toggle('snafu-crt-on', on);

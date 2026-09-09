@@ -82,6 +82,8 @@ resale value. They are the evidence for the SNAFU eye.
 
 ## Goods hold
 
+- [ ] Goods Drop 001 is intended to launch alongside Shop, but stays off the
+  release calendar until the following asset work is complete.
 - [ ] `g001` — add real product imagery
 - [ ] `g002` — add real product imagery
 - [ ] `g003` — add real product imagery

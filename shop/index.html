@@ -374,7 +374,7 @@ function render() {
   const list = (window.SNAFU_SHOP || []).filter(p =>
     (state.gender === 'all' || p.gender === state.gender) &&
     (state.cat === 'all' || p.cat === state.cat)
-  );
+  ).sort((a, b) => (a.deal === true) - (b.deal === true)); // full-price archive leads; deals follow as the bonus tier
   if (!list.length) {
     grid.innerHTML = '<div class="empty">Nothing here right now.</div>';
     return;
