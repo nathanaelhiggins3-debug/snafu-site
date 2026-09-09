@@ -22,6 +22,7 @@
     style.textContent = [
       /* header corner control — mirrors the CRT button furniture */
       '.snafu-acct { position: fixed; top: 8px; right: 8px; z-index: 101; }',
+      'body[data-snafu-hide-account-entry] .snafu-acct { display: none; }',
       '.snafu-acct__btn { display: inline-flex; align-items: center; gap: 8px;',
       '  min-height: 44px; padding: 6px 10px; cursor: pointer;',
       '  font-family: var(--display, "Press Start 2P", monospace);',
@@ -65,7 +66,7 @@
       '  letter-spacing: .04em; }',
 
       '.snafu-field { display: block; margin: 0 0 12px; }',
-      '.snafu-field > span { display: block; margin: 0 0 5px;',
+      '.snafu-field > span, .snafu-field > label { display: block; margin: 0 0 5px;',
       '  font-family: var(--display, "Press Start 2P", monospace);',
       '  font-size: 8px; letter-spacing: .1em; color: var(--cream, #f2e4c4);',
       '  text-transform: uppercase; }',
@@ -75,6 +76,19 @@
       '  border: var(--px, 3px) solid var(--cream, #f2e4c4); border-radius: 0; }',
       '.snafu-field input:focus-visible { outline: 3px solid var(--gold, #e3aa4d);',
       '  outline-offset: 2px; }',
+      '.snafu-password { position: relative; }',
+      '.snafu-password input { padding-right: 58px; }',
+      '.snafu-password__toggle { position: absolute; top: 50%; right: 1px;',
+      '  transform: translateY(-50%); min-width: 44px; min-height: 44px;',
+      '  display: inline-flex; align-items: center; justify-content: center;',
+      '  padding: 0; cursor: pointer; color: var(--cream, #f2e4c4);',
+      '  background: var(--ink, #0c1412); border: 0;',
+      '  border-left: var(--px, 3px) solid var(--ink, #0c1412); }',
+      '.snafu-password__toggle:hover { color: var(--gold, #e3aa4d); }',
+      '.snafu-password__toggle:focus-visible { outline: 3px solid var(--gold, #e3aa4d);',
+      '  outline-offset: 2px; }',
+      '.snafu-password__eye { width: 24px; height: 24px; display: block;',
+      '  image-rendering: pixelated; shape-rendering: crispEdges; }',
       '.snafu-hint { font-family: var(--body, "Pixelify Sans", sans-serif);',
       '  font-size: 12px; color: rgba(242,228,196,.6); margin: -7px 0 12px; }',
       '.snafu-hint a { color: var(--gold, #e3aa4d); }',
@@ -155,6 +169,12 @@
   document.body.appendChild(overlay);
 
   overlay.addEventListener('click', function (e) {
+    var toggle = e.target.closest && e.target.closest('[data-password-toggle]');
+    if (toggle && overlay.contains(toggle)) {
+      var input = overlay.querySelector('#' + toggle.getAttribute('aria-controls'));
+      if (input) setPasswordVisible(input, toggle, input.type === 'password');
+      return;
+    }
     if (e.target === overlay) close();
   });
   document.addEventListener('keydown', function (e) {
@@ -173,6 +193,7 @@
     if (first) first.focus();
   }
   function close() {
+    resetPasswordVisibility();
     overlay.classList.remove('is-open');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
@@ -198,8 +219,8 @@
         '<label class="snafu-field"><span>Email</span>' +
           '<input name="email" type="email" autocomplete="email" ' +
           'autocapitalize="none" spellcheck="false"></label>' +
-        '<label class="snafu-field"><span>Password</span>' +
-          '<input name="password" type="password" autocomplete="new-password"></label>' +
+        '<div class="snafu-field"><label for="snafu-auth-password">Password</label>' +
+          passwordField('new-password') + '</div>' +
         '<p class="snafu-hint">10+ chars. Cannot contain your handle or email.</p>' +
         '<div class="snafu-avpick"><span class="snafu-field" ' +
           'style="margin:0"><span>Pick an avatar</span></span>' +
@@ -213,8 +234,8 @@
         '<label class="snafu-field"><span>Handle or Email</span>' +
           '<input name="identifier" autocomplete="username" ' +
           'autocapitalize="none" spellcheck="false"></label>' +
-        '<label class="snafu-field"><span>Password</span>' +
-          '<input name="password" type="password" autocomplete="current-password"></label>' +
+        '<div class="snafu-field"><label for="snafu-auth-password">Password</label>' +
+          passwordField('current-password') + '</div>' +
         '<button class="snafu-submit" type="submit">SIGN IN</button>';
     }
 
@@ -264,6 +285,31 @@
     Auth.getAvatars().then(function (list) {
       if (list && list.length && overlay.querySelector('.snafu-avgrid') === grid) draw(list);
     });
+  }
+
+  function passwordField(autocomplete) {
+    return '<div class="snafu-password">' +
+      '<input id="snafu-auth-password" name="password" type="password" ' +
+        'autocomplete="' + autocomplete + '">' +
+      '<button class="snafu-password__toggle" type="button" data-password-toggle ' +
+        'aria-controls="snafu-auth-password" aria-label="Show password" aria-pressed="false">' +
+        '<svg class="snafu-password__eye" viewBox="0 0 16 16" aria-hidden="true">' +
+          '<path fill="currentColor" d="M1 7h2V5h2V3h6v2h2v2h2v2h-2v2h-2v2H5v-2H3V9H1V7zm5-1v4h4V6H6z"/>' +
+        '</svg>' +
+      '</button>' +
+    '</div>';
+  }
+
+  function setPasswordVisible(input, toggle, visible) {
+    input.type = visible ? 'text' : 'password';
+    toggle.setAttribute('aria-pressed', visible ? 'true' : 'false');
+    toggle.setAttribute('aria-label', visible ? 'Hide password' : 'Show password');
+  }
+
+  function resetPasswordVisibility() {
+    var input = overlay.querySelector('input[name="password"]');
+    var toggle = overlay.querySelector('[data-password-toggle]');
+    if (input && toggle) setPasswordVisible(input, toggle, false);
   }
 
   function onSubmit(e) {

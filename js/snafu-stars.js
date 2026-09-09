@@ -95,8 +95,8 @@
   // Batches every not-yet-resolved star into ONE POST /stars/state.
   function resolveState(btns) {
     var items = btns.map(idOf);
-    if (!items.length) return;
-    Auth.api('POST', '/stars/state', { items: items }).then(function (res) {
+    if (!items.length) return Promise.resolve();
+    return Auth.api('POST', '/stars/state', { items: items }).then(function (res) {
       var state = (res && res.state) || {};
       btns.forEach(function (btn) {
         var s = state[keyOf(btn)];
@@ -141,6 +141,13 @@
     var btn = e.currentTarget;
     if (btn.getAttribute('aria-disabled') === 'true') return;
 
+    if (Auth.current === undefined) {
+      // Session lookup is still in flight. Hold the intent until auth resolves
+      // instead of briefly treating an already-signed-in visitor as signed out.
+      pending = { btn: btn };
+      return;
+    }
+
     if (!Auth.current) {
       // signed out — hold intent, open the modal, complete after auth
       pending = { btn: btn };
@@ -176,9 +183,22 @@
   Auth.subscribe(function (user) {
     if (user === undefined) return;
     var signedIn = !!user;
+    var firstResolution = wasSignedIn === undefined;
     var became = signedIn && wasSignedIn === false;
     var loggedOut = !signedIn && wasSignedIn === true;
     wasSignedIn = signedIn;
+
+    if (firstResolution && pending && pending.btn) {
+      if (signedIn) {
+        var firstBtn = pending.btn; pending = null;
+        // Resolve the existing server state first, then honor this as a real
+        // toggle. This covers a click that lands before the initial state batch.
+        resolveState([firstBtn]).then(function () { toggle(firstBtn); });
+      } else if (window.SNAFU_openAuth) {
+        window.SNAFU_openAuth('signup', { context: 'Sign up to save this' });
+      }
+      return;
+    }
 
     if (became) {
       if (known.length) resolveState(known);  // one batched refresh
