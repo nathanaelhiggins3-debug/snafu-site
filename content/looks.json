@@ -1,0 +1,21 @@
+{
+  "looks": [
+    { "id": "01", "title": "Look 01", "cover": "IMG_0229.jpg", "photos": ["IMG_0229.jpg", "IMG_0233.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "02", "title": "Look 02", "cover": "IMG_0268.jpg", "photos": ["IMG_0268.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "03", "title": "Look 03", "cover": "IMG_0287.jpg", "photos": ["IMG_0287.jpg", "IMG_0313.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "04", "title": "Look 04", "cover": "IMG_0848.jpg", "photos": ["IMG_0848.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "05", "title": "Look 05", "cover": "IMG_0932.jpg", "photos": ["IMG_0932.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "06", "title": "Look 06", "cover": "IMG_1481.jpg", "photos": ["IMG_1481.jpg", "IMG_1490.jpg", "IMG_1559.jpg", "IMG_1589.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "07", "title": "Look 07", "cover": "IMG_2197.jpg", "photos": ["IMG_2185.jpg", "IMG_2197.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "08", "title": "Look 08", "cover": "IMG_2242.jpg", "photos": ["IMG_2237.jpg", "IMG_2242.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "09", "title": "Look 09", "cover": "IMG_2252.jpg", "photos": ["IMG_2252.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "10", "title": "Look 10", "cover": "IMG_3320.jpg", "photos": ["IMG_3320.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "11", "title": "Look 11", "cover": "IMG_3438.jpg", "photos": ["IMG_3428.jpg", "IMG_3433.jpg", "IMG_3438.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "12", "title": "Look 12", "cover": "IMG_6263.jpg", "photos": ["IMG_6263.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "13", "title": "Look 13", "cover": "IMG_6268.jpg", "photos": ["IMG_6267.jpg", "IMG_6268.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "14", "title": "Look 14", "cover": "IMG_8815.jpg", "photos": ["IMG_8815.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "15", "title": "Look 15", "cover": "IMG_8852.jpg", "photos": ["IMG_8852.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "16", "title": "Look 16", "cover": "IMG_8911.jpg", "photos": ["IMG_8911.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" },
+    { "id": "17", "title": "Look 17", "cover": "IMG_8938.jpg", "photos": ["IMG_8916.jpg", "IMG_8917.jpg", "IMG_8938.jpg"], "caption": "", "brands": "", "stylingIdeas": "", "explanation": "", "credits": "" }
+  ]
+}

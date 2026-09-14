@@ -531,7 +531,8 @@
   <script>
     // One data file powers both the cave-wall covers and the full-look viewer.
     (function () {
-      var looks = window.SNAFU_LOOKS || [];
+      var fallbackLooks = window.SNAFU_LOOKS || [];
+      var looks = fallbackLooks;
       var wall = document.getElementById('looks-wall');
       var dialog = document.createElement('dialog');
       dialog.className = 'look-dialog';
@@ -557,17 +558,27 @@
         dialog.querySelector('.dialog-close').addEventListener('click', function () { dialog.close(); });
         dialog.showModal();
       }
-      wall.insertAdjacentHTML('beforeend', looks.map(function (look) {
-        return '<a class="alcove" href="#look-' + look.id + '" data-look="' + look.id + '">' +
-          '<div class="frame"><div class="photo-window"><img src="' + imagePath(look.cover) + '" alt="' + escapeHtml(look.title) + '"></div></div>' +
-          '<div class="caption"><div class="num">' + look.id + '.</div><div class="name">' + escapeHtml(look.title) +
-          '</div><span class="margin-note">Open the look</span><span class="look-count">' + look.photos.length + ' photo' + (look.photos.length === 1 ? '' : 's') + '</span></div></a>';
-      }).join(''));
+      function renderLooks(looks) {
+        window.SNAFU_LOOKS = looks;
+        wall.querySelectorAll('[data-look]').forEach(function (card) { card.remove(); });
+        wall.insertAdjacentHTML('beforeend', looks.map(function (look) {
+          return '<a class="alcove" href="#look-' + look.id + '" data-look="' + look.id + '">' +
+            '<div class="frame"><div class="photo-window"><img src="' + imagePath(look.cover) + '" alt="' + escapeHtml(look.title) + '"></div></div>' +
+            '<div class="caption"><div class="num">' + look.id + '.</div><div class="name">' + escapeHtml(look.title) +
+            '</div><span class="margin-note">Open the look</span><span class="look-count">' + look.photos.length + ' photo' + (look.photos.length === 1 ? '' : 's') + '</span></div></a>';
+        }).join(''));
+      }
+      fetch('/content/looks.json', { cache: 'no-store' }).then(function (response) {
+        if (!response.ok) throw new Error('Could not load Looks.');
+        return response.json();
+      }).then(function (content) {
+        renderLooks(Array.isArray(content.looks) ? content.looks : fallbackLooks);
+      }).catch(function () { renderLooks(fallbackLooks); });
       wall.addEventListener('click', function (event) {
         var card = event.target.closest('.alcove');
         if (!card) return;
         event.preventDefault();
-        var look = looks.filter(function (item) { return item.id === card.dataset.look; })[0];
+        var look = (window.SNAFU_LOOKS || []).filter(function (item) { return item.id === card.dataset.look; })[0];
         if (look) openLook(look);
       });
     }());

@@ -1,0 +1,37 @@
+backend:
+  name: git-gateway
+  branch: main
+
+site_url: https://snafu.quest
+display_url: https://snafu.quest/gallery/
+publish_mode: simple
+
+media_folder: assets/looks
+public_folder: /assets/looks
+
+collections:
+  - name: looks
+    label: SNAFU Looks
+    files:
+      - name: looks
+        label: Looks
+        file: content/looks.json
+        format: json
+        fields:
+          - label: Looks
+            name: looks
+            widget: list
+            summary: "{{fields.id}} — {{fields.title}}"
+            fields:
+              - { label: Number, name: id, widget: string, hint: "Keep the two-digit number, e.g. 01." }
+              - { label: Title, name: title, widget: string }
+              - { label: Cover image file, name: cover, widget: string, hint: "Use an image file name from assets/looks, e.g. IMG_0229.jpg." }
+              - label: Supporting image files
+                name: photos
+                widget: list
+                field: { label: Image file, name: image, widget: string }
+              - { label: Caption, name: caption, widget: text, required: false }
+              - { label: Brands, name: brands, widget: text, required: false }
+              - { label: Styling ideas, name: stylingIdeas, widget: text, required: false }
+              - { label: Explanation, name: explanation, widget: text, required: false }
+              - { label: Credits, name: credits, widget: text, required: false }

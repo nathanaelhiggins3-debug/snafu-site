@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>SNAFU. — Looks Desk</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <script src="https://unpkg.com/decap-cms@3.6.0/dist/decap-cms.js"></script>
+  <script>
+    // Identity supplies the secure editor sign-in. Do not add a password to site code.
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', function (user) {
+        if (!user) window.netlifyIdentity.open();
+      });
+      window.netlifyIdentity.on('login', function () {
+        document.location.href = '/looks-desk/';
+      });
+      window.netlifyIdentity.init();
+    }
+  </script>
+</body>
+</html>
