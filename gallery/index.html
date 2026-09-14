@@ -233,39 +233,48 @@
   .frame {
     position: relative;
     aspect-ratio: 1 / 1;
-    background: url('../assets/cave-frame.png') center / 100% 100% no-repeat;
     image-rendering: pixelated;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* the interior of the frame art is roughly centered, ~72% of the tile */
-    padding: 14%;
+    overflow: hidden;
+    background: #07090a;
     box-shadow:
       calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.7),
       0 0 30px 4px rgba(232,143,58,.06);
   }
-  .frame .art {
+  /* The photo lives under the PNG, never on top of its stone border. */
+  .frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: url('../assets/cave-frame.png') center / 100% 100% no-repeat;
+    image-rendering: pixelated;
+  }
+  .photo-window {
+    position: absolute;
+    inset: 27% 24% 18%;
+    z-index: 1;
+    overflow: hidden;
+    background: #060708;
+  }
+  .photo-window img {
+    display: block;
     width: 100%;
     height: 100%;
-    background: var(--damp);
-    image-rendering: pixelated;
+    object-fit: contain;
+    object-position: center;
+  }
+  .legacy-window {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--stone-warm);
+    padding: 8px;
+    color: var(--wheat);
     font-family: var(--display);
     font-size: clamp(8px, .9vw, 10px);
-    letter-spacing: .2em;
+    letter-spacing: .1em;
     text-align: center;
   }
-  .frame .art.filled {
-    background-size: cover;
-    background-position: center;
-  }
-  .frame .art .placeholder {
-    opacity: .55;
-  }
-  .frame .art .placeholder::before { content: '\25C7  '; color: var(--torch); }
 
   /* hover: torch flicker on the frame glow */
   .alcove:hover .frame {
@@ -315,6 +324,72 @@
     text-shadow: var(--px) var(--px) 0 rgba(2,2,0,.6);
   }
   .caption .margin-note::before { content: '\2014  '; color: var(--rose); }
+
+  .look-count {
+    display: inline-block;
+    margin-top: 7px;
+    color: var(--torch);
+    font-family: var(--display);
+    font-size: 8px;
+    letter-spacing: .12em;
+  }
+
+  /* Full-look viewer: keeps alternate angles available without crowding the wall. */
+  .look-dialog {
+    width: min(920px, calc(100vw - 28px));
+    max-height: min(860px, calc(100dvh - 28px));
+    padding: clamp(16px, 3vw, 30px);
+    color: var(--cream);
+    background: #13191a;
+    border: var(--px) solid var(--stone-warm);
+    box-shadow: 0 0 0 var(--px) var(--ink), 0 0 44px 8px rgba(232,143,58,.25);
+  }
+  .look-dialog::backdrop { background: rgba(2, 4, 5, .82); }
+  .dialog-close {
+    float: right;
+    padding: 8px 10px;
+    border: var(--px) solid var(--cream);
+    color: var(--cream);
+    background: var(--ink);
+    font-family: var(--display);
+    font-size: 9px;
+    cursor: pointer;
+  }
+  .dialog-close:hover { color: var(--ink); background: var(--cream); }
+  .look-dialog h3 {
+    margin: 8px 80px 20px 0;
+    color: var(--wheat);
+    font-family: var(--display);
+    font-size: clamp(16px, 3vw, 24px);
+    line-height: 1.35;
+  }
+  .look-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+    gap: 12px;
+  }
+  .look-photos img {
+    width: 100%;
+    max-height: 62dvh;
+    object-fit: contain;
+    background: #060708;
+    border: 2px solid var(--stone-cool);
+  }
+  .look-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .look-field {
+    min-height: 58px;
+    padding: 10px;
+    border-left: var(--px) solid var(--torch);
+    background: rgba(0,0,0,.22);
+  }
+  .look-field b { display: block; font-family: var(--display); font-size: 8px; color: var(--torch); letter-spacing: .08em; }
+  .look-field span { display: block; margin-top: 7px; color: var(--wheat); font-size: 14px; }
+  .look-field .pending { opacity: .68; font-style: italic; }
 
   /* ---------- SCROLL DEPTH INDICATOR ---------- */
   .depth {
@@ -424,103 +499,16 @@
   <section class="descent" id="descent" aria-label="Gallery wall">
     <div class="descent-heading">
       <span class="eyebrow">On the walls</span>
-      <h2>Paintings, campaigns, moments</h2>
+      <h2>SNAFU Looks</h2>
     </div>
 
-    <div class="wall">
-      <!--
-        Alcove template. To add a real image later, set the .art element to:
-          <div class="art filled" style="background-image:url('../assets/gal/your-image.png')"></div>
-        And point the <a> href to the detail page: /gallery/your-slug/
-      -->
-
+    <div class="wall" id="looks-wall">
       <a class="alcove" href="/gallery/pet-rats/">
-        <div class="frame"><div class="art"><span class="placeholder">Pet Rats</span></div></div>
+        <div class="frame"><div class="photo-window legacy-window"><span>Pet Rats</span></div></div>
         <div class="caption">
           <div class="num">i.</div>
           <div class="name">Pet Rats</div>
           <span class="margin-note">live show</span>
-        </div>
-      </a>
-
-      <a class="alcove" href="#">
-        <div class="frame"><div class="art"><span class="placeholder">empty alcove</span></div></div>
-        <div class="caption">
-          <div class="num">ii.</div>
-          <div class="name">Untitled</div>
-          <span class="margin-note">to be filled</span>
-        </div>
-      </a>
-
-      <a class="alcove" href="#">
-        <div class="frame"><div class="art"><span class="placeholder">empty alcove</span></div></div>
-        <div class="caption">
-          <div class="num">iii.</div>
-          <div class="name">Untitled</div>
-          <span class="margin-note">to be filled</span>
-        </div>
-      </a>
-
-      <a class="alcove" href="#">
-        <div class="frame"><div class="art"><span class="placeholder">empty alcove</span></div></div>
-        <div class="caption">
-          <div class="num">iv.</div>
-          <div class="name">Untitled</div>
-          <span class="margin-note">to be filled</span>
-        </div>
-      </a>
-
-      <a class="alcove" href="#">
-        <div class="frame"><div class="art"><span class="placeholder">empty alcove</span></div></div>
-        <div class="caption">
-          <div class="num">v.</div>
-          <div class="name">Untitled</div>
-          <span class="margin-note">to be filled</span>
-        </div>
-      </a>
-
-      <a class="alcove" href="#">
-        <div class="frame"><div class="art"><span class="placeholder">empty alcove</span></div></div>
-        <div class="caption">
-          <div class="num">vi.</div>
-          <div class="name">Untitled</div>
-          <span class="margin-note">to be filled</span>
-        </div>
-      </a>
-
-      <a class="alcove" href="#">
-        <div class="frame"><div class="art"><span class="placeholder">empty alcove</span></div></div>
-        <div class="caption">
-          <div class="num">vii.</div>
-          <div class="name">Untitled</div>
-          <span class="margin-note">to be filled</span>
-        </div>
-      </a>
-
-      <a class="alcove" href="#">
-        <div class="frame"><div class="art"><span class="placeholder">empty alcove</span></div></div>
-        <div class="caption">
-          <div class="num">viii.</div>
-          <div class="name">Untitled</div>
-          <span class="margin-note">to be filled</span>
-        </div>
-      </a>
-
-      <a class="alcove" href="#">
-        <div class="frame"><div class="art"><span class="placeholder">empty alcove</span></div></div>
-        <div class="caption">
-          <div class="num">ix.</div>
-          <div class="name">Untitled</div>
-          <span class="margin-note">to be filled</span>
-        </div>
-      </a>
-
-      <a class="alcove" href="#">
-        <div class="frame"><div class="art"><span class="placeholder">empty alcove</span></div></div>
-        <div class="caption">
-          <div class="num">x.</div>
-          <div class="name">Untitled</div>
-          <span class="margin-note">to be filled</span>
         </div>
       </a>
 
@@ -539,7 +527,51 @@
     </div>
   </footer>
 
+  <script src="/js/looks-data.js"></script>
   <script>
+    // One data file powers both the cave-wall covers and the full-look viewer.
+    (function () {
+      var looks = window.SNAFU_LOOKS || [];
+      var wall = document.getElementById('looks-wall');
+      var dialog = document.createElement('dialog');
+      dialog.className = 'look-dialog';
+      document.body.appendChild(dialog);
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>'"]/g, function (character) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character];
+        });
+      }
+      function imagePath(filename) { return '../assets/looks/' + encodeURIComponent(filename); }
+      function field(label, value) {
+        return '<div class="look-field"><b>' + label + '</b><span class="' + (value ? '' : 'pending') + '">' +
+          (value ? escapeHtml(value) : 'Awaiting edit') + '</span></div>';
+      }
+      function openLook(look) {
+        dialog.innerHTML = '<button class="dialog-close" type="button">Close</button><h3>' + escapeHtml(look.title) +
+          '</h3><div class="look-photos">' + look.photos.map(function (photo) {
+            return '<img src="' + imagePath(photo) + '" alt="' + escapeHtml(look.title) + '">';
+          }).join('') + '</div><div class="look-fields">' +
+          field('Caption', look.caption) + field('Brands', look.brands) + field('Styling ideas', look.stylingIdeas) +
+          field('Explanation', look.explanation) + field('Credits', look.credits) + '</div>';
+        dialog.querySelector('.dialog-close').addEventListener('click', function () { dialog.close(); });
+        dialog.showModal();
+      }
+      wall.insertAdjacentHTML('beforeend', looks.map(function (look) {
+        return '<a class="alcove" href="#look-' + look.id + '" data-look="' + look.id + '">' +
+          '<div class="frame"><div class="photo-window"><img src="' + imagePath(look.cover) + '" alt="' + escapeHtml(look.title) + '"></div></div>' +
+          '<div class="caption"><div class="num">' + look.id + '.</div><div class="name">' + escapeHtml(look.title) +
+          '</div><span class="margin-note">Open the look</span><span class="look-count">' + look.photos.length + ' photo' + (look.photos.length === 1 ? '' : 's') + '</span></div></a>';
+      }).join(''));
+      wall.addEventListener('click', function (event) {
+        var card = event.target.closest('.alcove');
+        if (!card) return;
+        event.preventDefault();
+        var look = looks.filter(function (item) { return item.id === card.dataset.look; })[0];
+        if (look) openLook(look);
+      });
+    }());
+
     // Scene swap on scroll + depth indicator.
     // Three background layers cross-fade in stepped opacity as you descend.
     (function () {
