@@ -94,6 +94,7 @@ module.exports = async (req, res) => {
     if (!isSameOrigin(req)) return send(res, 403, { message: 'This request came from another site.' });
     const body = await json(req);
     if (body.action === 'login') {
+      if (!process.env.LOOKS_EDITOR_PASSWORD) return send(res, 503, { message: 'The Desk password is not configured in Vercel yet.' });
       if (!validPassword(body.password)) return send(res, 401, { message: 'That password is not right.' });
       return send(res, 200, { looks: await storedLooks() }, { 'Set-Cookie': editorCookie() });
     }
