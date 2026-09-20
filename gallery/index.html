@@ -568,7 +568,7 @@
             '</div><span class="margin-note">Open the look</span><span class="look-count">' + look.photos.length + ' photo' + (look.photos.length === 1 ? '' : 's') + '</span></div></a>';
         }).join(''));
       }
-      fetch('/content/looks.json', { cache: 'no-store' }).then(function (response) {
+      fetch('/api/looks', { cache: 'no-store' }).then(function (response) {
         if (!response.ok) throw new Error('Could not load Looks.');
         return response.json();
       }).then(function (content) {

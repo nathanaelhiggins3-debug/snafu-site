@@ -631,3 +631,12 @@ const SNAFU_SHOP = [
 // Isomorphic export — browser gets window.SNAFU_SHOP, Node (Vercel /api/) gets module.exports.
 if (typeof window !== 'undefined') window.SNAFU_SHOP = SNAFU_SHOP;
 if (typeof module !== 'undefined' && module.exports) module.exports = SNAFU_SHOP;
+if (typeof window !== 'undefined') {
+  try { const saved = JSON.parse(sessionStorage.getItem('snafu.shop.catalog') || 'null'); if (Array.isArray(saved)) window.SNAFU_SHOP = saved; } catch (e) {}
+  fetch('/api/catalog', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(data => {
+    if (!data || !Array.isArray(data.shop)) return;
+    window.SNAFU_SHOP = data.shop;
+    try { sessionStorage.setItem('snafu.shop.catalog', JSON.stringify(data.shop)); } catch (e) {}
+    window.dispatchEvent(new CustomEvent('snafu:shop-updated'));
+  }).catch(() => {});
+}

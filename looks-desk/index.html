@@ -5,21 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>SNAFU. — Looks Desk</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    :root { --ink:#0c1412; --cream:#f2e4c4; --wheat:#e8d29a; --gold:#e3aa4d; --red:#b8352b; --px:3px; --display:'Courier New',monospace; --body:system-ui,sans-serif; }
+    * { box-sizing:border-box; } body { margin:0; min-height:100svh; background:#111917; color:var(--cream); font-family:var(--body); }
+    .shell { width:min(760px,100%); margin:0 auto; padding:20px 14px 44px; } .back { color:var(--cream); font:700 12px var(--display); text-decoration:none; letter-spacing:.08em; }
+    h1 { margin:28px 0 6px; font:900 clamp(25px,8vw,40px) var(--display); color:var(--wheat); letter-spacing:-.08em; } .intro,.status { color:var(--wheat); line-height:1.45; } .status { min-height:1.5em; font-size:14px; } .status.error { color:#ffd2c9; } .status.good { color:#a8dfb4; }
+    .panel { margin-top:22px; padding:16px; background:#17211f; border:var(--px) solid var(--cream); box-shadow:5px 5px 0 rgba(0,0,0,.45); }
+    label { display:block; margin-top:15px; font:700 12px var(--display); letter-spacing:.06em; color:var(--wheat); } input,textarea,select,button { font:inherit; } input,textarea,select { width:100%; margin-top:7px; padding:11px; color:var(--ink); background:var(--cream); border:var(--px) solid var(--ink); border-radius:0; font-size:16px; } textarea { min-height:100px; resize:vertical; }
+    button { min-height:46px; margin-top:18px; padding:10px 14px; cursor:pointer; border:var(--px) solid var(--cream); background:var(--gold); color:var(--ink); font:800 12px var(--display); letter-spacing:.06em; } button:hover { background:var(--cream); } button.secondary { margin-left:10px; background:transparent; color:var(--cream); } button:disabled { opacity:.55; cursor:wait; }
+    .hidden { display:none !important; } .photo-note { margin:7px 0 0; color:rgba(242,228,196,.68); font-size:13px; line-height:1.4; } .savebar { position:sticky; bottom:0; display:flex; gap:8px; align-items:center; padding:12px 0 2px; background:linear-gradient(0deg,#111917 70%,transparent); } .savebar button { flex:1; margin:0; }
+  </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@3.6.0/dist/decap-cms.js"></script>
+  <main class="shell">
+    <a class="back" href="/gallery/">◂ Back to Gallery</a>
+    <h1>Looks Desk</h1>
+    <p class="intro">Private caption desk. Save changes here and the gallery updates live.</p>
+    <section class="panel" id="login-panel">
+      <label for="password">Desk password</label><input id="password" type="password" autocomplete="current-password">
+      <button id="login" type="button">Enter Desk</button><p class="status" id="login-status" role="alert"></p>
+    </section>
+    <div class="hidden" id="desk-tabs"><button type="button" data-desk="looks">Looks</button><button type="button" data-desk="shop">Shop + Deals</button></div>
+    <section class="panel hidden" id="editor-panel">
+      <label for="look-picker">Choose a look</label><select id="look-picker"></select>
+      <label for="title">Title</label><input id="title" type="text">
+      <label for="caption">Caption</label><textarea id="caption"></textarea>
+      <label for="brands">Brands</label><textarea id="brands"></textarea>
+      <label for="stylingIdeas">Styling ideas</label><textarea id="stylingIdeas"></textarea>
+      <label for="explanation">Explanation</label><textarea id="explanation"></textarea>
+      <label for="credits">Credits</label><textarea id="credits"></textarea>
+      <p class="photo-note" id="photo-note"></p>
+      <div class="savebar"><button id="save" type="button">Save live</button><button class="secondary" id="logout" type="button">Lock</button></div>
+      <p class="status" id="editor-status" role="status"></p>
+    </section>
+    <section class="panel hidden" id="shop-panel">
+      <label for="product-picker">Choose shop item</label><select id="product-picker"></select>
+      <label for="product-name">Name</label><input id="product-name" type="text">
+      <label for="product-brand">Brand</label><input id="product-brand" type="text">
+      <label for="product-price">Current price</label><input id="product-price" type="number" min="0" step="0.01">
+      <label for="product-originalPrice">Was price — leave blank for no sale price</label><input id="product-originalPrice" type="number" min="0" step="0.01">
+      <label for="product-size">Size</label><input id="product-size" type="text">
+      <label for="product-condition">Condition</label><textarea id="product-condition"></textarea>
+      <label for="product-note">SNAFU line / item description</label><textarea id="product-note"></textarea>
+      <label><input id="product-sold" type="checkbox" style="width:auto;margin-right:8px"> Mark as sold</label>
+      <div class="savebar"><button id="save-shop" type="button">Save shop live</button><button class="secondary" id="logout-shop" type="button">Lock</button></div>
+      <p class="status" id="shop-status" role="status"></p>
+    </section>
+  </main>
   <script>
-    // Identity supplies the secure editor sign-in. Do not add a password to site code.
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', function (user) {
-        if (!user) window.netlifyIdentity.open();
-      });
-      window.netlifyIdentity.on('login', function () {
-        document.location.href = '/looks-desk/';
-      });
-      window.netlifyIdentity.init();
-    }
+  (function () {
+    var looks = [], active = 0, shop = [], activeShop = 0; var $ = function (id) { return document.getElementById(id); };
+    var loginPanel = $('login-panel'), editorPanel = $('editor-panel'); var fields = ['title', 'caption', 'brands', 'stylingIdeas', 'explanation', 'credits'];
+    function status(id, message, state) { var el = $(id); el.textContent = message || ''; el.className = 'status' + (state ? ' ' + state : ''); }
+    function escapeHtml(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+    function drawPicker() { $('look-picker').innerHTML = looks.map(function (look, index) { return '<option value="' + index + '">' + escapeHtml(look.id + ' — ' + look.title) + '</option>'; }).join(''); }
+    function drawLook() { var look = looks[active]; if (!look) return; $('look-picker').value = active; fields.forEach(function (name) { $(name).value = look[name] || ''; }); $('photo-note').textContent = 'Cover: ' + look.cover + ' · Photos: ' + (look.photos || []).join(', '); }
+    function readLook() { var look = looks[active]; fields.forEach(function (name) { look[name] = $(name).value.trim(); }); }
+    function openDesk(data) { looks = data.looks || []; drawPicker(); active = 0; drawLook(); loginPanel.classList.add('hidden'); editorPanel.classList.remove('hidden'); $('desk-tabs').classList.remove('hidden'); }
+    function drawShopPicker() { $('product-picker').innerHTML = shop.map(function (item, index) { return '<option value="' + index + '">' + escapeHtml(item.id + ' — ' + item.name) + '</option>'; }).join(''); }
+    function drawShop() { var item = shop[activeShop]; if (!item) return; $('product-picker').value = activeShop; ['name','brand','price','originalPrice','size','condition','note'].forEach(function (key) { $('product-' + key).value = item[key] == null ? '' : item[key]; }); $('product-sold').checked = !!item.sold; }
+    function readShop() { var item = shop[activeShop]; ['name','brand','size','condition','note'].forEach(function (key) { item[key] = $('product-' + key).value.trim(); }); item.price = Number($('product-price').value); item.originalPrice = $('product-originalPrice').value === '' ? null : Number($('product-originalPrice').value); item.sold = $('product-sold').checked; }
+    function openShop(data) { shop = data.shop || []; drawShopPicker(); activeShop = 0; drawShop(); }
+    function request(url, options) { return fetch(url, options).then(function (response) { return response.json().catch(function(){ return {}; }).then(function (data) { if (!response.ok) throw new Error(data.message || 'Something went wrong.'); return data; }); }); }
+    $('login').addEventListener('click', function () { var button = $('login'), password = $('password').value; if (!password) { status('login-status','Enter your password.','error'); return; } button.disabled = true; status('login-status','Checking…'); request('/api/looks', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'login',password:password})}).then(function (data) { $('password').value = ''; openDesk(data); return request('/api/catalog'); }).then(openShop, function (error) { status('login-status',error.message,'error'); }).finally(function(){ button.disabled = false; }); });
+    $('password').addEventListener('keydown', function (event) { if (event.key === 'Enter') $('login').click(); });
+    $('look-picker').addEventListener('change', function () { readLook(); active = Number(this.value); drawLook(); });
+    $('save').addEventListener('click', function () { readLook(); var button = $('save'); button.disabled = true; status('editor-status','Saving live…'); request('/api/looks', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',looks:looks})}).then(function (data) { looks = data.looks || looks; drawPicker(); drawLook(); status('editor-status','Live.','good'); }, function (error) { status('editor-status',error.message,'error'); }).finally(function(){ button.disabled = false; }); });
+    $('logout').addEventListener('click', lock);
+    $('product-picker').addEventListener('change', function () { readShop(); activeShop = Number(this.value); drawShop(); });
+    $('save-shop').addEventListener('click', function () { readShop(); var button = $('save-shop'); button.disabled = true; status('shop-status','Saving live…'); request('/api/catalog', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({shop:shop})}).then(function (data) { shop = data.shop || shop; drawShopPicker(); drawShop(); status('shop-status','Live.','good'); }, function (error) { status('shop-status',error.message,'error'); }).finally(function(){ button.disabled = false; }); });
+    function lock() { request('/api/looks', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'logout'})}).finally(function(){ editorPanel.classList.add('hidden'); $('shop-panel').classList.add('hidden'); $('desk-tabs').classList.add('hidden'); loginPanel.classList.remove('hidden'); status('login-status','Desk locked.'); }); }
+    $('logout-shop').addEventListener('click', lock);
+    document.querySelectorAll('[data-desk]').forEach(function (button) { button.addEventListener('click', function () { var isShop = this.dataset.desk === 'shop'; editorPanel.classList.toggle('hidden', isShop); $('shop-panel').classList.toggle('hidden', !isShop); }); });
+  }());
   </script>
 </body>
 </html>
