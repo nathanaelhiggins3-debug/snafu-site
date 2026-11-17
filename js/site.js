@@ -76,6 +76,32 @@
       body.snafu-menu-open { overflow: hidden; }
       /* The menu replaces the old in-scene "Back to the clearing" buttons. */
       .path-back[href="/"] { display: none !important; }
+
+      /* ---- Readability layer (all pages) ----
+         One crisp pixel shadow on big titles instead of stacked outlines + ghost drops.
+         Small text gets no shadow and normal tracking. Long reading text uses the
+         phone's own clean font; pixel type stays for titles, labels and buttons. */
+      .title h1, h1.wordmark, .descent-heading h2, .latest-head h2 {
+        text-shadow: 3px 3px 0 #0c1412 !important;
+      }
+      .title .lede, .pron, .definition, .brand-line, .start, .shop-now, .cue,
+      .descent-heading .eyebrow, .latest-label, .end .marker, .end .colophon,
+      .eyebrow, .sec-title, .curation-eyebrow {
+        text-shadow: none !important;
+      }
+      .title {
+        background: rgba(12,20,18,.78);
+        border: 2px solid rgba(242,228,196,.16);
+        padding: 16px 18px 18px;
+        max-width: min(92vw, 640px);
+      }
+      .title .lede { letter-spacing: .03em !important; line-height: 1.45; margin-top: 14px !important; }
+      .sec p, .curation-body, .post-caption, .post-note, .piece p, .hero-line,
+      .index-intro, .definition, .brand-line, .doc p {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+        letter-spacing: 0 !important;
+        -webkit-font-smoothing: antialiased;
+      }
       @media (prefers-reduced-motion: reduce) { .snafu-menu, .snafu-menu.open { transition: none; } }
     `;
     document.head.appendChild(style);
