@@ -96,12 +96,35 @@
         max-width: min(92vw, 640px);
       }
       .title .lede { letter-spacing: .03em !important; line-height: 1.45; margin-top: 14px !important; }
+      /* Type: keep the pixel fonts. Pixelify Sans for everything you read, just set
+         clean: no shadow, near-normal tracking, real size and line height. */
       .sec p, .curation-body, .post-caption, .post-note, .piece p, .hero-line,
-      .index-intro, .definition, .brand-line, .doc p {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
-        letter-spacing: 0 !important;
-        -webkit-font-smoothing: antialiased;
+      .index-intro, .definition, .brand-line, .doc p, .title .lede {
+        font-family: 'Pixelify Sans', monospace !important;
+        font-weight: 500 !important;
+        letter-spacing: .02em !important;
+        text-shadow: none !important;
+        -webkit-font-smoothing: none;
       }
+      .sec p, .curation-body, .doc p { font-size: 18px !important; line-height: 1.65 !important; }
+      .hero-line { font-size: 21px !important; line-height: 1.5 !important; }
+      .title .lede { font-size: 16px !important; line-height: 1.5 !important; }
+      .post-caption { font-size: 18px !important; line-height: 1.5 !important; }
+      .post-note { font-size: 16px !important; line-height: 1.55 !important; }
+      .definition, .brand-line { font-size: 18px !important; line-height: 1.5 !important; }
+      .hero-line em, .sec em { font-style: normal !important; color: #e3aa4d; }
+      /* Labels: tighter tracking so they read as words, not letters. */
+      .eyebrow, .sec-title, .curation-eyebrow, .latest-label, .descent-heading .eyebrow, .end .marker {
+        letter-spacing: .1em !important;
+      }
+      /* Scroll hints ("Read ▾", "Enter ▾") retired; the content is already in view. */
+      .arrive .cue, .title-screen .cue { display: none !important; }
+      /* CRT toggle sits in the menu instead of floating over content. */
+      .snafu-crt-btn.in-menu { position: static !important; margin: 0; padding: 8px 2px !important; border: 0 !important;
+        background: none !important; box-shadow: none !important; font-family: 'Press Start 2P', monospace; font-size: 9px;
+        letter-spacing: .12em; color: rgba(242,228,196,.75); cursor: pointer; }
+      .snafu-crt-btn.in-menu::after { display: none !important; }
+      .snafu-crt-btn.in-menu[aria-pressed="true"] { color: #e3aa4d; }
       @media (prefers-reduced-motion: reduce) { .snafu-menu, .snafu-menu.open { transition: none; } }
     `;
     document.head.appendChild(style);
@@ -242,6 +265,7 @@
     function apply() {
       document.body.classList.toggle('snafu-crt-on', on);
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.textContent = on ? 'CRT: ON' : 'CRT: OFF';
     }
     btn.addEventListener('click', function () {
       on = !on;
@@ -249,6 +273,8 @@
       apply();
     });
     apply();
-    document.body.appendChild(btn);
+    var slot = document.querySelector('.snafu-menu .minor');
+    if (slot) { btn.classList.add('in-menu'); slot.appendChild(btn); }
+    else document.body.appendChild(btn);
   }
 })();
