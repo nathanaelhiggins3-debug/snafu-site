@@ -254,6 +254,7 @@ a { color: inherit; }
   font-family: var(--display); font-size: 9px; letter-spacing: .16em;
   color: var(--wheat); text-transform: uppercase;
 }
+.measurements .m dd small { font-size: .7em; opacity: .7; }
 .measurements .m dd {
   font-family: var(--body); font-size: 18px; color: var(--cream);
 }
@@ -443,7 +444,7 @@ if (!product) {
   let measurementsHTML = '';
   if (product.measurements && Object.keys(product.measurements).length) {
     const items = Object.entries(product.measurements).map(([k, v]) => `
-      <dl class="m"><dt>${k}</dt><dd>${v}"</dd></dl>
+      <dl class="m"><dt>${k}</dt><dd>${v}"${product.measurementsCm && product.measurementsCm[k] ? ` <small>/ ${product.measurementsCm[k]}cm</small>` : ''}</dd></dl>
     `).join('');
     measurementsHTML = `
       <section class="measurements">
