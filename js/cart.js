@@ -70,7 +70,7 @@
       sub = [entry.edition, entry.drop].filter(Boolean).join("  ·  ");
       href = "/goods/#" + entry.id;
     } else {
-      image = entry.coverImage || (entry.images && entry.images[0]) || "";
+      image = (entry.cutouts && entry.cutouts[0]) || entry.coverImage || (entry.images && entry.images[0]) || "";
       sub = [entry.year, entry.origin, entry.size].filter(Boolean).join("  ·  ");
       href = "/shop/product.html?id=" + entry.id;
     }

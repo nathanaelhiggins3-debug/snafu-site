@@ -31,20 +31,28 @@
     <a class="backlink" href="../shop/">&larr; Back to the Shop</a>
   </section>
 
-  <!-- Purchase event: each Stripe Payment Link redirects here with ?item=<shop id>.
-       Fires once per checkout session (reloads don't double count). -->
+  <!-- Purchase event. Buy now links land here with ?item=<id>; the bag
+       checkout lands with ?items=<id,id>. Fires once per checkout session
+       (reloads don't double count). A bag purchase also locks each piece's
+       Buy now link and empties those pieces from the bag. -->
   <script src="../js/shop-data.js"></script>
+  <script src="../js/cart.js"></script>
   <script>
     (function () {
       var q = new URLSearchParams(location.search);
-      var id = q.get('item'), sid = q.get('session_id') || '';
-      var piece = (window.SNAFU_SHOP || []).filter(function (p) { return p.id === id; })[0];
-      if (!piece) return;
-      var key = 'snafu.purchase.' + (sid || id);
+      var ids = (q.get('items') || q.get('item') || '').split(',').filter(Boolean);
+      var sid = q.get('session_id') || '';
+      var pieces = (window.SNAFU_SHOP || []).filter(function (p) { return ids.indexOf(p.id) > -1; });
+      if (!pieces.length) return;
+      if (window.SNAFU_CART) pieces.forEach(function (p) { window.SNAFU_CART.remove(p.id); });
+      if (q.get('items') && sid) fetch('/api/checkout?confirm=' + encodeURIComponent(sid)).catch(function () {});
+      var key = 'snafu.purchase.' + (sid || ids.join(','));
       try { if (localStorage.getItem(key)) return; localStorage.setItem(key, '1'); } catch (e) {}
+      var skus = pieces.map(function (p) { return p.sku || p.id; });
+      var total = pieces.reduce(function (s, p) { return s + Number(p.price || 0); }, 0);
       var fire = function () {
-        if (typeof snafuTrackPurchase === 'function') return snafuTrackPurchase([piece.sku || piece.id], piece.price);
-        if (window.fbq) fbq('track', 'Purchase', { value: piece.price, currency: 'USD', content_ids: [piece.sku || piece.id], content_type: 'product' });
+        if (typeof snafuTrackPurchase === 'function') return snafuTrackPurchase(skus, total);
+        if (window.fbq) fbq('track', 'Purchase', { value: total, currency: 'USD', content_ids: skus, content_type: 'product' });
       };
       if (document.readyState === 'complete') fire(); else window.addEventListener('load', fire);
     })();

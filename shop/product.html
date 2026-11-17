@@ -71,8 +71,10 @@ a { color: inherit; }
 .stage .slide {
   flex: 0 0 100%; scroll-snap-align: center;
   display: grid; place-items: center;
-  height: min(78svh, 620px); padding: 8px 0 18px;
+  height: min(42svh, 400px); padding: 6px 0 12px;
+  grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(0, 1fr);
 }
+.stage .slide img { min-height: 0; min-width: 0; }
 .stage .slide img { image-rendering: auto; display: block; max-width: 100%; max-height: 100%; }
 .stage .slide.cut img {
   object-fit: contain; width: 100%; height: 100%;
@@ -178,7 +180,10 @@ a { color: inherit; }
 /* ── BUY / ADD ── */
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .actions > * { flex: 1 1 140px; }
-.actions button, .actions a.buy {
+.actions > .buy { flex-basis: 100%; }
+.actions .bag { background: transparent; color: var(--cream); }
+.actions .bag.in { background: var(--cream); color: var(--ink); }
+.actions button, .actions a.buy, .actions a.bag {
   display: inline-block; text-decoration: none; text-align: center;
   font-family: var(--display); font-size: 11px; letter-spacing: .16em;
   padding: 14px 20px;
@@ -327,7 +332,7 @@ a { color: inherit; }
 /* ── YOU'D ALSO LIKE ── */
 .also .agrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: clamp(10px, 2vw, 16px);
 }
 .also .card {
@@ -347,14 +352,16 @@ a { color: inherit; }
   padding: 4px 7px; z-index: 2;
 }
 .also .card .thumb {
-  aspect-ratio: 1 / 1; background: var(--wheat);
+  aspect-ratio: 1 / 1; background: #f2e4c4; position: relative; z-index: 1;
   border-bottom: var(--px) solid var(--cream);
   display: grid; place-items: center;
   font-family: var(--display); font-size: 9px; color: var(--loam); letter-spacing: .12em;
-  text-align: center; padding: 10px; overflow: hidden;
+  text-align: center; padding: 14px; overflow: hidden;
 }
 .also .card.card--deal .thumb { border-bottom-color: var(--deal); }
 .also .card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.also .card .thumb img.cut { object-fit: contain; image-rendering: auto; background: none;
+  filter: drop-shadow(0 8px 8px rgba(0,0,0,.28)); }
 .also .card .info { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
 .also .card .name { font-family: var(--body); font-size: 14px; letter-spacing: .02em; }
 .also .card .price { font-family: var(--display); font-size: 10px; color: var(--gold); letter-spacing: .1em; }
@@ -406,13 +413,13 @@ a { color: inherit; }
 <header class="top">
   <a class="back" href="index.html">Back to the market</a>
   <a class="pack empty-pack" id="pack" data-cart-badge href="/cart/">
-    PACK <span class="count" id="packCount" data-cart-count>0</span>
+    BAG <span class="count" id="packCount" data-cart-count>0</span>
   </a>
 </header>
 
 <main id="main"></main>
 
-<div class="toast" id="toast">ADDED TO PACK</div>
+<div class="toast" id="toast">ADDED TO BAG</div>
 
 <footer class="colophon">
   <div class="row1">SNAFU. &nbsp;·&nbsp; SHOP &nbsp;·&nbsp; LOS ANGELES</div>
@@ -523,7 +530,7 @@ if (!product) {
     const price = d && p.originalPrice
       ? `<div class="price-row"><span class="price-was">$${p.originalPrice}</span><span class="price">$${p.price}</span></div>`
       : `<div class="price">$${p.price}</div>`;
-    const thumb = (p.cutouts && p.cutouts[0]) ? `<img src="${p.cutouts[0]}" alt="${p.name}" loading="lazy" style="object-fit:contain;background:#0c1412;image-rendering:auto">` : p.coverImage
+    const thumb = (p.cutouts && p.cutouts[0]) ? `<img class="cut" src="${p.cutouts[0]}" alt="${p.name}" loading="lazy">` : p.coverImage
       ? `<img src="${p.coverImage}" alt="${p.name}">`
       : p.name.toUpperCase();
     return `
@@ -576,7 +583,8 @@ if (!product) {
         ${product.sold
           ? `<button class="buy" disabled>SOLD</button>`
           : product.paymentLink
-            ? `<a class="buy" id="buyBtn" href="${product.paymentLink}" rel="noopener">BUY NOW · $${product.price}</a>`
+            ? `<a class="buy" id="buyBtn" href="${product.paymentLink}" rel="noopener">BUY NOW · $${product.price}</a>
+               <button class="bag" id="bagBtn" type="button">+ ADD TO BAG</button>`
             : `<button class="buy pending" disabled title="This piece is not open for checkout yet.">COMING SOON</button>`}
         <button class="add snafu-save" id="saveBtn" type="button" ${product.sold ? 'disabled' : ''}>☆ SAVE</button>
       </div>
@@ -637,6 +645,36 @@ if (!product) {
     saveBtn.addEventListener('click', () => { star.click(); setTimeout(sync, 400); });
     new MutationObserver(sync).observe(star, { attributes: true, attributeFilter: ['class'] });
   }
+  // Bag: one-of-one, so a second tap just opens the bag.
+  const bagBtn = document.getElementById('bagBtn');
+  const syncBag = () => {
+    if (!bagBtn || !window.SNAFU_CART) return;
+    const inBag = window.SNAFU_CART.has(product.id);
+    bagBtn.classList.toggle('in', inBag);
+    bagBtn.textContent = inBag ? 'IN YOUR BAG · VIEW' : '+ ADD TO BAG';
+  };
+  if (bagBtn) {
+    syncBag();
+    window.addEventListener('snafu:cart', syncBag);
+    bagBtn.addEventListener('click', () => {
+      if (window.SNAFU_CART.has(product.id)) { location.href = '/cart/'; return; }
+      window.SNAFU_CART.add(product.id, 'shop');
+      showToast('ADDED TO BAG');
+      if (typeof snafuTrackAddToCart === 'function') snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);
+    });
+  }
+
+  // Live check: if the piece already sold through Stripe, say so.
+  if (!product.sold && product.paymentLinkId) {
+    fetch('/api/checkout?status=' + product.id).then(r => r.ok ? r.json() : null).then(d => {
+      if (!d || !(d.sold || []).includes(product.id)) return;
+      const acts = document.querySelector('.actions');
+      if (acts) acts.innerHTML = '<button class="buy" disabled>SOLD</button>';
+      const cc = document.querySelector('.claim-check'); if (cc) cc.remove();
+      if (window.SNAFU_CART) window.SNAFU_CART.remove(product.id);
+    }).catch(() => {});
+  }
+
   const buyBtn = document.getElementById('buyBtn');
   if (buyBtn) buyBtn.addEventListener('click', () => {
     if (typeof snafuTrackAddToCart === 'function') snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);

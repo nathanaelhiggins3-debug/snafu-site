@@ -11,6 +11,7 @@
   ];
   var MINOR = [
     { href: 'https://instagram.com/snafusau', label: 'Instagram' },
+    { href: '/cart/', label: 'Bag' },
     { href: '/shipping/', label: 'Shipping' },
     { href: '/play/',    label: 'Play' },
     { href: '/account/', label: 'Account' },
@@ -130,8 +131,8 @@
       .snafu-menu-tip { max-width: 560px; margin: 14px auto 0; padding: 0 20px; text-align: center;
         font-family: 'Pixelify Sans', monospace; font-size: 13px; color: rgba(242,228,196,.6); }
       .snafu-menu-tip b { color: #e3aa4d; font-weight: 500; }
-      /* Pieces are bought one at a time with Buy now; the pack/cart is retired for launch. */
-      [data-cart-badge] { display: none !important; }
+      /* The bag link only shows once something is in it. */
+      [data-cart-badge].empty-pack { display: none !important; }
 
       /* Follow strip — every page, above the footer */
       .snafu-follow { position: relative; z-index: 5; background: #0c1412; border-top: 3px solid #f2e4c4;

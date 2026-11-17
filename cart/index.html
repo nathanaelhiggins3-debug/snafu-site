@@ -10,8 +10,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SNAFU. — Pack</title>
-<meta name="description" content="Your SNAFU pack — pieces from the Shop and the Goods hoard.">
+<title>SNAFU. — Bag</title>
+<meta name="description" content="Your SNAFU bag.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -157,18 +157,18 @@ main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-widt
 }
 .summary .total .amt { color: var(--gold); font-size: 16px; }
 
-/* Checkout is deliberately off — Stripe is not connected yet. This is a
-   real disabled button, not a link to a page that does not exist. */
+/* Checkout: one Stripe session for the whole bag (api/checkout.js). */
 .summary .checkout {
   font-family: var(--display); font-size: 12px;
   letter-spacing: .18em;
   padding: 16px 24px;
-  background: transparent; color: var(--wheat);
-  border: var(--px) dashed var(--wheat);
-  text-align: center;
-  cursor: not-allowed;
-  opacity: .75;
+  background: var(--gold); color: var(--ink);
+  border: var(--px) solid var(--gold);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  text-align: center; cursor: pointer; width: 100%;
 }
+.summary .checkout:disabled { opacity: .6; cursor: wait; }
+.summary .err { font-family: var(--body); font-size: 14px; color: var(--rose); text-align: center; }
 .summary .note {
   font-family: var(--body); font-size: 13px;
   color: var(--wheat); text-align: center;
@@ -192,14 +192,14 @@ main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-widt
 
 <header class="top">
   <a class="back" href="/shop/">Back to the market</a>
-  <h2>YOUR PACK</h2>
+  <h2>YOUR BAG</h2>
   <span class="spacer"></span>
 </header>
 
 <main id="main"></main>
 
 <footer class="colophon">
-  <div class="row1">SNAFU. &nbsp;·&nbsp; PACK &nbsp;·&nbsp; LOS ANGELES</div>
+  <div class="row1">SNAFU. &nbsp;·&nbsp; BAG &nbsp;·&nbsp; LOS ANGELES</div>
   <div>Situation Normal: All Fouled Up.</div>
   <div><a href="/privacy/">Privacy</a></div>
   <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
@@ -262,11 +262,9 @@ main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-widt
     if (!items.length) {
       main.innerHTML =
         '<div class="empty">' +
-          'Your pack is empty.' +
+          'Your bag is empty.' +
           '<br>' +
           '<a href="/shop/">back to the market</a>' +
-          '<br>' +
-          '<a href="/goods/">or into the hoard</a>' +
         '</div>';
       return;
     }
@@ -277,16 +275,40 @@ main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-widt
       '<div class="rows">' + items.map(row).join('') + '</div>' +
       '<div class="summary">' +
         '<div class="total"><span>TOTAL</span><span class="amt">' + money(total) + '</span></div>' +
-        '<div class="checkout" role="status" aria-disabled="true">CHECKOUT OPENING SOON</div>' +
-        '<div class="note">Your pack is saved and will keep. ' +
-          '<strong>Purchasing is not open yet</strong> — nothing here charges you, ' +
-          'and nothing is reserved. Email ' +
-          '<a href="mailto:nate@snafu.quest">nate@snafu.quest</a> about a piece in the meantime.' +
+        '<button class="checkout" id="checkoutBtn" type="button">CHECKOUT · ' + money(total) + '</button>' +
+        '<div class="err" id="checkoutErr" role="alert"></div>' +
+        '<div class="note">Shipping and tax are added at checkout. ' +
+          'Every piece is one of one, so nothing is held until you pay. ' +
+          '<strong>All sales are final.</strong> <a href="/shipping/">Shipping &amp; returns</a>' +
         '</div>' +
       '</div>';
   }
 
+  function checkout(btn) {
+    var err = document.getElementById('checkoutErr');
+    var items = window.SNAFU_CART.resolve().filter(function (i) { return i.source === 'shop'; });
+    if (!items.length) return;
+    btn.disabled = true; btn.textContent = 'OPENING CHECKOUT…'; err.textContent = '';
+    if (typeof snafuTrackInitiateCheckout === 'function') snafuTrackInitiateCheckout(items.map(function (i) { return i.id; }), items.reduce(function (s, i) { return s + i.price; }, 0));
+    fetch('/api/checkout', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: items.map(function (i) { return { id: i.id }; }) })
+    }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (x) {
+        if (x.ok && x.d.url) { location.href = x.d.url; return; }
+        if (x.d && x.d.sold) {
+          x.d.sold.forEach(function (id) { window.SNAFU_CART.remove(id); });
+          err.textContent = 'Someone got there first: a piece in your bag just sold, so it was removed.';
+        } else {
+          err.textContent = (x.d && x.d.error) || 'Checkout did not open. Try again.';
+        }
+        btn.disabled = false;
+      })
+      .catch(function () { err.textContent = 'Checkout did not open. Check your connection and try again.'; btn.disabled = false; });
+  }
+
   main.addEventListener('click', function (e) {
+    if (e.target.closest('#checkoutBtn')) { checkout(e.target.closest('#checkoutBtn')); return; }
     var t = e.target.closest('[data-remove], [data-inc], [data-dec]');
     if (!t) return;
     var C = window.SNAFU_CART;

@@ -18,6 +18,8 @@
      cat: 'jackets',                   // 'tops' | 'bottoms' | 'jackets' | 'knits' | 'accessories'
      cutouts: ['/assets/shop/p101-cut-front.webp'],  // background-removed main shots (Claude makes these)
      images: ['/assets/shop/p101-label.jpg'],         // detail shots: labels, tags, texture
+     stripePrice: 'price_...',        // Stripe Price id (used by the bag checkout)
+     paymentLinkId: 'plink_...',      // Stripe Payment Link id (the piece's sold lock)
      paymentLink: 'https://buy.stripe.com/...',  // Stripe Payment Link, limited to 1 sale
      added: '2026-11-16',             // date listed — drives "last added" on the shop
      sold: false
@@ -54,6 +56,8 @@ const SNAFU_SHOP = [
       '/assets/shop/p022-hanging.jpg',
       '/assets/shop/p022-tag.jpg'
     ],
+    stripePrice: 'price_1UctW2LwaRjGaOhuR9HAdDw1',
+    paymentLinkId: 'plink_1UctW9LwaRjGaOhuALjRsg56',
     paymentLink: 'https://buy.stripe.com/6oUaEYacy9On2Mc6dZ3sI01',  // plink_1UctW9LwaRjGaOhuALjRsg56 — limit 1 sale
     added: '2026-11-17',
     sold: false
@@ -84,6 +88,8 @@ const SNAFU_SHOP = [
       '/assets/shop/p021-4-tag.jpg',
       '/assets/shop/p021-5-texture.jpg'
     ],
+    stripePrice: 'price_1Ucs4aLwaRjGaOhuIcX90vqZ',
+    paymentLinkId: 'plink_1Ucs9VLwaRjGaOhuKfRDi7t4',
     paymentLink: 'https://buy.stripe.com/aFaaEYesO6Cb5Yoauf3sI00',  // plink_1Ucs9VLwaRjGaOhuKfRDi7t4 — limit 1 sale
     added: '2026-11-16',
     sold: false
