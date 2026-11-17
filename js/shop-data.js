@@ -54,7 +54,7 @@ const SNAFU_SHOP = [
       '/assets/shop/p022-hanging.jpg',
       '/assets/shop/p022-tag.jpg'
     ],
-    paymentLink: '',
+    paymentLink: 'https://buy.stripe.com/6oUaEYacy9On2Mc6dZ3sI01',  // plink_1UctW9LwaRjGaOhuALjRsg56 — limit 1 sale
     added: '2026-11-17',
     sold: false
   },
