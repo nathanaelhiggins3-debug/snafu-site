@@ -25,3 +25,7 @@ Rules
 
 ## Email list
 Sign-ups from the "Get first look" strip are stored in Vercel Blob. While signed in to the Desk, open `/api/subscribe` to see them.
+
+## SEO (search + link previews)
+After publishing an article or adding shop pieces, run `python3 scripts/seo.py`. It refreshes link-preview tags, article structured data, `sitemap.xml` and `robots.txt`.
+Each article needs: a specific `<title>`, a 1–2 sentence `<meta name="description">`, `snafu:published` (date) and `snafu:image` (cover).
