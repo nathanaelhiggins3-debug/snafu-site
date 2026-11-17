@@ -34,7 +34,7 @@ const SNAFU_SHOP = [
     name: 'Striped Mohair Sweater',
     brand: 'beauty:beast',
     year: '20+ years old',
-    size: '3 (L)',
+    size: 'M (tagged 3 / L, Japanese sizing)',
     measurements: { chest: 22.5, length: 24, sleeve: 26.5, shoulder: 17.5 },  // inches, flat
     measurementsCm: { chest: 57, length: 61, sleeve: 67, shoulder: 44.5 },
     material: '55% mohair, 15% wool, 30% nylon',
@@ -44,7 +44,7 @@ const SNAFU_SHOP = [
     condition: 'Good used condition. No noticeable flaws or stains.',
     authNote: 'Original beauty:beast neck label and Japanese care tag present. Made in Japan.',
     note: 'Rare beauty:beast knit from over two decades ago. Loose mohair gauge, soft halo, colour-blocked stripes front to back.',
-    price: 180,
+    price: 200,
     gender: 'unisex',
     cat: 'knits',
     images: [
