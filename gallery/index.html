@@ -217,73 +217,52 @@
       calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.6);
   }
 
-  /* The feed: one column, newest first, built to scroll like a phone feed. */
+  /* The feed: an Instagram-style grid. Small tiles, no captions; tap to open. */
   .feed {
-    max-width: 560px;
+    max-width: 720px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: clamp(28px, 6vh, 56px);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
   }
-  .post {
-    background: rgba(10,13,14,.94);
-    border: var(--px) solid var(--wheat);
-    padding: 8px;
-    box-shadow: 0 0 0 var(--px) var(--ink), calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.75), 0 0 34px 4px rgba(232,143,58,.1);
-    content-visibility: auto;
-    contain-intrinsic-size: auto 760px;
+  .tile {
+    position: relative; display: block; aspect-ratio: 3 / 4; overflow: hidden;
+    background: #060708; border: 0; padding: 0; cursor: pointer;
+    content-visibility: auto; contain-intrinsic-size: auto 160px;
   }
+  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease, filter .25s ease; }
+  .tile:hover img, .tile:focus-visible img { transform: scale(1.03); filter: brightness(1.08); }
+  .tile:focus-visible { outline: 2px solid var(--torch); outline-offset: -2px; }
+  .tile .multi { position: absolute; top: 6px; right: 6px; width: 12px; height: 12px;
+    border: 2px solid var(--cream); box-shadow: 3px -3px 0 -1px var(--cream); opacity: .9; }
+  @media (min-width: 700px) { .feed { gap: 6px; } }
+
+  /* Viewer: full post on tap */
+  .viewer { position: fixed; inset: 0; z-index: 200; background: #050707; display: none; flex-direction: column; }
+  .viewer.open { display: flex; }
+  .viewer-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; }
+  .viewer-top span { font-family: var(--display); font-size: 9px; letter-spacing: .12em; color: var(--wheat); }
+  .viewer-top button { background: none; border: 2px solid var(--cream); color: var(--cream); font-family: var(--display);
+    font-size: 9px; letter-spacing: .1em; padding: 8px 10px; cursor: pointer; }
+  .viewer .reel { flex: 1 1 auto; min-height: 0; }
+  .viewer .reel img { max-height: 100%; height: 100%; object-fit: contain; }
+  .viewer .post-text { padding: 12px 16px 22px; max-width: 560px; margin: 0 auto; width: 100%; }
+  .viewer .nav { display: flex; justify-content: space-between; padding: 0 12px 14px; }
+  .viewer .nav button { background: none; border: 0; color: var(--wheat); font-family: var(--display); font-size: 9px; letter-spacing: .1em; padding: 8px; cursor: pointer; }
   .reel {
-    position: relative;
-    border: 2px solid var(--stone-warm);
-    box-shadow: 0 0 0 2px var(--ink);
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    background: #060708;
+    position: relative; display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
   }
   .reel::-webkit-scrollbar { display: none; }
-  .reel img {
-    flex: 0 0 100%;
-    width: 100%;
-    height: auto;
-    max-height: 82svh;
-    object-fit: contain;
-    scroll-snap-align: center;
-    display: block;
-    background: #060708;
-  }
-  .reel-count {
-    position: absolute;
-    top: 12px; right: 12px;
-    padding: 5px 7px;
-    font-family: var(--display);
-    font-size: 8px;
-    letter-spacing: .1em;
-    color: var(--cream);
-    background: rgba(12,20,18,.8);
-    border: 2px solid var(--cream);
-    pointer-events: none;
-  }
-  .reel-wrap { position: relative; }
+  .reel img { flex: 0 0 100%; width: 100%; scroll-snap-align: center; display: block; }
   .dots { display: flex; justify-content: center; gap: 6px; padding: 10px 0 0; }
   .dots i { width: 6px; height: 6px; background: var(--stone-cool); }
   .dots i.on { background: var(--torch); }
-  .post-text { padding: 14px 8px 10px; }
-  .post-title {
-    font-family: var(--display);
-    font-size: clamp(11px, 3vw, 14px);
-    line-height: 1.5;
-    letter-spacing: .03em;
-    color: var(--wheat);
-    margin-bottom: 8px;
-  }
-  .post-caption { font-size: 17px; line-height: 1.4; color: var(--cream); }
-  .post-note { margin-top: 8px; font-size: 15px; line-height: 1.5; color: var(--wheat); opacity: .85; white-space: pre-line; }
+  .post-title { font-family: var(--display); font-size: clamp(11px, 3vw, 14px); line-height: 1.5; color: var(--wheat); margin-bottom: 8px; }
+  .post-caption { font-size: 18px; line-height: 1.45; color: var(--cream); }
+  .post-note { margin-top: 8px; font-size: 16px; line-height: 1.55; color: var(--wheat); opacity: .85; white-space: pre-line; }
   .post-date { margin-top: 12px; font-family: var(--display); font-size: 8px; letter-spacing: .14em; color: var(--torch); }
-  .post-text:empty { display: none; }
+  .feed-empty { grid-column: 1 / -1; text-align: center; font-family: var(--display); font-size: 10px; letter-spacing: .14em; color: var(--wheat); opacity: .75; }
   .feed-more { height: 1px; }
   .ig-link { display: inline-block; margin-top: 14px; padding: 9px 12px; font-family: var(--display); font-size: 9px; letter-spacing: .08em;
     color: var(--cream); text-decoration: none; border: 2px solid var(--cream); background: rgba(12,20,18,.8); }
@@ -400,6 +379,13 @@
 
     <div class="feed" id="feed" aria-live="polite"></div>
     <div class="feed-more" id="feed-more" aria-hidden="true"></div>
+    <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Post">
+      <div class="viewer-top"><span id="viewerCount"></span><button type="button" id="viewerClose">CLOSE ✕</button></div>
+      <div class="reel" id="viewerReel"></div>
+      <div class="dots" id="viewerDots"></div>
+      <div class="post-text" id="viewerText"></div>
+      <div class="nav"><button type="button" id="viewerPrev">◂ NEWER</button><button type="button" id="viewerNext">OLDER ▸</button></div>
+    </div>
     <p class="feed-end"><a class="ig-link" href="https://instagram.com/snafusau" rel="noopener">Keep scrolling on Instagram · @snafusau ▸</a></p>
   </section>
 
@@ -421,7 +407,7 @@
     (function () {
       var feed = document.getElementById('feed');
       var more = document.getElementById('feed-more');
-      var posts = [], shown = 0, BATCH = 6;
+      var posts = [], shown = 0, BATCH = 18;
       var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
       function esc(v) {
@@ -433,40 +419,60 @@
         var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || '');
         return m ? (+m[3]) + ' ' + MONTHS[+m[2] - 1] + ' ' + m[1] : '';
       }
-      function postHtml(p, i) {
-        var alt = esc(p.title || p.caption || 'SNAFU gallery photo');
-        var imgs = p.photos.map(function (ph, n) {
-          return '<img src="' + esc(ph.src) + '" width="' + (ph.w || 3) + '" height="' + (ph.h || 4) + '" alt="' + alt + (p.photos.length > 1 ? ' — ' + (n + 1) + ' of ' + p.photos.length : '') + '"' +
-            (i < 2 && n === 0 ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async">';
-        }).join('');
-        var multi = p.photos.length > 1;
+      function tileHtml(p, i) {
+        var ph = p.photos[0];
+        return '<button type="button" class="tile" data-i="' + i + '" aria-label="' + esc(p.title || p.caption || 'Open post') + '">' +
+          '<img src="' + esc(ph.src) + '" width="' + (ph.w || 3) + '" height="' + (ph.h || 4) + '" alt="" loading="' + (i < 9 ? 'eager' : 'lazy') + '" decoding="async">' +
+          (p.photos.length > 1 ? '<span class="multi" aria-hidden="true"></span>' : '') + '</button>';
+      }
+      var viewer = document.getElementById('viewer');
+      document.body.appendChild(viewer); // escape the section's stacking context so it covers the top bar
+      var vReel = document.getElementById('viewerReel'),
+          vDots = document.getElementById('viewerDots'), vText = document.getElementById('viewerText'),
+          vCount = document.getElementById('viewerCount'), current = -1, lastFocus = null;
+      function openPost(i) {
+        var p = posts[i]; if (!p) return; current = i;
+        vReel.innerHTML = p.photos.map(function (ph, n) { return '<img src="' + esc(ph.src) + '" alt="' + esc(p.title || p.caption || 'SNAFU') + (p.photos.length > 1 ? ' — ' + (n + 1) + ' of ' + p.photos.length : '') + '">'; }).join('');
+        vReel.scrollLeft = 0;
+        vDots.innerHTML = p.photos.length > 1 ? p.photos.map(function (_, n) { return '<i' + (n ? '' : ' class="on"') + '></i>'; }).join('') : '';
         var text = (p.title ? '<h3 class="post-title">' + esc(p.title) + '</h3>' : '') +
           (p.caption ? '<p class="post-caption">' + esc(p.caption) + '</p>' : '') +
           (p.note ? '<p class="post-note">' + esc(p.note) + '</p>' : '') +
           (fmtDate(p.date) ? '<p class="post-date">' + fmtDate(p.date) + '</p>' : '');
-        return '<article class="post" id="' + esc(p.id) + '">' +
-          '<div class="reel-wrap"><div class="reel">' + imgs + '</div>' +
-          (multi ? '<span class="reel-count">1/' + p.photos.length + '</span>' : '') + '</div>' +
-          (multi ? '<div class="dots">' + p.photos.map(function (_, n) { return '<i' + (n ? '' : ' class="on"') + '></i>'; }).join('') + '</div>' : '') +
-          (text ? '<div class="post-text">' + text + '</div>' : '') + '</article>';
+        vText.innerHTML = text; vText.style.display = text ? '' : 'none';
+        vCount.textContent = (i + 1) + ' / ' + posts.length;
+        if (!viewer.classList.contains('open')) { lastFocus = document.activeElement; viewer.classList.add('open'); document.body.style.overflow = 'hidden'; }
+        history.replaceState(null, '', '#' + p.id);
+        document.getElementById('viewerClose').focus({ preventScroll: true });
       }
+      function closePost() {
+        viewer.classList.remove('open'); document.body.style.overflow = ''; current = -1;
+        history.replaceState(null, '', location.pathname);
+        if (lastFocus) lastFocus.focus({ preventScroll: true });
+      }
+      document.getElementById('viewerClose').addEventListener('click', closePost);
+      document.getElementById('viewerPrev').addEventListener('click', function () { if (current > 0) openPost(current - 1); });
+      document.getElementById('viewerNext').addEventListener('click', function () { if (current < posts.length - 1) openPost(current + 1); });
+      document.addEventListener('keydown', function (e) {
+        if (!viewer.classList.contains('open')) return;
+        if (e.key === 'Escape') closePost();
+        if (e.key === 'ArrowDown') document.getElementById('viewerNext').click();
+        if (e.key === 'ArrowUp') document.getElementById('viewerPrev').click();
+      });
+      vReel.addEventListener('scroll', function () {
+        var n = Math.round(vReel.scrollLeft / vReel.clientWidth);
+        vDots.querySelectorAll('i').forEach(function (d, k) { d.classList.toggle('on', k === n); });
+      }, { passive: true });
+      feed.addEventListener('click', function (e) {
+        var t = e.target.closest('.tile'); if (t) openPost(+t.dataset.i);
+      });
+
       function renderMore() {
         if (shown >= posts.length) return;
         var next = posts.slice(shown, shown + BATCH);
-        feed.insertAdjacentHTML('beforeend', next.map(function (p, k) { return postHtml(p, shown + k); }).join(''));
+        feed.insertAdjacentHTML('beforeend', next.map(function (p, k) { return tileHtml(p, shown + k); }).join(''));
         shown += next.length;
       }
-      // Swipe counter for multi-photo posts.
-      feed.addEventListener('scroll', function (e) {
-        var reel = e.target;
-        if (!reel.classList || !reel.classList.contains('reel')) return;
-        var n = Math.round(reel.scrollLeft / reel.clientWidth);
-        var wrap = reel.parentNode, post = wrap.parentNode;
-        var count = wrap.querySelector('.reel-count');
-        if (count) count.textContent = (n + 1) + '/' + reel.children.length;
-        post.querySelectorAll('.dots i').forEach(function (d, k) { d.classList.toggle('on', k === n); });
-      }, true);
-
       function start(list) {
         posts = (list || []).filter(function (p) { return p && p.photos && p.photos.length; });
         feed.innerHTML = '';
@@ -481,9 +487,8 @@
           while (shown < posts.length) renderMore();
         }
         if (location.hash) {
-          var target = document.getElementById(location.hash.slice(1));
-          while (!target && shown < posts.length) { renderMore(); target = document.getElementById(location.hash.slice(1)); }
-          if (target) target.scrollIntoView();
+          var hid = location.hash.slice(1);
+          for (var k = 0; k < posts.length; k++) if (posts[k].id === hid) { openPost(k); break; }
         }
       }
       fetch('/api/posts', { cache: 'no-store' })
