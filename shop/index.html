@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <meta name="theme-color" content="#0c1412">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="SNAFU">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>SNAFU. — Shop</title>
@@ -246,6 +253,7 @@ a { color: inherit; }
   border-bottom: var(--px) solid var(--cream);
 }
 .curation-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+.shop-status { display: inline-block; margin: 0 0 16px; padding: 6px 10px; border: 2px solid var(--gold); color: var(--gold); font-family: var(--display); font-size: 9px; letter-spacing: .1em; }
 .curation-eyebrow {
   font-family: var(--display); font-size: clamp(9px, 1vw, 11px);
   letter-spacing: .22em; color: var(--gold);
@@ -316,6 +324,7 @@ a { color: inherit; }
 <section class="curation">
   <div class="curation-inner">
     <div class="curation-eyebrow">The collection</div>
+    <p class="shop-status" id="shopStatus" hidden></p>
     <p class="curation-body">
       Every piece here is curated and hand-picked, sourced from wherever the good stuff turns up. Each one is cleaned and ready to wear. One of each. When it's gone, it's gone.
     </p>
@@ -430,6 +439,17 @@ document.querySelectorAll('.cats button').forEach(b => {
 
 render();
 window.addEventListener('snafu:shop-updated', render);
+(function () {
+  const all = window.SNAFU_SHOP || [];
+  const live = all.filter(p => !p.sold).length;
+  const last = all.map(p => p.added || '').sort().pop();
+  const el = document.getElementById('shopStatus');
+  if (!el) return;
+  const M = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(last || '');
+  el.textContent = live + (live === 1 ? ' PIECE' : ' PIECES') + ' LIVE' + (d ? ' · LAST ADDED ' + (+d[3]) + ' ' + M[+d[2]-1] : '') + ' · NEW PIECES AS THEY ARE FOUND';
+  el.hidden = false;
+})();
 </script>
 <script src="../js/site.js"></script>
 </body>

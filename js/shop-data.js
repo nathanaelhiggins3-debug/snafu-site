@@ -17,8 +17,12 @@
      gender: 'mens',                   // 'mens' | 'womens' | 'unisex'
      cat: 'jackets',                   // 'tops' | 'bottoms' | 'jackets' | 'knits' | 'accessories'
      images: ['/assets/shop/p101-1.jpg', '/assets/shop/p101-2.jpg'],  // 3–5 photos, first = cover
+     paymentLink: 'https://buy.stripe.com/...',  // Stripe Payment Link, limited to 1 sale
+     added: '2026-11-16',             // date listed — drives "last added" on the shop
      sold: false
    },
+
+   When a piece sells: set sold: true (and deactivate its Stripe link).
 
    Optional extras the product page also shows if present:
    material, color, closure, origin, authNote, originalPrice + deal:true.
@@ -42,6 +46,8 @@ const SNAFU_SHOP = [
     gender: 'unisex',
     cat: 'knits',
     images: ['/assets/shop/p021-01.jpg', '/assets/shop/p021-02.jpg'],
+    paymentLink: '',
+    added: '2026-11-16',
     sold: false
   },
 ];

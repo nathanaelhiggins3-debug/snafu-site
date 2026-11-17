@@ -10,6 +10,7 @@
     { href: '/about/',   label: 'About',   blurb: 'The premise' }
   ];
   var MINOR = [
+    { href: 'https://instagram.com/snafusau', label: 'Instagram' },
     { href: '/play/',    label: 'Play' },
     { href: '/account/', label: 'Account' },
     { href: '/privacy/', label: 'Privacy' }
@@ -125,6 +126,37 @@
         letter-spacing: .12em; color: rgba(242,228,196,.75); cursor: pointer; }
       .snafu-crt-btn.in-menu::after { display: none !important; }
       .snafu-crt-btn.in-menu[aria-pressed="true"] { color: #e3aa4d; }
+      .snafu-menu-tip { max-width: 560px; margin: 14px auto 0; padding: 0 20px; text-align: center;
+        font-family: 'Pixelify Sans', monospace; font-size: 13px; color: rgba(242,228,196,.6); }
+      .snafu-menu-tip b { color: #e3aa4d; font-weight: 500; }
+      /* Pieces are bought one at a time with Buy now; the pack/cart is retired for launch. */
+      [data-cart-badge] { display: none !important; }
+
+      /* Follow strip — every page, above the footer */
+      .snafu-follow { position: relative; z-index: 5; background: #0c1412; border-top: 3px solid #f2e4c4;
+        padding: 34px 18px 30px; text-align: center; }
+      .snafu-follow h2 { font-family: 'Press Start 2P', monospace; font-size: 13px; letter-spacing: .06em; color: #f2e4c4; margin: 0 0 10px; }
+      .snafu-follow p { font-family: 'Pixelify Sans', monospace; font-size: 16px; line-height: 1.5; color: #e8d29a; margin: 0 auto 16px; max-width: 420px; }
+      .snafu-follow form { display: flex; gap: 8px; max-width: 420px; margin: 0 auto; }
+      .snafu-follow input[type=email] { flex: 1; min-width: 0; padding: 12px; font: 16px 'Pixelify Sans', monospace; color: #0c1412;
+        background: #f2e4c4; border: 3px solid #f2e4c4; border-radius: 0; }
+      .snafu-follow button, .snafu-follow .ig { font-family: 'Press Start 2P', monospace; font-size: 10px; letter-spacing: .06em; padding: 0 14px;
+        min-height: 46px; border: 3px solid #e3aa4d; background: #e3aa4d; color: #0c1412; cursor: pointer; border-radius: 0; }
+      .snafu-follow .ig { display: inline-flex; align-items: center; margin-top: 14px; background: transparent; color: #f2e4c4;
+        border-color: #f2e4c4; text-decoration: none; }
+      .snafu-follow .msg { min-height: 1.4em; margin: 10px 0 0; font-size: 14px; }
+      .snafu-follow .hp { position: absolute; left: -9999px; }
+
+      /* New here? — home, first visit only */
+      .snafu-welcome { position: relative; z-index: 2; max-width: 820px; margin: 0 auto; padding: 6vh 16px 0; }
+      .snafu-welcome > div { position: relative; background: rgba(12,10,7,.92); border: 3px solid #e3aa4d; padding: 18px 18px 16px;
+        box-shadow: 6px 6px 0 rgba(10,8,5,.6); }
+      .snafu-welcome h2 { font-family: 'Press Start 2P', monospace; font-size: 12px; color: #e3aa4d; margin: 0 0 12px; }
+      .snafu-welcome ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+      .snafu-welcome li { font-family: 'Pixelify Sans', monospace; font-size: 16px; line-height: 1.45; color: #f2e4c4; }
+      .snafu-welcome li b { color: #e3aa4d; font-weight: 500; }
+      .snafu-welcome .x { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; background: none; border: 2px solid rgba(242,228,196,.5);
+        color: #f2e4c4; font: 14px monospace; cursor: pointer; }
       @media (prefers-reduced-motion: reduce) { .snafu-menu, .snafu-menu.open { transition: none; } }
     `;
     document.head.appendChild(style);
@@ -141,7 +173,8 @@
     menu.className = 'snafu-menu'; menu.id = 'snafu-menu';
     menu.innerHTML = '<ul>' + LINKS.map(function (l) {
       return '<li><a href="' + l.href + '"' + (isHere(l.href) ? ' aria-current="page"' : '') + '><b>' + l.label + '</b><span>' + l.blurb + '</span></a></li>';
-    }).join('') + '</ul><div class="minor">' + MINOR.map(function (l) { return '<a href="' + l.href + '">' + l.label + '</a>'; }).join('') + '</div>';
+    }).join('') + '</ul><div class="minor">' + MINOR.map(function (l) { return '<a href="' + l.href + '">' + l.label + '</a>'; }).join('') + '</div>' +
+      '<p class="snafu-menu-tip">Keep SNAFU on your phone: tap Share, then <b>Add to Home Screen</b>.</p>';
     var scrim = document.createElement('div');
     scrim.className = 'snafu-menu-scrim';
     document.body.prepend(scrim); document.body.prepend(menu); document.body.prepend(nav);
@@ -157,6 +190,56 @@
     scrim.addEventListener('click', function () { setOpen(false); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menu.classList.contains('open')) { setOpen(false); btn.focus(); } });
     menu.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
+  }
+
+
+  /* Follow strip: Instagram + first-look email list, above every footer. */
+  if (!document.querySelector('.snafu-follow') && !/^\/(desk|admin|looks-desk)\b/.test(location.pathname)) {
+    var foot = document.querySelector('body > footer:last-of-type') || document.querySelector('footer') || document.querySelector('[role=contentinfo]');
+    var f = document.createElement('section');
+    f.className = 'snafu-follow';
+    f.setAttribute('aria-label', 'Follow SNAFU');
+    f.innerHTML = '<h2>GET FIRST LOOK</h2>' +
+      '<p>New pieces, stories and drops land as they are found. Be the first to know.</p>' +
+      '<form novalidate><label class="hp">Leave empty <input name="website" tabindex="-1" autocomplete="off"></label>' +
+      '<input type="email" name="email" placeholder="your@email.com" autocomplete="email" required aria-label="Email address">' +
+      '<button type="submit">JOIN</button></form><p class="msg" role="status"></p>' +
+      '<a class="ig" href="https://instagram.com/snafusau" rel="noopener">FOLLOW @SNAFUSAU</a>';
+    if (foot && foot.parentNode) foot.parentNode.insertBefore(f, foot); else document.body.appendChild(f);
+    var form = f.querySelector('form'), msg = f.querySelector('.msg');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var b = form.querySelector('button'); b.disabled = true; msg.textContent = 'Joining…'; msg.style.color = '#e8d29a';
+      fetch('/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email.value, website: form.website.value, from: location.pathname }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.message || 'Try again.'); }); })
+        .then(function () { form.reset(); msg.textContent = 'You\'re in. First look is yours.'; msg.style.color = '#a8dfb4';
+          if (window.fbq) try { fbq('track', 'Lead'); } catch (x) {} })
+        .catch(function (err) { msg.textContent = err.message; msg.style.color = '#ffb4a6'; })
+        .finally(function () { b.disabled = false; });
+    });
+  }
+
+  /* New here? — explains SNAFU once, on the home page, then never again. */
+  if (location.pathname === '/' || location.pathname === '/index.html') {
+    var seen = false;
+    try { seen = localStorage.getItem('snafu.welcomed') === '1'; } catch (e) {}
+    var latest = document.getElementById('latest');
+    if (!seen && latest) {
+      var w = document.createElement('section');
+      w.className = 'snafu-welcome';
+      w.setAttribute('aria-label', 'New here');
+      w.innerHTML = '<div><button class="x" type="button" aria-label="Close">✕</button><h2>NEW HERE?</h2><ul>' +
+        '<li><b>Read</b> — stories, shows and interviews in News.</li>' +
+        '<li><b>Scroll</b> — the Gallery feed, updated all the time.</li>' +
+        '<li><b>Shop</b> — one-of-one pieces. When they are gone, they are gone.</li>' +
+        '<li><b>Save</b> — tap ☆ on anything to keep it on your shelf.</li></ul></div>';
+      latest.parentNode.insertBefore(w, latest);
+      w.querySelector('.x').addEventListener('click', function () {
+        try { localStorage.setItem('snafu.welcomed', '1'); } catch (e) {}
+        w.remove();
+      });
+    }
   }
 
   /* Account layer (auth + modal + stars + NEW badges). Pulled in via the

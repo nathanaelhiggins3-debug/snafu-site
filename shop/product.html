@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <meta name="theme-color" content="#0c1412">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="SNAFU">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>SNAFU. — Piece</title>
@@ -137,7 +144,9 @@ a { color: inherit; }
 
 /* ── BUY / ADD ── */
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.actions button {
+.actions > * { flex: 1 1 140px; }
+.actions button, .actions a.buy {
+  display: inline-block; text-decoration: none; text-align: center;
   font-family: var(--display); font-size: 11px; letter-spacing: .16em;
   padding: 14px 20px;
   border: var(--px) solid var(--cream);
@@ -146,7 +155,7 @@ a { color: inherit; }
   transition: transform 80ms steps(2, end);
 }
 .actions button:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
-.actions .buy { background: var(--moss); color: var(--ink); border-color: var(--moss); }
+.actions .buy { background: var(--gold); color: var(--ink); border-color: var(--gold); }
 .actions .add { background: transparent; color: var(--cream); }
 .is-deal .actions .buy { background: var(--deal); border-color: var(--deal); }
 .actions button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
@@ -523,13 +532,12 @@ if (!product) {
       </div>
 
       <div class="actions">
-        <button class="buy${product.sold ? '' : ' pending'}" id="buyBtn" disabled
-                title="${product.sold ? 'This piece is gone.' : 'Checkout is not open yet — add it to your pack and it will keep.'}">
-          ${product.sold ? 'SOLD' : 'CHECKOUT SOON'}
-        </button>
-        <button class="add" id="addBtn" ${product.sold ? 'disabled' : ''}>
-          ADD TO PACK
-        </button>
+        ${product.sold
+          ? `<button class="buy" disabled>SOLD</button>`
+          : product.paymentLink
+            ? `<a class="buy" id="buyBtn" href="${product.paymentLink}" rel="noopener">BUY NOW · $${product.price}</a>`
+            : `<button class="buy pending" disabled title="This piece is not open for checkout yet.">COMING SOON</button>`}
+        <button class="add snafu-save" id="saveBtn" type="button" ${product.sold ? 'disabled' : ''}>☆ SAVE</button>
       </div>
 
       ${product.sold ? '' : `
@@ -537,7 +545,7 @@ if (!product) {
           <div class="claim-check__mark" aria-hidden="true">01</div>
           <div>
             <div class="claim-check__title">Before you claim it</div>
-            <p class="claim-check__body">One piece, one buyer. Review the condition and measurements below; fit is personal. Every item is cleaned and ready to wear. Shipping is calculated at checkout.</p>
+            <p class="claim-check__body">One piece, one buyer. Review the condition and measurements below; fit is personal. Every item is cleaned and ready to wear. Pay securely by card through Stripe. Shipping is added at checkout.</p>
           </div>
         </aside>`}
 
@@ -571,16 +579,18 @@ if (!product) {
     snafuTrackViewContent(product.name, product.sku || product.id, product.price, product.cat);
   }
 
-  if (!product.sold) {
-    document.getElementById('addBtn').addEventListener('click', () => {
-      const added = window.SNAFU_CART.add(product.id, 'shop');
-      showToast(added ? 'ADDED TO PACK' : 'ALREADY IN YOUR PACK');
-      // ── PIXEL: AddToCart ──
-      if (added && typeof snafuTrackAddToCart === 'function') {
-        snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);
-      }
-    });
+  // SAVE mirrors the star next to the price (the star handles sign-in + the shelf).
+  const saveBtn = document.getElementById('saveBtn');
+  const star = document.querySelector('.price-row .snafu-star');
+  if (saveBtn && star) {
+    const sync = () => { const on = star.classList.contains('is-starred'); saveBtn.textContent = on ? '★ SAVED' : '☆ SAVE'; };
+    saveBtn.addEventListener('click', () => { star.click(); setTimeout(sync, 400); });
+    new MutationObserver(sync).observe(star, { attributes: true, attributeFilter: ['class'] });
   }
+  const buyBtn = document.getElementById('buyBtn');
+  if (buyBtn) buyBtn.addEventListener('click', () => {
+    if (typeof snafuTrackAddToCart === 'function') snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);
+  });
 }
 
 let toastTimer;
