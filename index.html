@@ -196,7 +196,7 @@ body {
 }
 .latest-feed a:active, .latest-feed a:hover { border-color: var(--gold); }
 .latest-feed img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.latest-more { display: flex; justify-content: flex-end; margin-top: 10px; }
+.latest-more { display: flex; justify-content: space-between; margin-top: 10px; }
 .latest-more a { background: rgba(12,10,7,.85); padding: 8px 10px; border: 2px solid rgba(242,228,196,.6); }
 .latest-more a, .latest-row a { font-family: var(--display); font-size: 9px; letter-spacing: .1em; color: var(--cream); text-decoration: none; }
 .latest-more a::after { content: '  \25B8'; color: var(--gold); }
@@ -358,7 +358,7 @@ body {
 <section class="latest" id="latest" aria-label="Latest">
   <p class="latest-label">LATEST FROM SNAFU</p>
   <div class="latest-feed" id="latest-feed"></div>
-  <div class="latest-more"><a href="/gallery/">Open the feed</a></div>
+  <div class="latest-more"><a href="https://instagram.com/snafusau" rel="noopener">@snafusau</a><a href="/gallery/">Open the feed</a></div>
   <div class="latest-rows">
     <div class="latest-row"><a href="/news/editorial/worn-in/"><img src="/assets/covers/worn-in.png" alt="" loading="lazy"><span><small>READ · EDITORIAL</small><b>Worn In</b></span></a></div>
     <div class="latest-row" id="latest-shop" hidden></div>

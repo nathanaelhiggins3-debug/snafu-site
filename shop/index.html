@@ -134,6 +134,9 @@ a { color: inherit; }
   transition: transform 80ms steps(2, end);
 }
 .card:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
+.card .thumb.is-cut { background: radial-gradient(ellipse at 50% 60%, #1c2724 0%, #0c1412 72%); padding: 14px; }
+.card .thumb.is-cut img { image-rendering: auto; object-fit: contain; width: 100%; height: 100%;
+  filter: drop-shadow(0 14px 14px rgba(0,0,0,.6)); }
 .card .thumb {
   aspect-ratio: 1 / 1; background: var(--wheat);
   border-bottom: var(--px) solid var(--cream);
@@ -404,17 +407,18 @@ function render() {
     // Deals show real photo; mainline shows 16-bit pixel cover (with
     // real-photo fallback so mainline items display something until Nate
     // runs the piece through Retro Diffusion).
-    const imgSrc = isDeal
+    const cut = p.cutouts && p.cutouts[0];
+    const imgSrc = cut || (isDeal
       ? (p.images && p.images[0])
-      : (p.coverImage || (p.images && p.images[0]));
+      : (p.coverImage || (p.images && p.images[0])));
     return `
     <a class="card ${p.sold ? 'sold' : ''} ${isDeal ? 'card--deal' : ''}" href="product.html?id=${p.id}" style="position:relative">
       ${isDeal ? '<span class="deal-badge">DEAL</span>' : ''}
       <button class="snafu-star snafu-star--corner" data-star-type="product"
               data-star-ref="/shop/product.html?id=${p.id}" data-star-title="${p.name}"
               data-star-image="${imgSrc || ''}" data-star-section="${isDeal ? 'deals' : 'shop'}"></button>
-      <div class="thumb">
-        ${imgSrc ? `<img src="${imgSrc}" alt="${p.name}">` : p.name.toUpperCase()}
+      <div class="thumb ${cut ? 'is-cut' : ''}">
+        ${imgSrc ? `<img src="${imgSrc}" alt="${p.name}" loading="lazy" decoding="async">` : p.name.toUpperCase()}
       </div>
       <div class="info">
         <div class="name">${p.name}</div>

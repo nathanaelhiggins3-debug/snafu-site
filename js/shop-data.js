@@ -16,7 +16,8 @@
      price: 240,
      gender: 'mens',                   // 'mens' | 'womens' | 'unisex'
      cat: 'jackets',                   // 'tops' | 'bottoms' | 'jackets' | 'knits' | 'accessories'
-     images: ['/assets/shop/p101-1.jpg', '/assets/shop/p101-2.jpg'],  // 3–5 photos, first = cover
+     cutouts: ['/assets/shop/p101-cut-front.webp'],  // background-removed main shots (Claude makes these)
+     images: ['/assets/shop/p101-label.jpg'],         // detail shots: labels, tags, texture
      paymentLink: 'https://buy.stripe.com/...',  // Stripe Payment Link, limited to 1 sale
      added: '2026-11-16',             // date listed — drives "last added" on the shop
      sold: false
@@ -47,9 +48,9 @@ const SNAFU_SHOP = [
     price: 200,
     gender: 'unisex',
     cat: 'knits',
+    // cutouts: background-removed shots (front, back) shown clean on the page
+    cutouts: ['/assets/shop/p021-cut-front.webp', '/assets/shop/p021-cut-back.webp'],
     images: [
-      '/assets/shop/p021-1-front.jpg',
-      '/assets/shop/p021-2-back.jpg',
       '/assets/shop/p021-3-label.jpg',
       '/assets/shop/p021-4-tag.jpg',
       '/assets/shop/p021-5-texture.jpg'

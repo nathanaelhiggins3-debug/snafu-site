@@ -285,6 +285,10 @@
   .post-date { margin-top: 12px; font-family: var(--display); font-size: 8px; letter-spacing: .14em; color: var(--torch); }
   .post-text:empty { display: none; }
   .feed-more { height: 1px; }
+  .ig-link { display: inline-block; margin-top: 14px; padding: 9px 12px; font-family: var(--display); font-size: 9px; letter-spacing: .08em;
+    color: var(--cream); text-decoration: none; border: 2px solid var(--cream); background: rgba(12,20,18,.8); }
+  .ig-link:hover, .ig-link:active { background: var(--cream); color: var(--ink); }
+  .feed-end { text-align: center; margin-top: 8px; }
   .feed-empty { text-align: center; font-family: var(--display); font-size: 10px; letter-spacing: .14em; color: var(--wheat); opacity: .75; }
 
   /* ---------- SCROLL DEPTH INDICATOR ---------- */
@@ -391,10 +395,12 @@
     <div class="descent-heading">
       <span class="eyebrow">On the walls</span>
       <h2>The Feed</h2>
+      <a class="ig-link" href="https://instagram.com/snafusau" rel="noopener">More on Instagram · @snafusau ▸</a>
     </div>
 
     <div class="feed" id="feed" aria-live="polite"></div>
     <div class="feed-more" id="feed-more" aria-hidden="true"></div>
+    <p class="feed-end"><a class="ig-link" href="https://instagram.com/snafusau" rel="noopener">Keep scrolling on Instagram · @snafusau ▸</a></p>
   </section>
 
   <!-- end -->

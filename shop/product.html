@@ -59,7 +59,39 @@ a { color: inherit; }
   gap: clamp(32px, 4vw, 56px);
 }
 
-/* ── PIXEL COVER (256×384) ── */
+
+/* ── STAGE: cutouts float clean on the page, detail shots edge to edge ── */
+.stage { position: relative; }
+.stage-track {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.stage-track::-webkit-scrollbar { display: none; }
+.stage .slide {
+  flex: 0 0 100%; scroll-snap-align: center;
+  display: grid; place-items: center;
+  height: min(78svh, 620px); padding: 8px 0 18px;
+}
+.stage .slide img { image-rendering: auto; display: block; max-width: 100%; max-height: 100%; }
+.stage .slide.cut img {
+  object-fit: contain; width: auto; height: 100%;
+  filter: drop-shadow(0 22px 22px rgba(0,0,0,.55)) drop-shadow(0 2px 2px rgba(0,0,0,.35));
+}
+.stage .slide.detail img { width: 100%; height: 100%; object-fit: cover; }
+.stage-count {
+  position: absolute; top: 6px; right: 0;
+  font-family: var(--display); font-size: 9px; letter-spacing: .12em; color: var(--wheat);
+}
+.stage-dots { display: flex; justify-content: center; gap: 7px; margin-top: -4px; }
+.stage-dots i { width: 7px; height: 7px; background: rgba(242,228,196,.25); }
+.stage-dots i.on { background: var(--gold); }
+.stage .sold-mark {
+  position: absolute; top: 10px; left: 0; z-index: 2;
+  font-family: var(--display); font-size: 10px; letter-spacing: .14em;
+  background: var(--red); color: var(--cream); padding: 6px 9px;
+}
+
+/* ── PIXEL COVER (256×384) — legacy ── */
 .cover-wrap {
   align-self: center;
   position: relative;
@@ -509,17 +541,24 @@ if (!product) {
       <div class="agrid">${related.map(relatedCard).join('')}</div>
     </section>` : '';
 
+  // Stage: background-removed cutouts first, then detail shots (labels, tags, texture).
+  const cuts = product.cutouts || [];
+  const details = cuts.length ? (product.images || []) : (product.images || []);
+  const slides = cuts.map(src => ({ src, cut: true })).concat(details.map(src => ({ src, cut: false })));
+  const stageCount = slides.length;
+  const stageHTML = slides.length
+    ? slides.map((sl, i) => `<div class="slide ${sl.cut ? 'cut' : 'detail'}"><img src="${sl.src}" alt="${product.name}, photo ${i + 1} of ${slides.length}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></div>`).join('')
+    : `<div class="slide cut"><span>PHOTOS SOON</span></div>`;
+
   main.innerHTML = `
     <article class="piece ${isDeal ? 'is-deal' : ''}">
 
-      <div class="cover-wrap">
-        ${isDeal ? '<span class="cover-badge">DEAL</span>' : ''}
-        <div class="cover">${coverInner}</div>
+      <div class="stage" aria-label="Photos">
+        ${product.sold ? '<span class="sold-mark">SOLD</span>' : ''}
+        <div class="stage-track" id="stageTrack">${stageHTML}</div>
+        ${stageCount > 1 ? `<span class="stage-count" id="stageCount">1/${stageCount}</span>
+        <div class="stage-dots" id="stageDots">${Array.from({length: stageCount}, (_, i) => `<i${i ? '' : ' class="on"'}></i>`).join('')}</div>` : ''}
       </div>
-
-      ${isDeal ? '' : '<div class="photos-cue">Real photos below</div>'}
-
-      <div class="photos">${photosHTML}</div>
 
       <div class="head">
         <h1>${product.name}</h1>
@@ -578,6 +617,15 @@ if (!product) {
   // ── PIXEL: ViewContent — fires once per product page load ──
   if (typeof snafuTrackViewContent === 'function') {
     snafuTrackViewContent(product.name, product.sku || product.id, product.price, product.cat);
+  }
+
+  const track = document.getElementById('stageTrack');
+  if (track && stageCount > 1) {
+    track.addEventListener('scroll', () => {
+      const n = Math.round(track.scrollLeft / track.clientWidth);
+      document.getElementById('stageCount').textContent = (n + 1) + '/' + stageCount;
+      document.querySelectorAll('#stageDots i').forEach((d, k) => d.classList.toggle('on', k === n));
+    }, { passive: true });
   }
 
   // SAVE mirrors the star next to the price (the star handles sign-in + the shelf).
