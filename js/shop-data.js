@@ -6,7 +6,7 @@
 
    {
      id: 'p101',                       // unique, used in the URL
-     name: 'Velvet Blazer',            // what it is
+     name: 'Yohji Yamamoto Velvet Blazer',  // brand first, then the piece
      brand: 'Yohji Yamamoto',          // maker
      year: '1990s',                    // era
      size: 'M',
@@ -32,7 +32,7 @@ const SNAFU_SHOP = [
   {
     id: 'p022',
     sku: 'SNF-HDY-2611-001',
-    name: 'Double-Zip Faded Hoodie',
+    name: 'GOA Double-Zip Hoodie',
     brand: 'GOA',
     year: '2000s',
     size: 'Fits slim S men\'s / XS (tagged F)',
@@ -61,7 +61,7 @@ const SNAFU_SHOP = [
   {
     id: 'p021',
     sku: 'SNF-KNT-2607-005',
-    name: 'Striped Mohair Sweater',
+    name: 'beauty:beast Mohair Sweater',
     brand: 'beauty:beast',
     year: '20+ years old',
     size: 'M (tagged 3 / L, Japanese sizing)',
