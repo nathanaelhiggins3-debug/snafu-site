@@ -11,6 +11,7 @@
   ];
   var MINOR = [
     { href: 'https://instagram.com/snafusau', label: 'Instagram' },
+    { href: '/shipping/', label: 'Shipping' },
     { href: '/play/',    label: 'Play' },
     { href: '/account/', label: 'Account' },
     { href: '/privacy/', label: 'Privacy' }

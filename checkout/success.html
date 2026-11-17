@@ -31,27 +31,22 @@
     <a class="backlink" href="../shop/">&larr; Back to the Shop</a>
   </section>
 
-  <!-- Fire the Purchase event, then clear the cart. -->
+  <!-- Purchase event: each Stripe Payment Link redirects here with ?item=<shop id>.
+       Fires once per checkout session (reloads don't double count). -->
   <script src="../js/shop-data.js"></script>
-  <script src="../js/goods-data.js"></script>
-  <script src="../js/cart.js"></script>
   <script>
     (function () {
-      if (!window.SNAFU_CART) return;
-      // ── PIXEL: Purchase — read the cart one last time before clearing ──
-      // NOTE: this reflects the browser-side view of the sale. The canonical
-      // event should be sent server-side from a Stripe webhook (see api/checkout.js)
-      // once STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET are set — that recovers
-      // the ~30-40% of iOS/adblocker traffic the browser pixel loses.
-      try {
-        var items = window.SNAFU_CART.read();
-        var ids = items.map(function (i) { return i.id; });
-        var total = window.SNAFU_CART.subtotal();
-        if (typeof snafuTrackPurchase === "function") {
-          snafuTrackPurchase(ids, total);
-        }
-      } catch (e) {}
-      window.SNAFU_CART.clear();
+      var q = new URLSearchParams(location.search);
+      var id = q.get('item'), sid = q.get('session_id') || '';
+      var piece = (window.SNAFU_SHOP || []).filter(function (p) { return p.id === id; })[0];
+      if (!piece) return;
+      var key = 'snafu.purchase.' + (sid || id);
+      try { if (localStorage.getItem(key)) return; localStorage.setItem(key, '1'); } catch (e) {}
+      var fire = function () {
+        if (typeof snafuTrackPurchase === 'function') return snafuTrackPurchase([piece.sku || piece.id], piece.price);
+        if (window.fbq) fbq('track', 'Purchase', { value: piece.price, currency: 'USD', content_ids: [piece.sku || piece.id], content_type: 'product' });
+      };
+      if (document.readyState === 'complete') fire(); else window.addEventListener('load', fire);
     })();
   </script>
   <script src="../js/site.js"></script>
