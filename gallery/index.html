@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>SNAFU. — Gallery</title>
-  <meta name="description" content="Gallery — images down the cave wall." />
+  <meta name="description" content="SNAFU Gallery — looks, finds and moments, newest first." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -210,186 +210,72 @@
       calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.6);
   }
 
-  .wall {
-    max-width: 780px;
+  /* The feed: one column, newest first, built to scroll like a phone feed. */
+  .feed {
+    max-width: 560px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(40px, 6vw, 80px) clamp(24px, 4vw, 48px);
-    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 6vh, 56px);
   }
-  .alcove { width: 100%; max-width: 260px; }
-
-  .alcove {
-    display: block;
-    text-decoration: none;
-    color: inherit;
+  .post {
+    background: rgba(10,13,14,.92);
+    border: var(--px) solid var(--stone-warm);
+    box-shadow: 0 0 0 var(--px) var(--ink), calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.7), 0 0 34px 4px rgba(232,143,58,.08);
+    content-visibility: auto;
+    contain-intrinsic-size: auto 760px;
+  }
+  .reel {
     position: relative;
-  }
-  /* stagger: even alcoves push down, odd alcoves lift up */
-  .alcove:nth-child(odd)  { align-self: start; margin-top: clamp(0px, 6vh, 60px); }
-  .alcove:nth-child(even) { align-self: start; margin-top: clamp(20px, 12vh, 140px); }
-
-  .frame {
-    position: relative;
-    aspect-ratio: 1 / 1;
-    image-rendering: pixelated;
-    overflow: hidden;
-    background: #07090a;
-    box-shadow:
-      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.7),
-      0 0 30px 4px rgba(232,143,58,.06);
-  }
-  /* The photo lives under the PNG, never on top of its stone border. */
-  .frame::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    background: url('../assets/cave-frame.png') center / 100% 100% no-repeat;
-    image-rendering: pixelated;
-  }
-  .photo-window {
-    position: absolute;
-    inset: 27% 24% 18%;
-    z-index: 1;
-    overflow: hidden;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
     background: #060708;
   }
-  .photo-window img {
-    display: block;
+  .reel::-webkit-scrollbar { display: none; }
+  .reel img {
+    flex: 0 0 100%;
     width: 100%;
-    height: 100%;
+    height: auto;
+    max-height: 82svh;
     object-fit: contain;
-    object-position: center;
-  }
-  .legacy-window {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    color: var(--wheat);
-    font-family: var(--display);
-    font-size: clamp(8px, .9vw, 10px);
-    letter-spacing: .1em;
-    text-align: center;
-  }
-
-  /* hover: torch flicker on the frame glow */
-  .alcove:hover .frame {
-    box-shadow:
-      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.7),
-      0 0 40px 8px rgba(232,143,58,.28);
-    animation: flicker .4s steps(3) infinite;
-  }
-  @keyframes flicker {
-    0%, 100% { filter: brightness(1); }
-    33%      { filter: brightness(1.08); }
-    66%      { filter: brightness(.96); }
-  }
-
-  .caption {
-    margin-top: calc(var(--px)*4);
-    padding: 0 4px;
-  }
-  .caption .num {
-    font-family: var(--display);
-    font-size: 9px;
-    letter-spacing: .25em;
-    color: var(--torch);
-    margin-bottom: 6px;
-    text-shadow: var(--px) var(--px) 0 var(--ink);
-  }
-  .caption .name {
-    font-family: var(--display);
-    font-size: clamp(11px, 1.2vw, 14px);
-    letter-spacing: .04em;
-    color: var(--cream);
-    text-shadow:
-      calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
-      0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
-      var(--px) var(--px) 0 rgba(2,2,0,.6);
-    line-height: 1.35;
-  }
-  .caption .margin-note {
+    scroll-snap-align: center;
     display: block;
-    margin-top: 8px;
-    font-family: var(--body);
-    font-size: 13px;
-    color: var(--wheat);
-    letter-spacing: .04em;
-    opacity: .8;
-    font-style: italic;
-    text-shadow: var(--px) var(--px) 0 rgba(2,2,0,.6);
+    background: #060708;
   }
-  .caption .margin-note::before { content: '\2014  '; color: var(--rose); }
-
-  .look-count {
-    display: inline-block;
-    margin-top: 7px;
-    color: var(--torch);
+  .reel-count {
+    position: absolute;
+    top: 10px; right: 10px;
+    padding: 5px 7px;
     font-family: var(--display);
     font-size: 8px;
-    letter-spacing: .12em;
-  }
-
-  /* Full-look viewer: keeps alternate angles available without crowding the wall. */
-  .look-dialog {
-    width: min(920px, calc(100vw - 28px));
-    max-height: min(860px, calc(100dvh - 28px));
-    padding: clamp(16px, 3vw, 30px);
+    letter-spacing: .1em;
     color: var(--cream);
-    background: #13191a;
-    border: var(--px) solid var(--stone-warm);
-    box-shadow: 0 0 0 var(--px) var(--ink), 0 0 44px 8px rgba(232,143,58,.25);
+    background: rgba(12,20,18,.8);
+    border: 2px solid var(--cream);
+    pointer-events: none;
   }
-  .look-dialog::backdrop { background: rgba(2, 4, 5, .82); }
-  .dialog-close {
-    float: right;
-    padding: 8px 10px;
-    border: var(--px) solid var(--cream);
-    color: var(--cream);
-    background: var(--ink);
+  .reel-wrap { position: relative; }
+  .dots { display: flex; justify-content: center; gap: 6px; padding: 10px 0 0; }
+  .dots i { width: 6px; height: 6px; background: var(--stone-cool); }
+  .dots i.on { background: var(--torch); }
+  .post-text { padding: 14px 16px 18px; }
+  .post-title {
     font-family: var(--display);
-    font-size: 9px;
-    cursor: pointer;
-  }
-  .dialog-close:hover { color: var(--ink); background: var(--cream); }
-  .look-dialog h3 {
-    margin: 8px 80px 20px 0;
+    font-size: clamp(11px, 3vw, 14px);
+    line-height: 1.5;
+    letter-spacing: .03em;
     color: var(--wheat);
-    font-family: var(--display);
-    font-size: clamp(16px, 3vw, 24px);
-    line-height: 1.35;
+    margin-bottom: 8px;
   }
-  .look-photos {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
-    gap: 12px;
-  }
-  .look-photos img {
-    width: 100%;
-    max-height: 62dvh;
-    object-fit: contain;
-    background: #060708;
-    border: 2px solid var(--stone-cool);
-  }
-  .look-fields {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 12px;
-    margin-top: 20px;
-  }
-  .look-field {
-    min-height: 58px;
-    padding: 10px;
-    border-left: var(--px) solid var(--torch);
-    background: rgba(0,0,0,.22);
-  }
-  .look-field b { display: block; font-family: var(--display); font-size: 8px; color: var(--torch); letter-spacing: .08em; }
-  .look-field span { display: block; margin-top: 7px; color: var(--wheat); font-size: 14px; }
-  .look-field .pending { opacity: .68; font-style: italic; }
+  .post-caption { font-size: 17px; line-height: 1.4; color: var(--cream); }
+  .post-note { margin-top: 8px; font-size: 15px; line-height: 1.5; color: var(--wheat); opacity: .85; white-space: pre-line; }
+  .post-date { margin-top: 12px; font-family: var(--display); font-size: 8px; letter-spacing: .14em; color: var(--torch); }
+  .post-text:empty { display: none; }
+  .feed-more { height: 1px; }
+  .feed-empty { text-align: center; font-family: var(--display); font-size: 10px; letter-spacing: .14em; color: var(--wheat); opacity: .75; }
 
   /* ---------- SCROLL DEPTH INDICATOR ---------- */
   .depth {
@@ -454,15 +340,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .cue, .title h1, .alcove:hover .frame { animation: none; }
+    .cue, .title h1 { animation: none; }
     .scene .layer { transition: none; }
   }
 
-  /* single column on narrow screens */
-  @media (max-width: 620px) {
-    .wall { grid-template-columns: 1fr; }
-    .alcove:nth-child(even) { margin-top: 0; }
-  }
   </style>
 <script src="/js/pixels.js"></script>
 </head>
@@ -495,24 +376,15 @@
     <span class="cue">Descend</span>
   </section>
 
-  <!-- descent: alcoves down the walls -->
-  <section class="descent" id="descent" aria-label="Gallery wall">
+  <!-- descent: the feed -->
+  <section class="descent" id="descent" aria-label="Gallery feed">
     <div class="descent-heading">
       <span class="eyebrow">On the walls</span>
-      <h2>SNAFU Looks</h2>
+      <h2>The Feed</h2>
     </div>
 
-    <div class="wall" id="looks-wall">
-      <a class="alcove" href="/gallery/pet-rats/">
-        <div class="frame"><div class="photo-window legacy-window"><span>Pet Rats</span></div></div>
-        <div class="caption">
-          <div class="num">i.</div>
-          <div class="name">Pet Rats</div>
-          <span class="margin-note">live show</span>
-        </div>
-      </a>
-
-    </div>
+    <div class="feed" id="feed" aria-live="polite"></div>
+    <div class="feed-more" id="feed-more" aria-hidden="true"></div>
   </section>
 
   <!-- end -->
@@ -527,60 +399,85 @@
     </div>
   </footer>
 
-  <script src="/js/looks-data.js"></script>
   <script>
-    // One data file powers both the cave-wall covers and the full-look viewer.
+    // The Feed: posts come from /api/posts (edited from the phone Desk).
+    // Renders in batches as you scroll so it stays smooth however long it gets.
     (function () {
-      var fallbackLooks = window.SNAFU_LOOKS || [];
-      var looks = fallbackLooks;
-      var wall = document.getElementById('looks-wall');
-      var dialog = document.createElement('dialog');
-      dialog.className = 'look-dialog';
-      document.body.appendChild(dialog);
+      var feed = document.getElementById('feed');
+      var more = document.getElementById('feed-more');
+      var posts = [], shown = 0, BATCH = 6;
+      var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
-      function escapeHtml(value) {
-        return String(value).replace(/[&<>'"]/g, function (character) {
-          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character];
+      function esc(v) {
+        return String(v == null ? '' : v).replace(/[&<>'"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c];
         });
       }
-      function imagePath(filename) { return '../assets/looks/' + encodeURIComponent(filename); }
-      function field(label, value) {
-        return '<div class="look-field"><b>' + label + '</b><span class="' + (value ? '' : 'pending') + '">' +
-          (value ? escapeHtml(value) : 'Awaiting edit') + '</span></div>';
+      function fmtDate(d) {
+        var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || '');
+        return m ? (+m[3]) + ' ' + MONTHS[+m[2] - 1] + ' ' + m[1] : '';
       }
-      function openLook(look) {
-        dialog.innerHTML = '<button class="dialog-close" type="button">Close</button><h3>' + escapeHtml(look.title) +
-          '</h3><div class="look-photos">' + look.photos.map(function (photo) {
-            return '<img src="' + imagePath(photo) + '" alt="' + escapeHtml(look.title) + '">';
-          }).join('') + '</div><div class="look-fields">' +
-          field('Caption', look.caption) + field('Brands', look.brands) + field('Styling ideas', look.stylingIdeas) +
-          field('Explanation', look.explanation) + field('Credits', look.credits) + '</div>';
-        dialog.querySelector('.dialog-close').addEventListener('click', function () { dialog.close(); });
-        dialog.showModal();
+      function postHtml(p, i) {
+        var alt = esc(p.title || p.caption || 'SNAFU gallery photo');
+        var imgs = p.photos.map(function (ph, n) {
+          return '<img src="' + esc(ph.src) + '" width="' + (ph.w || 3) + '" height="' + (ph.h || 4) + '" alt="' + alt + (p.photos.length > 1 ? ' — ' + (n + 1) + ' of ' + p.photos.length : '') + '"' +
+            (i < 2 && n === 0 ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async">';
+        }).join('');
+        var multi = p.photos.length > 1;
+        var text = (p.title ? '<h3 class="post-title">' + esc(p.title) + '</h3>' : '') +
+          (p.caption ? '<p class="post-caption">' + esc(p.caption) + '</p>' : '') +
+          (p.note ? '<p class="post-note">' + esc(p.note) + '</p>' : '') +
+          (fmtDate(p.date) ? '<p class="post-date">' + fmtDate(p.date) + '</p>' : '');
+        return '<article class="post" id="' + esc(p.id) + '">' +
+          '<div class="reel-wrap"><div class="reel">' + imgs + '</div>' +
+          (multi ? '<span class="reel-count">1/' + p.photos.length + '</span>' : '') + '</div>' +
+          (multi ? '<div class="dots">' + p.photos.map(function (_, n) { return '<i' + (n ? '' : ' class="on"') + '></i>'; }).join('') + '</div>' : '') +
+          (text ? '<div class="post-text">' + text + '</div>' : '') + '</article>';
       }
-      function renderLooks(looks) {
-        window.SNAFU_LOOKS = looks;
-        wall.querySelectorAll('[data-look]').forEach(function (card) { card.remove(); });
-        wall.insertAdjacentHTML('beforeend', looks.map(function (look) {
-          return '<a class="alcove" href="#look-' + look.id + '" data-look="' + look.id + '">' +
-            '<div class="frame"><div class="photo-window"><img src="' + imagePath(look.cover) + '" alt="' + escapeHtml(look.title) + '"></div></div>' +
-            '<div class="caption"><div class="num">' + look.id + '.</div><div class="name">' + escapeHtml(look.title) +
-            '</div><span class="margin-note">Open the look</span><span class="look-count">' + look.photos.length + ' photo' + (look.photos.length === 1 ? '' : 's') + '</span></div></a>';
-        }).join(''));
+      function renderMore() {
+        if (shown >= posts.length) return;
+        var next = posts.slice(shown, shown + BATCH);
+        feed.insertAdjacentHTML('beforeend', next.map(function (p, k) { return postHtml(p, shown + k); }).join(''));
+        shown += next.length;
       }
-      fetch('/api/looks', { cache: 'no-store' }).then(function (response) {
-        if (!response.ok) throw new Error('Could not load Looks.');
-        return response.json();
-      }).then(function (content) {
-        renderLooks(Array.isArray(content.looks) ? content.looks : fallbackLooks);
-      }).catch(function () { renderLooks(fallbackLooks); });
-      wall.addEventListener('click', function (event) {
-        var card = event.target.closest('.alcove');
-        if (!card) return;
-        event.preventDefault();
-        var look = (window.SNAFU_LOOKS || []).filter(function (item) { return item.id === card.dataset.look; })[0];
-        if (look) openLook(look);
-      });
+      // Swipe counter for multi-photo posts.
+      feed.addEventListener('scroll', function (e) {
+        var reel = e.target;
+        if (!reel.classList || !reel.classList.contains('reel')) return;
+        var n = Math.round(reel.scrollLeft / reel.clientWidth);
+        var wrap = reel.parentNode, post = wrap.parentNode;
+        var count = wrap.querySelector('.reel-count');
+        if (count) count.textContent = (n + 1) + '/' + reel.children.length;
+        post.querySelectorAll('.dots i').forEach(function (d, k) { d.classList.toggle('on', k === n); });
+      }, true);
+
+      function start(list) {
+        posts = (list || []).filter(function (p) { return p && p.photos && p.photos.length; });
+        feed.innerHTML = '';
+        shown = 0;
+        if (!posts.length) { feed.innerHTML = '<p class="feed-empty">New posts are on the way.</p>'; return; }
+        renderMore();
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver(function (entries) {
+            if (entries[0].isIntersecting) renderMore();
+          }, { rootMargin: '1200px 0px' }).observe(more);
+        } else {
+          while (shown < posts.length) renderMore();
+        }
+        if (location.hash) {
+          var target = document.getElementById(location.hash.slice(1));
+          while (!target && shown < posts.length) { renderMore(); target = document.getElementById(location.hash.slice(1)); }
+          if (target) target.scrollIntoView();
+        }
+      }
+      fetch('/api/posts', { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+        .then(function (d) { start(d.posts); })
+        .catch(function () {
+          fetch('/content/posts.json').then(function (r) { return r.json(); })
+            .then(function (d) { start(d.posts); })
+            .catch(function () { start([]); });
+        });
     }());
 
     // Scene swap on scroll + depth indicator.

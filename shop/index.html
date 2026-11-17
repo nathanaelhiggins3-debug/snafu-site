@@ -165,6 +165,7 @@ a { color: inherit; }
 /* ── DEALS ENTRY BLOCK — sits between curation and grid, deliberately punchy.
    Wrapped in its own solid-ink strip so the fixed shop-street scene image
    doesn't bleed through the orange tint. ── */
+[hidden] { display: none !important; }
 .deals-strip {
   position: relative; z-index: 2;
   background: var(--ink);
@@ -375,8 +376,13 @@ function render() {
     (state.gender === 'all' || p.gender === state.gender) &&
     (state.cat === 'all' || p.cat === state.cat)
   ).sort((a, b) => (a.deal === true) - (b.deal === true)); // full-price archive leads; deals follow as the bonus tier
+  const hasStock = (window.SNAFU_SHOP || []).length > 0;
+  document.querySelector('.filters').hidden = !hasStock;
+  document.querySelector('.deals-strip').hidden = !(window.SNAFU_SHOP || []).some(p => p.deal === true);
   if (!list.length) {
-    grid.innerHTML = '<div class="empty">Nothing here right now.</div>';
+    grid.innerHTML = hasStock
+      ? '<div class="empty">Nothing in this cut right now.</div>'
+      : '<div class="empty">The market is being restocked. A small run of pieces, done right, lands soon.</div>';
     return;
   }
   grid.innerHTML = list.map(p => {

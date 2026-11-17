@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#111917">
+  <title>SNAFU. — Desk</title>
+  <style>
+    :root { --ink:#0c1412; --cream:#f2e4c4; --wheat:#e8d29a; --gold:#e3aa4d; --red:#b8352b; --px:3px; --display:'Courier New',monospace; --body:system-ui,-apple-system,sans-serif; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100svh; background:#111917; color:var(--cream); font-family:var(--body); }
+    .shell { width:min(640px,100%); margin:0 auto; padding:18px 14px calc(44px + env(safe-area-inset-bottom)); }
+    .top { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .top a, .linkbtn { color:var(--cream); font:700 12px var(--display); text-decoration:none; letter-spacing:.08em; background:none; border:0; padding:6px 0; cursor:pointer; min-height:0; margin:0; }
+    h1 { margin:20px 0 4px; font:900 clamp(26px,8vw,38px) var(--display); color:var(--wheat); letter-spacing:-.06em; }
+    h2 { margin:0 0 4px; font:800 15px var(--display); color:var(--wheat); letter-spacing:.04em; }
+    .muted { color:rgba(242,228,196,.7); font-size:14px; line-height:1.45; margin:4px 0 0; }
+    .status { min-height:1.4em; font-size:14px; margin:10px 0 0; color:var(--wheat); } .status.error { color:#ffb4a6; } .status.good { color:#a8dfb4; }
+    .panel { margin-top:18px; padding:16px; background:#17211f; border:var(--px) solid var(--cream); box-shadow:5px 5px 0 rgba(0,0,0,.45); }
+    label { display:block; margin-top:14px; font:700 12px var(--display); letter-spacing:.06em; color:var(--wheat); }
+    label small { font-weight:400; opacity:.7; letter-spacing:0; }
+    input, textarea { width:100%; margin-top:7px; padding:11px; color:var(--ink); background:var(--cream); border:var(--px) solid var(--ink); border-radius:0; font:16px var(--body); }
+    textarea { min-height:84px; resize:vertical; }
+    button { min-height:48px; margin-top:16px; padding:10px 14px; cursor:pointer; border:var(--px) solid var(--cream); background:var(--gold); color:var(--ink); font:800 13px var(--display); letter-spacing:.06em; border-radius:0; }
+    button.ghost { background:transparent; color:var(--cream); }
+    button.danger { background:transparent; color:#ffb4a6; border-color:#ffb4a6; }
+    button:disabled { opacity:.55; cursor:wait; }
+    .wide { width:100%; }
+    .hidden { display:none !important; }
+    .pick { display:flex; align-items:center; justify-content:center; min-height:120px; margin-top:12px; border:var(--px) dashed var(--wheat); color:var(--wheat); font:700 13px var(--display); text-align:center; cursor:pointer; padding:14px; }
+    .pick input { display:none; }
+    .thumbs { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:10px; }
+    .thumb { position:relative; aspect-ratio:3/4; background:#060708; overflow:hidden; }
+    .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .thumb button { position:absolute; top:3px; right:3px; min-height:0; margin:0; padding:2px 7px; font-size:12px; border-width:2px; background:rgba(12,20,18,.85); color:var(--cream); }
+    .thumb .first { position:absolute; left:3px; bottom:3px; font:700 9px var(--display); background:var(--gold); color:var(--ink); padding:2px 4px; }
+    .row { display:flex; gap:8px; } .row button { flex:1; }
+    .list { margin-top:10px; display:flex; flex-direction:column; gap:10px; }
+    .item { display:grid; grid-template-columns:64px 1fr; gap:10px; align-items:center; padding:8px; background:#0f1615; border:2px solid rgba(242,228,196,.25); }
+    .item img { width:64px; height:84px; object-fit:cover; display:block; background:#060708; }
+    .item .t { font-size:14px; line-height:1.35; }
+    .item .t b { display:block; font:700 12px var(--display); color:var(--wheat); margin-bottom:3px; }
+    .item .t .todo { color:#ffb4a6; font-size:12px; }
+    .item .acts { grid-column:1 / -1; display:flex; gap:6px; }
+    .item .acts button { flex:1; min-height:40px; margin:0; padding:6px; font-size:11px; }
+    .filter { display:flex; gap:6px; margin-top:10px; } .filter button { flex:1; min-height:38px; margin:0; font-size:11px; padding:6px; }
+    .filter button.on { background:var(--cream); }
+  </style>
+</head>
+<body>
+<main class="shell">
+  <div class="top"><a href="/gallery/">◂ Gallery</a><button class="linkbtn hidden" id="lock" type="button">LOCK</button></div>
+  <h1>Desk</h1>
+  <p class="muted">Post to the Gallery feed. Live the moment you hit Post.</p>
+
+  <section class="panel" id="login-panel">
+    <label for="password">Desk password</label>
+    <input id="password" type="password" autocomplete="current-password" enterkeyhint="go">
+    <button id="login" class="wide" type="button">Enter</button>
+    <p class="status" id="login-status" role="alert"></p>
+  </section>
+
+  <section class="panel hidden" id="compose">
+    <h2 id="compose-title">New post</h2>
+    <label class="pick" id="pick">Tap to add photos<br>(first one is the cover)
+      <input id="files" type="file" accept="image/*" multiple>
+    </label>
+    <div class="thumbs" id="thumbs"></div>
+    <label for="caption">Caption <small>— the line people read first</small></label>
+    <textarea id="caption" rows="2" maxlength="600"></textarea>
+    <label for="note">What it is <small>— pieces, brands, the story (optional)</small></label>
+    <textarea id="note" maxlength="3000"></textarea>
+    <label for="title">Title <small>(optional)</small></label>
+    <input id="title" type="text" maxlength="120">
+    <label for="date">Date</label>
+    <input id="date" type="date">
+    <div class="row">
+      <button id="post" type="button">Post</button>
+      <button id="cancel" class="ghost hidden" type="button">Cancel</button>
+    </div>
+    <p class="status" id="compose-status" role="status"></p>
+  </section>
+
+  <section class="panel hidden" id="posts-panel">
+    <h2>On the feed</h2>
+    <p class="muted" id="count"></p>
+    <div class="filter"><button type="button" data-f="all" class="on">All</button><button type="button" data-f="todo">Needs words</button></div>
+    <div class="list" id="list"></div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var posts = [], photos = [], editing = null, filter = 'all';
+
+  function status(id, text, kind) { var el = $(id); el.textContent = text || ''; el.className = 'status' + (kind ? ' ' + kind : ''); }
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>'"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]; }); }
+  function today() { var d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
+  function api(body) {
+    return fetch('/api/posts', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.message || 'Something went wrong.'); return d; }); });
+  }
+
+  // Shrink on the phone before upload: long edge 1600px, JPEG. Keeps posts fast to load.
+  function shrink(file) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var max = 1600, w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, max / Math.max(w, h));
+        var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(function (blob) { blob ? resolve({ blob: blob, w: c.width, h: c.height }) : reject(new Error('Could not read that photo.')); }, 'image/jpeg', 0.85);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Could not read that photo.')); };
+      img.src = url;
+    });
+  }
+  function upload(item) {
+    return fetch('/api/posts?upload=1&w=' + item.w + '&h=' + item.h, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'image/jpeg' }, body: item.blob })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.message || 'Upload failed.'); return d.photo; }); });
+  }
+
+  function drawThumbs() {
+    $('thumbs').innerHTML = photos.map(function (p, i) {
+      return '<div class="thumb"><img src="' + esc(p.preview || p.src) + '" alt="">' + (i ? '' : '<span class="first">COVER</span>') +
+        '<button type="button" data-rm="' + i + '" aria-label="Remove photo">✕</button></div>';
+    }).join('');
+  }
+  $('thumbs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-rm]'); if (!b) return;
+    photos.splice(+b.dataset.rm, 1); drawThumbs();
+  });
+  $('files').addEventListener('change', function () {
+    var files = Array.prototype.slice.call(this.files || []); this.value = '';
+    status('compose-status', 'Preparing ' + files.length + ' photo' + (files.length === 1 ? '' : 's') + '…');
+    files.reduce(function (chain, f) {
+      return chain.then(function () { return shrink(f).then(function (s) { s.preview = URL.createObjectURL(s.blob); photos.push(s); drawThumbs(); }); });
+    }, Promise.resolve()).then(function () { status('compose-status', ''); }, function (err) { status('compose-status', err.message, 'error'); });
+  });
+
+  function resetForm() {
+    editing = null; photos = [];
+    ['caption', 'note', 'title'].forEach(function (k) { $(k).value = ''; });
+    $('date').value = today();
+    $('compose-title').textContent = 'New post'; $('post').textContent = 'Post';
+    $('cancel').classList.add('hidden'); drawThumbs();
+  }
+  function editPost(p) {
+    editing = p.id; photos = p.photos.map(function (ph) { return { src: ph.src, w: ph.w, h: ph.h }; });
+    $('caption').value = p.caption || ''; $('note').value = p.note || ''; $('title').value = p.title || ''; $('date').value = p.date || '';
+    $('compose-title').textContent = 'Edit post'; $('post').textContent = 'Save';
+    $('cancel').classList.remove('hidden'); drawThumbs(); status('compose-status', '');
+    $('compose').scrollIntoView({ behavior: 'smooth' });
+  }
+  $('cancel').addEventListener('click', resetForm);
+
+  $('post').addEventListener('click', function () {
+    var btn = this;
+    if (!photos.length) { status('compose-status', 'Add at least one photo.', 'error'); return; }
+    btn.disabled = true;
+    var done = 0, pending = photos.filter(function (p) { return p.blob; }).length;
+    status('compose-status', pending ? 'Uploading 0/' + pending + '…' : 'Saving…');
+    photos.reduce(function (chain, p, i) {
+      return chain.then(function () {
+        if (!p.blob) return;
+        return upload(p).then(function (saved) { photos[i] = saved; done++; status('compose-status', 'Uploading ' + done + '/' + pending + '…'); });
+      });
+    }, Promise.resolve()).then(function () {
+      var post = { photos: photos.map(function (p) { return { src: p.src, w: p.w, h: p.h }; }), caption: $('caption').value, note: $('note').value, title: $('title').value, date: $('date').value };
+      return api(editing ? { action: 'update', id: editing, post: post } : { action: 'create', post: post });
+    }).then(function (d) {
+      posts = d.posts; drawList(); resetForm(); status('compose-status', 'Live on the Gallery.', 'good');
+    }, function (err) { status('compose-status', err.message, 'error'); })
+      .finally(function () { btn.disabled = false; });
+  });
+
+  function needsWords(p) { return !p.caption && !p.title; }
+  function drawList() {
+    var todo = posts.filter(needsWords).length;
+    $('count').textContent = posts.length + ' post' + (posts.length === 1 ? '' : 's') + (todo ? ' · ' + todo + ' still need a caption' : '');
+    var shown = filter === 'todo' ? posts.filter(needsWords) : posts;
+    $('list').innerHTML = shown.map(function (p) {
+      return '<div class="item" data-id="' + esc(p.id) + '"><img src="' + esc(p.photos[0].src) + '" alt="" loading="lazy">' +
+        '<div class="t">' + (p.title ? '<b>' + esc(p.title) + '</b>' : '') + (p.caption ? esc(p.caption) : '<span class="todo">No caption yet</span>') +
+        '<div class="muted" style="font-size:12px">' + p.photos.length + ' photo' + (p.photos.length === 1 ? '' : 's') + (p.date ? ' · ' + esc(p.date) : '') + '</div></div>' +
+        '<div class="acts"><button type="button" data-a="edit">Edit</button><button type="button" class="ghost" data-a="up" aria-label="Move up">▲</button>' +
+        '<button type="button" class="ghost" data-a="down" aria-label="Move down">▼</button><button type="button" class="danger" data-a="delete">Delete</button></div></div>';
+    }).join('') || '<p class="muted">Nothing here.</p>';
+  }
+  document.querySelectorAll('[data-f]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      filter = b.dataset.f; document.querySelectorAll('[data-f]').forEach(function (x) { x.classList.toggle('on', x === b); }); drawList();
+    });
+  });
+  $('list').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-a]'); if (!b) return;
+    var id = b.closest('.item').dataset.id, p = posts.filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    if (b.dataset.a === 'edit') return editPost(p);
+    if (b.dataset.a === 'delete' && !confirm('Delete this post from the Gallery?')) return;
+    b.disabled = true;
+    api({ action: b.dataset.a === 'delete' ? 'delete' : 'move', id: id, dir: b.dataset.a }).then(function (d) { posts = d.posts; drawList(); if (editing === id && b.dataset.a === 'delete') resetForm(); },
+      function (err) { alert(err.message); b.disabled = false; });
+  });
+
+  function open(d) {
+    posts = d.posts || [];
+    $('login-panel').classList.add('hidden');
+    ['compose', 'posts-panel', 'lock'].forEach(function (k) { $(k).classList.remove('hidden'); });
+    resetForm(); drawList();
+  }
+  function login() {
+    var pw = $('password').value, btn = $('login');
+    if (!pw) { status('login-status', 'Enter your password.', 'error'); return; }
+    btn.disabled = true; status('login-status', 'Checking…');
+    api({ action: 'login', password: pw }).then(function (d) { $('password').value = ''; status('login-status', ''); open(d); },
+      function (err) { status('login-status', err.message, 'error'); }).finally(function () { btn.disabled = false; });
+  }
+  $('login').addEventListener('click', login);
+  $('password').addEventListener('keydown', function (e) { if (e.key === 'Enter') login(); });
+  $('lock').addEventListener('click', function () {
+    api({ action: 'logout' }).finally(function () { location.reload(); });
+  });
+  // Already signed in on this phone? Skip the password.
+  api({ action: 'check' }).then(open, function () {});
+})();
+</script>
+</body>
+</html>
