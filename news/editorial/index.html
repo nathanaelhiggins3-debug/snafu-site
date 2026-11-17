@@ -71,7 +71,7 @@
   .arrive {
     position: relative;
     z-index: 2;
-    min-height: 100svh;
+    min-height: 58svh;
     display: grid;
     grid-template-rows: auto 1fr auto;
     padding: clamp(20px, 3vw, 32px);
@@ -162,7 +162,7 @@
   }
   .card {
     /* full viewport per card on mobile */
-    min-height: 100svh;
+    min-height: auto;
     scroll-snap-align: start;
     display: grid;
     place-items: center;
@@ -171,7 +171,7 @@
   }
 
   /* snap the section, not the whole page — feels smoother */
-  .feed { scroll-snap-type: y mandatory; }
+  .feed { scroll-snap-type: none; }
 
   /* ---------- POSTER CARD ---------- */
   .poster {
@@ -336,7 +336,7 @@
           <div class="poster-plate">
             <div class="poster-meta">
               <span class="desk">Editorial</span>
-              <span>18 Jun 2026</span>
+              <span>21 Jul 2026</span>
               <span>N. Higgins</span>
             </div>
             <h2>Worn In</h2>
@@ -398,5 +398,6 @@
   </footer>
 
   <script src="/js/account-layer.js" defer></script>
+  <script src="/js/site.js" defer></script>
 </body>
 </html>

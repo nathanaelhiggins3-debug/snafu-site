@@ -21,15 +21,15 @@
     style.id = 'snafu-account-styles';
     style.textContent = [
       /* header corner control — mirrors the CRT button furniture */
-      '.snafu-acct { position: fixed; top: 8px; right: 8px; z-index: 101; }',
+      '.snafu-acct { position: fixed; top: 8px; right: 8px; z-index: 101; }' /* sits inside the 52px top bar */,
       'body[data-snafu-hide-account-entry] .snafu-acct { display: none; }',
       '.snafu-acct__btn { display: inline-flex; align-items: center; gap: 8px;',
-      '  min-height: 44px; padding: 6px 10px; cursor: pointer;',
+      '  min-height: 36px; padding: 4px 10px; cursor: pointer;',
       '  font-family: var(--display, "Press Start 2P", monospace);',
       '  font-size: 9px; letter-spacing: .06em; line-height: 1;',
-      '  color: var(--cream, #f2e4c4); background: rgba(12,10,7,.72);',
-      '  border: var(--px, 3px) solid var(--cream, #f2e4c4);',
-      '  box-shadow: 2px 2px 0 rgba(10,8,5,.6); text-decoration: none; }',
+      '  color: var(--cream, #f2e4c4); background: transparent;',
+      '  border: 2px solid rgba(242,228,196,.7);',
+      '  box-shadow: none; text-decoration: none; }',
       '.snafu-acct__btn:hover { background: var(--red, #b8352b); }',
       '.snafu-acct__btn:focus-visible { outline: 2px solid var(--gold, #e3aa4d);',
       '  outline-offset: 2px; }',

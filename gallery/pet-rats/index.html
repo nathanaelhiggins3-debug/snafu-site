@@ -21,7 +21,7 @@ body{background:var(--floor);color:var(--cream);font-family:var(--ui);-webkit-fo
   radial-gradient(120% 80% at 50% -8%,rgba(227,170,77,.18),transparent 55%),
   radial-gradient(90% 60% at 50% 118%,rgba(192,96,42,.15),transparent 60%),var(--floor)}
 .cave::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 2px,transparent 2px 4px);opacity:.5}
-.strip{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px clamp(16px,4vw,32px);background:rgba(10,8,9,.9);border-bottom:var(--px) solid #2a1f18;font-family:var(--display);font-size:9px;letter-spacing:.16em;color:var(--cream);text-transform:uppercase}
+.strip{position:sticky;top:52px;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px clamp(16px,4vw,32px);background:rgba(10,8,9,.9);border-bottom:var(--px) solid #2a1f18;font-family:var(--display);font-size:9px;letter-spacing:.16em;color:var(--cream);text-transform:uppercase}
 .strip a{color:var(--cream);text-decoration:none}.strip a:hover{color:var(--amber)}
 .strip .back::before{content:'\25C2  ';color:var(--ember)}.strip .here{color:var(--amber)}
 .hero{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:clamp(40px,8vh,90px) clamp(20px,5vw,32px) 10px;text-align:center}
@@ -114,5 +114,6 @@ body{background:var(--floor);color:var(--cream);font-family:var(--ui);-webkit-fo
   lb.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40){dx<0?next():prev();}x0=null;},{passive:true});
 })();
 </script>
+  <script src="/js/site.js" defer></script>
 </body>
 </html>

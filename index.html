@@ -168,15 +168,36 @@ body {
   to   { transform: none; opacity: 1; }
 }
 
+
+/* ---------- LATEST (home) ---------- */
+.latest { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 8vh 16px 0; }
+.latest-label { font-family: var(--display); font-size: 10px; letter-spacing: .2em; color: var(--gold); margin-bottom: 14px; text-shadow: var(--px) var(--px) 0 var(--ink); }
+.latest-feed { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.latest-feed a { display: block; aspect-ratio: 3 / 4; overflow: hidden; background: var(--ink); border: 2px solid rgba(242,228,196,.25); }
+.latest-feed img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.latest-more { display: flex; justify-content: flex-end; margin-top: 8px; }
+.latest-more a, .latest-row a { font-family: var(--display); font-size: 9px; letter-spacing: .1em; color: var(--cream); text-decoration: none; }
+.latest-more a::after { content: '  \25B8'; color: var(--gold); }
+.latest-rows { display: grid; gap: 10px; margin-top: 18px; }
+.latest-row a {
+  display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center;
+  padding: 8px; background: rgba(12,10,7,.85); border: var(--px) solid var(--cream);
+}
+.latest-row img { width: 64px; height: 80px; object-fit: cover; display: block; image-rendering: pixelated; background: var(--ink); }
+.latest-row small { display: block; font-size: 8px; color: var(--gold); letter-spacing: .14em; margin-bottom: 6px; }
+.latest-row b { display: block; font-size: 12px; line-height: 1.4; font-weight: normal; }
+.latest-row a:hover, .latest-row a:active { background: var(--cream); color: var(--ink); }
+.latest-row a:hover small { color: var(--red); }
+
 /* ---------- INDEX ---------- */
 .index {
   position: relative;
   z-index: 1;
-  min-height: 100svh;
+  
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10vh 20px;
+  padding: 4vh 16px 10vh;
 }
 .index-inner {
   width: min(820px, 100%);
@@ -305,20 +326,29 @@ body {
     and objects that earned their place.
   </p>
   <div class="title-actions">
-    <button class="start" id="start">Enter the clearing</button>
+    <button class="start" id="start">See what's new</button>
     <a class="shop-now" href="/shop/">Shop the current market</a>
   </div>
 </main>
+
+<section class="latest" id="latest" aria-label="Latest">
+  <p class="latest-label">LATEST FROM SNAFU</p>
+  <div class="latest-feed" id="latest-feed"></div>
+  <div class="latest-more"><a href="/gallery/">Open the feed</a></div>
+  <div class="latest-rows">
+    <div class="latest-row"><a href="/news/editorial/worn-in/"><img src="/assets/covers/worn-in.png" alt="" loading="lazy"><span><small>READ · EDITORIAL</small><b>Worn In</b></span></a></div>
+    <div class="latest-row" id="latest-shop" hidden></div>
+  </div>
+</section>
 
 <section class="index" id="index">
   <div class="index-inner">
     <p class="index-label">SNAFU FIELD GUIDE</p>
     <p class="index-intro">A living record of <em>culture, rare clothing,</em> and found objects. Nothing here was chosen by an algorithm.</p>
     <ul class="index-nav">
-      <li><a href="/news">News <span class="blurb">Dispatches</span></a></li>
-      <li><a href="/gallery">Gallery <span class="blurb">The feed</span></a></li>
+      <li><a href="/news/">News <span class="blurb">Dispatches</span></a></li>
+      <li><a href="/gallery/">Gallery <span class="blurb">The feed</span></a></li>
       <li><a href="/shop/">Shop <span class="blurb">Current market</span></a></li>
-      <li><a href="/goods">Goods <span class="blurb">SNAFU objects</span></a></li>
       <li><a href="/about/">About <span class="blurb">The premise</span></a></li>
     </ul>
   </div>
@@ -346,7 +376,7 @@ body {
 })();
 
 (function () {
-  var index = document.getElementById('index');
+  var index = document.getElementById('latest');
   var start = document.getElementById('start');
   var used = false;
 
@@ -364,6 +394,30 @@ body {
     if (window.scrollY > 40) return;
     begin();
   });
+})();
+/* Latest strip: newest 3 Gallery posts + a live shop piece. */
+(function () {
+  var feed = document.getElementById('latest-feed');
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function draw(posts) {
+    posts = (posts || []).filter(function (p) { return p.photos && p.photos.length; }).slice(0, 3);
+    feed.innerHTML = posts.map(function (p) {
+      return '<a href="/gallery/#' + esc(p.id) + '"><img src="' + esc(p.photos[0].src) + '" alt="' + esc(p.caption || p.title || 'Gallery post') + '" loading="lazy"></a>';
+    }).join('');
+  }
+  fetch('/api/posts', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (d) { draw(d.posts); })
+    .catch(function () { fetch('/content/posts.json').then(function (r) { return r.json(); }).then(function (d) { draw(d.posts); }).catch(function () {}); });
+  var s = document.createElement('script');
+  s.src = '/js/shop-data.js';
+  s.onload = function () {
+    var p = (window.SNAFU_SHOP || []).filter(function (x) { return !x.sold; })[0];
+    var row = document.getElementById('latest-shop');
+    if (!p) return;
+    row.innerHTML = '<a href="/shop/product.html?id=' + esc(p.id) + '"><img src="' + esc((p.images || [])[0] || '') + '" alt="" loading="lazy"><span><small>SHOP · $' + esc(p.price) + '</small><b>' + esc(p.name) + '</b></span></a>';
+    row.hidden = false;
+  };
+  document.head.appendChild(s);
 })();
 </script>
   <script src="/js/site.js" defer></script>

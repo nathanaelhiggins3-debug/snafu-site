@@ -80,7 +80,7 @@
   .arrive {
     position: relative;
     z-index: 2;
-    min-height: 100svh;
+    min-height: 58svh;
     display: grid;
     grid-template-rows: auto 1fr auto;
     padding: clamp(20px, 3vw, 32px);
@@ -161,106 +161,36 @@
   .cue::after { content: '  \25BE'; color: var(--gold); }
   @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:.2} }
 
-  /* ---------- DESKS (3 papers on a stump — placeholder framework) ---------- */
-  .desks {
+  /* ---------- LATEST (flat list: one tap to any piece) ---------- */
+  .latest {
     position: relative;
     z-index: 2;
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 10vh clamp(20px, 4vw, 40px);
-    gap: clamp(24px, 3vw, 36px);
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 4vh 16px 8vh;
   }
-
-  .desks-heading {
-    text-align: center;
-    margin-bottom: clamp(20px, 4vh, 40px);
+  .latest-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .latest-head h2 { font-family: var(--display); font-size: 14px; letter-spacing: .06em; color: var(--cream); text-shadow: var(--px) var(--px) 0 var(--ink); }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .tags a {
+    font-family: var(--display); font-size: 9px; letter-spacing: .1em;
+    color: var(--cream); text-decoration: none; padding: 8px 10px;
+    background: rgba(12,20,18,.75); border: 2px solid rgba(242,228,196,.6);
   }
-  .desks-heading .eyebrow {
-    display: block;
-    font-family: var(--display);
-    font-size: 10px;
-    letter-spacing: .3em;
-    color: var(--gold);
-    margin-bottom: 12px;
-    text-shadow: var(--px) var(--px) 0 var(--ink);
+  .tags a:hover, .tags a:active { background: var(--cream); color: var(--ink); }
+  .pieces { display: flex; flex-direction: column; gap: 14px; }
+  .piece {
+    display: grid; grid-template-columns: 96px 1fr; gap: 14px; align-items: center;
+    padding: 10px; text-decoration: none; color: var(--ink);
+    background: var(--paper); border: var(--px) solid var(--ink);
+    box-shadow: calc(var(--px)*2) calc(var(--px)*2) 0 rgba(2,2,0,.6);
   }
-  .desks-heading h2 {
-    font-family: var(--display);
-    font-size: clamp(18px, 3vw, 32px);
-    color: var(--cream);
-    letter-spacing: .04em;
-    text-shadow:
-      calc(var(--px)*-1) 0 0 var(--ink), var(--px) 0 0 var(--ink),
-      0 calc(var(--px)*-1) 0 var(--ink), 0 var(--px) 0 var(--ink),
-      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.6);
-  }
-
-  .desks-grid {
-    display: grid;
-    gap: clamp(20px, 3vw, 32px);
-    grid-template-columns: 1fr;
-    width: 100%;
-    max-width: 900px;
-  }
-  @media (min-width: 720px) {
-    .desks-grid { grid-template-columns: repeat(3, 1fr); }
-  }
-
-  /* Each desk is a cream paper card. Nail head at top. Pinned to nothing —
-     they float in the dark forest for now. Stump art can come later. */
-  .desk {
-    position: relative;
-    display: block;
-    background: var(--paper);
-    color: var(--ink);
-    text-decoration: none;
-    border: var(--px) solid var(--ink);
-    box-shadow:
-      calc(var(--px)*2) calc(var(--px)*3) 0 rgba(2,2,0,.7),
-      0 0 40px 6px rgba(227,170,77,.1);
-    padding: clamp(24px, 3vw, 32px);
-    text-align: center;
-  }
-  .desk:nth-child(1) { transform: rotate(-.5deg); }
-  .desk:nth-child(2) { transform: rotate(.3deg); }
-  .desk:nth-child(3) { transform: rotate(-.2deg); }
-  .desk::before {
-    content: '';
-    position: absolute;
-    top: calc(var(--px)*-2);
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(var(--px)*4);
-    height: calc(var(--px)*4);
-    background: var(--wood);
-    border: var(--px) solid var(--ink);
-    box-shadow: 0 var(--px) 0 rgba(2,2,0,.6);
-  }
-  .desk .name {
-    display: block;
-    font-family: var(--display);
-    font-size: clamp(13px, 1.5vw, 17px);
-    letter-spacing: .06em;
-    color: var(--ink);
-    margin-bottom: 12px;
-  }
-  .desk .count {
-    display: block;
-    font-family: var(--body);
-    font-size: 15px;
-    color: var(--rose);
-    letter-spacing: .06em;
-  }
-  .desk:hover {
-    background: var(--ink);
-    color: var(--paper);
-    transform: rotate(0);
-  }
-  .desk:hover .name { color: var(--paper); }
-  .desk:hover .count { color: var(--gold); }
+  .piece img { width: 96px; height: 120px; object-fit: cover; display: block; background: var(--ink); image-rendering: pixelated; }
+  .piece .ph { width: 96px; height: 120px; display: grid; place-items: center; background: var(--ink); color: var(--gold); font-family: var(--display); font-size: 18px; }
+  .piece .tag { font-family: var(--display); font-size: 8px; letter-spacing: .12em; color: var(--rose); }
+  .piece h3 { margin: 6px 0; font-family: var(--display); font-size: 13px; line-height: 1.4; }
+  .piece p { font-family: var(--body); font-size: 14px; line-height: 1.4; }
+  .piece:hover, .piece:active { background: var(--cream); }
 
   /* ---------- END OF PATH ---------- */
   .end {
@@ -320,24 +250,22 @@
     <span class="cue">Read on</span>
   </section>
 
-  <!-- desks: three doors down -->
-  <section class="desks" id="desks" aria-label="Desks">
-    <div class="desks-heading">
-      <span class="eyebrow">Choose your desk</span>
-      <h2>Three ways in</h2>
-    </div>
-    <div class="desks-grid">
-      <a class="desk" href="/news/editorial/">
-        <span class="name">Editorial</span>
-        <span class="count">1 dispatch</span>
+  <!-- latest: every published piece, newest first. To publish, add an <a class="piece"> at the top. -->
+  <section class="latest" id="desks" aria-label="Latest dispatches">
+    <div class="latest-head"><h2>Latest</h2></div>
+    <nav class="tags" aria-label="Desks">
+      <a href="/news/editorial/">Editorial</a>
+      <a href="/news/field-notes/">Field Notes</a>
+      <a href="/news/interview/">Interview</a>
+    </nav>
+    <div class="pieces">
+      <a class="piece" href="/news/editorial/worn-in/">
+        <img src="/assets/covers/worn-in.png" alt="" loading="lazy">
+        <div><span class="tag">EDITORIAL · 21 JUL 2026</span><h3>Worn In</h3><p>The center of gravity in resale is moving from mass drops toward single-copy pieces.</p></div>
       </a>
-      <a class="desk" href="/news/field-notes/">
-        <span class="name">Field Notes</span>
-        <span class="count">Discussion</span>
-      </a>
-      <a class="desk" href="/news/interview/">
-        <span class="name">Interview</span>
-        <span class="count">Coming soon</span>
+      <a class="piece" href="/news/field-notes/">
+        <span class="ph" aria-hidden="true">?</span>
+        <div><span class="tag">FIELD NOTES · DISCUSSION</span><h3>Field Notes</h3><p>The discussion desk. Threads, takes and replies from readers.</p></div>
       </a>
     </div>
   </section>

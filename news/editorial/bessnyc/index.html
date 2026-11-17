@@ -24,7 +24,7 @@
 body{background:var(--floor);color:var(--cream);font-family:var(--body);font-size:20px;line-height:1.65;-webkit-font-smoothing:antialiased}
 .scene{position:fixed;inset:0;z-index:0;background:var(--scene) center/cover no-repeat,var(--floor);image-rendering:pixelated}
 .scene::after{content:'';position:absolute;inset:0;background:rgba(12,20,18,.82)}
-.strip{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px clamp(16px,4vw,32px);background:rgba(12,20,18,.9);border-bottom:var(--px) solid var(--moss);font-family:var(--display);font-size:9px;letter-spacing:.18em;color:var(--cream);text-transform:uppercase}
+.strip{position:sticky;top:52px;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px clamp(16px,4vw,32px);background:rgba(12,20,18,.9);border-bottom:var(--px) solid var(--moss);font-family:var(--display);font-size:9px;letter-spacing:.18em;color:var(--cream);text-transform:uppercase}
 .strip a{color:var(--cream);text-decoration:none}.strip a:hover{color:var(--gold)}
 .strip .back::before{content:'\25C2  ';color:var(--rose)}.strip .desk{color:var(--gold)}
 .cover{position:relative;z-index:2;min-height:88vh;display:grid;grid-template-rows:auto 1fr auto;padding:clamp(20px,4vw,40px);overflow:hidden;isolation:isolate}
@@ -165,5 +165,6 @@ figure.fig.full .ph,figure.fig.full img{border-left:0;border-right:0}
   <div class="meta"><span>SNAFU · Editorial</span><span>Los Angeles</span><span>Since 2026</span><span><a href="/privacy/">Privacy</a></span><span><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></span></div>
 </footer>
 <script src="/js/account-layer.js" defer></script>
+  <script src="/js/site.js" defer></script>
 </body>
 </html>

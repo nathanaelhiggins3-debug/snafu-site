@@ -11,3 +11,7 @@ Rules
 - Nothing half-written goes public. Drafts stay unlisted and noindexed until they are done.
 - Empty fields never show. Leave a field blank rather than writing a placeholder.
 - Desk setup (password, storage) is in `DESK-SETUP.md`.
+
+| Menu (every page) | `js/site.js` → `LINKS` | Add or remove a section in one place. Goods returns here once Drop 001 is real. |
+| News list | `news/index.html` → `.pieces` | Add a new `<a class="piece">` at the top when a piece publishes. |
+| Home "Latest" | automatic | Shows the 3 newest Gallery posts and the first unsold shop piece. Update the dispatch row in `index.html` when you publish. |
