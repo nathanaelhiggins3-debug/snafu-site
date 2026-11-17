@@ -30,6 +30,35 @@
 */
 const SNAFU_SHOP = [
   {
+    id: 'p022',
+    sku: 'SNF-HDY-2611-001',
+    name: 'Double-Zip Faded Hoodie',
+    brand: 'GOA',
+    year: '2000s',
+    size: 'Fits slim S men\'s / XS (tagged F)',
+    measurements: { 'pit to pit': 17.5, length: 23, sleeve: 23 },  // inches, flat; sleeve from underarm
+    material: '100% cotton, heavyweight loopback',
+    color: 'Faded beige-gray',
+    closure: 'Double-zip front',
+    origin: 'Japan',
+    condition: 'True used condition. Broken in, with the fade original to the piece. No major flaws.',
+    authNote: 'Signature GOA interior wash-instruction label intact. Original Japanese care tag.',
+    note: 'The finish is the point: a sun-faded over-dye that settled into the body and sleeves on its own. Raglan sleeves, ribbed cuffs and hem, two zips. Early-2000s Japan, worn the way it was meant to be.',
+    price: 150,
+    gender: 'mens',
+    cat: 'tops',
+    cutouts: ['/assets/shop/p022-cut-front.webp', '/assets/shop/p022-cut-back.webp'],
+    images: [
+      '/assets/shop/p022-label.jpg',
+      '/assets/shop/p022-collar.jpg',
+      '/assets/shop/p022-hanging.jpg',
+      '/assets/shop/p022-tag.jpg'
+    ],
+    paymentLink: '',
+    added: '2026-11-17',
+    sold: false
+  },
+  {
     id: 'p021',
     sku: 'SNF-KNT-2607-005',
     name: 'Striped Mohair Sweater',
