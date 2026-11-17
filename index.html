@@ -176,10 +176,21 @@ body {
 /* ---------- LATEST (home) ---------- */
 .latest { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 8vh 16px 0; }
 .latest-label { font-family: var(--display); font-size: 10px; letter-spacing: .2em; color: var(--gold); margin-bottom: 14px; text-shadow: var(--px) var(--px) 0 var(--ink); }
-.latest-feed { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.latest-feed a { display: block; aspect-ratio: 3 / 4; overflow: hidden; background: var(--ink); border: 2px solid rgba(242,228,196,.25); }
+.latest-feed {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  padding: 8px; background: rgba(12,10,7,.88);
+  border: var(--px) solid var(--cream);
+  box-shadow: calc(var(--px)*2) calc(var(--px)*2) 0 rgba(10,8,5,.6);
+}
+.latest-feed a {
+  display: block; aspect-ratio: 3 / 4; overflow: hidden; background: var(--ink);
+  border: 2px solid var(--wheat);
+  box-shadow: 0 0 0 2px var(--ink), var(--px) var(--px) 0 2px rgba(0,0,0,.55);
+}
+.latest-feed a:active, .latest-feed a:hover { border-color: var(--gold); }
 .latest-feed img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.latest-more { display: flex; justify-content: flex-end; margin-top: 8px; }
+.latest-more { display: flex; justify-content: flex-end; margin-top: 10px; }
+.latest-more a { background: rgba(12,10,7,.85); padding: 8px 10px; border: 2px solid rgba(242,228,196,.6); }
 .latest-more a, .latest-row a { font-family: var(--display); font-size: 9px; letter-spacing: .1em; color: var(--cream); text-decoration: none; }
 .latest-more a::after { content: '  \25B8'; color: var(--gold); }
 .latest-rows { display: grid; gap: 10px; margin-top: 18px; }
