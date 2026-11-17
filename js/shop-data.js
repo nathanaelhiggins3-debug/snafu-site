@@ -24,6 +24,26 @@
    material, color, closure, origin, authNote, originalPrice + deal:true.
 */
 const SNAFU_SHOP = [
+  {
+    id: 'p021',
+    sku: 'SNF-KNT-2607-005',
+    name: 'Purple Stripe Mohair Sweater',
+    brand: 'Vintage',
+    year: '1990s',
+    size: 'M',
+    measurements: { chest: 21, length: 25, sleeve: 26, shoulder: 18 },
+    material: 'Mohair blend',
+    color: 'Purple, cream and gray stripe',
+    closure: 'Pullover',
+    condition: 'Very good. Mohair halo intact, no moth.',
+    authNote: 'Hand-inspected. Mohair fiber confirmed by hand and halo. Original knit construction.',
+    note: 'Warm and luminous — the sweater equivalent of morning light.',
+    price: 180,
+    gender: 'unisex',
+    cat: 'knits',
+    images: ['/assets/shop/p021-01.jpg', '/assets/shop/p021-02.jpg'],
+    sold: false
+  },
 ];
 
 // Browser gets window.SNAFU_SHOP; Node (Vercel /api/checkout) gets module.exports.
