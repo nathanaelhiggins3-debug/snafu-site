@@ -352,15 +352,16 @@ a { color: inherit; }
   padding: 4px 7px; z-index: 2;
 }
 .also .card .thumb {
-  aspect-ratio: 1 / 1; background: #f2e4c4; position: relative; z-index: 1;
+  aspect-ratio: 4 / 5; background: #f2e4c4; position: relative; z-index: 1;
+  grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(0, 1fr);
   border-bottom: var(--px) solid var(--cream);
   display: grid; place-items: center;
   font-family: var(--display); font-size: 9px; color: var(--loam); letter-spacing: .12em;
-  text-align: center; padding: 14px; overflow: hidden;
+  text-align: center; padding: 6px 4px 2px; overflow: hidden;
 }
 .also .card.card--deal .thumb { border-bottom-color: var(--deal); }
 .also .card .thumb img { width: 100%; height: 100%; object-fit: cover; }
-.also .card .thumb img.cut { object-fit: contain; image-rendering: auto; background: none;
+.also .card .thumb img.cut { object-fit: contain; object-position: center bottom; min-height: 0; image-rendering: auto; background: none;
   filter: drop-shadow(0 8px 8px rgba(0,0,0,.28)); }
 .also .card .info { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
 .also .card .name { font-family: var(--body); font-size: 14px; letter-spacing: .02em; }
