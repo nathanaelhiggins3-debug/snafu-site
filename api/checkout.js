@@ -149,6 +149,7 @@ module.exports = async (req, res) => {
       shipping_options: SHIPPING_RATES.map((id) => ({ shipping_rate: id })),
       phone_number_collection: { enabled: true },
       custom_text: {
+        shipping_address: { message: 'US Standard and US Express are for US addresses. International orders: please choose International shipping.' },
         submit: { message: 'All sales are final. Every piece is one of one.' }
       },
       metadata: { items: itemList },
