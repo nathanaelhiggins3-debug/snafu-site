@@ -88,6 +88,20 @@ a { color: inherit; }
 .stage-dots { display: flex; justify-content: center; gap: 7px; margin-top: -4px; }
 .stage-dots i { width: 7px; height: 7px; background: rgba(242,228,196,.25); }
 .stage-dots i.on { background: var(--gold); }
+.stage .slide img { cursor: zoom-in; }
+.stage-zoom { position: absolute; left: 10px; bottom: 26px; z-index: 3; font-family: var(--display, monospace); font-size: 8px; letter-spacing: .14em;
+  color: var(--cream); background: rgba(12,20,18,.7); padding: 5px 7px; pointer-events: none; }
+/* Full-screen photo viewer: tap a photo, pinch or double-tap to zoom, drag to pan, swipe to change photo. */
+.zv { position: fixed; inset: 0; z-index: 300; background: #080c0a; display: none; touch-action: none; user-select: none; -webkit-user-select: none; }
+.zv.open { display: block; }
+.zv-img { position: absolute; left: 50%; top: 50%; max-width: 100vw; max-height: 86vh; transform-origin: 0 0; will-change: transform; image-rendering: auto; -webkit-user-drag: none; }
+.zv-bar { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding: calc(env(safe-area-inset-top) + 10px) 14px 10px;
+  font-family: var(--display, monospace); font-size: 10px; letter-spacing: .14em; color: var(--cream); z-index: 2; }
+.zv-bar button, .zv-nav { background: rgba(12,20,18,.85); color: var(--cream); border: 3px solid var(--cream); font-family: inherit; font-size: 11px; letter-spacing: .12em; padding: 9px 12px; cursor: pointer; }
+.zv-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; padding: 12px 10px; }
+.zv-nav.prev { left: 8px; } .zv-nav.next { right: 8px; }
+.zv-hint { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 14px); left: 0; right: 0; text-align: center; font-family: var(--display, monospace); font-size: 8px; letter-spacing: .16em; color: rgba(242,228,196,.6); z-index: 2; }
+@media (hover: none) { .zv-nav { display: none; } }
 .stage .sold-mark {
   position: absolute; top: 10px; left: 0; z-index: 2;
   font-family: var(--display); font-size: 10px; letter-spacing: .14em;
@@ -565,6 +579,7 @@ if (!product) {
       <div class="stage" aria-label="Photos">
         ${product.sold ? '<span class="sold-mark">SOLD</span>' : ''}
         <div class="stage-track" id="stageTrack">${stageHTML}</div>
+        ${slides.length ? '<span class="stage-zoom">TAP TO ZOOM</span>' : ''}
         ${stageCount > 1 ? `<span class="stage-count" id="stageCount">1/${stageCount}</span>
         <div class="stage-dots" id="stageDots">${Array.from({length: stageCount}, (_, i) => `<i${i ? '' : ' class="on"'}></i>`).join('')}</div>` : ''}
       </div>
@@ -637,6 +652,108 @@ if (!product) {
       document.querySelectorAll('#stageDots i').forEach((d, k) => d.classList.toggle('on', k === n));
     }, { passive: true });
   }
+
+  // ---- Photo viewer: tap a photo to open it full screen ----
+  (function () {
+    if (!slides.length || !track) return;
+    const zv = document.createElement('div');
+    zv.className = 'zv'; zv.setAttribute('role', 'dialog'); zv.setAttribute('aria-modal', 'true'); zv.setAttribute('aria-label', 'Photo viewer');
+    zv.innerHTML = '<div class="zv-bar"><span id="zvCount"></span><button type="button" id="zvClose" aria-label="Close">✕ CLOSE</button></div>' +
+      '<img class="zv-img" id="zvImg" alt="">' +
+      (slides.length > 1 ? '<button class="zv-nav prev" type="button" aria-label="Previous photo">◂</button><button class="zv-nav next" type="button" aria-label="Next photo">▸</button>' : '') +
+      '<div class="zv-hint">PINCH OR DOUBLE-TAP TO ZOOM</div>';
+    document.body.appendChild(zv);
+    const img = zv.querySelector('#zvImg');
+    let idx = 0, sc = 1, tx = 0, ty = 0, baseW = 0, baseH = 0;
+
+    const apply = () => { img.style.transform = `translate(${tx}px, ${ty}px) scale(${sc})`; };
+    const fit = () => {
+      // natural fitted size, centered
+      img.style.transform = 'none';
+      const r = img.getBoundingClientRect(); baseW = r.width; baseH = r.height;
+      sc = 1; tx = -baseW / 2; ty = -baseH / 2; apply();
+    };
+    const clamp = () => {
+      const W = innerWidth, H = innerHeight, w = baseW * sc, h = baseH * sc;
+      const cx = W / 2, cy = H / 2;
+      // keep the image covering the centre when zoomed; centred when smaller than the screen
+      if (w <= W) tx = -w / 2; else tx = Math.min(-cx, Math.max(W - cx - w, tx));
+      if (h <= H) ty = -h / 2; else ty = Math.min(-cy, Math.max(H - cy - h, ty));
+    };
+    const zoomAt = (ns, px, py) => {
+      ns = Math.max(1, Math.min(5, ns));
+      const ox = px - innerWidth / 2, oy = py - innerHeight / 2;   // point relative to image origin space
+      tx = ox - (ox - tx) * (ns / sc); ty = oy - (oy - ty) * (ns / sc); sc = ns; clamp(); apply();
+    };
+    const show = (i) => {
+      idx = (i + slides.length) % slides.length;
+      img.onload = fit; img.src = slides[idx].src; img.alt = product.name + ', photo ' + (idx + 1);
+      if (img.complete) fit();
+      zv.querySelector('#zvCount').textContent = slides.length > 1 ? (idx + 1) + '/' + slides.length : '';
+    };
+    const open = (i) => { show(i); zv.classList.add('open'); document.documentElement.style.overflow = 'hidden'; };
+    const close = () => {
+      zv.classList.remove('open'); document.documentElement.style.overflow = '';
+      track.scrollTo({ left: idx * track.clientWidth });
+    };
+
+    track.addEventListener('click', (e) => {
+      const sl = e.target.closest('.slide'); if (!sl || !sl.querySelector('img')) return;
+      open([...track.children].indexOf(sl));
+    });
+    zv.querySelector('#zvClose').addEventListener('click', close);
+    zv.querySelectorAll('.zv-nav').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); show(idx + (b.classList.contains('next') ? 1 : -1)); }));
+    addEventListener('keydown', (e) => {
+      if (!zv.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowRight') show(idx + 1);
+      if (e.key === 'ArrowLeft') show(idx - 1);
+    });
+    addEventListener('resize', () => { if (zv.classList.contains('open')) fit(); });
+
+    // Mouse: click toggles zoom, wheel zooms.
+    img.addEventListener('click', (e) => { if (matchMedia('(hover: none)').matches) return; sc > 1 ? fit() : zoomAt(2.5, e.clientX, e.clientY); });
+    zv.addEventListener('wheel', (e) => { e.preventDefault(); zoomAt(sc * (e.deltaY < 0 ? 1.15 : 0.87), e.clientX, e.clientY); }, { passive: false });
+
+    // Touch: pinch, pan, double-tap, swipe.
+    let pts = {}, startDist = 0, startSc = 1, mid = null, last = null, startX = 0, startY = 0, moved = false, lastTap = 0;
+    const list = () => Object.values(pts);
+    zv.addEventListener('touchstart', (e) => {
+      for (const t of e.changedTouches) pts[t.identifier] = { x: t.clientX, y: t.clientY };
+      const p = list();
+      if (p.length === 2) { startDist = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y); startSc = sc; mid = { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 }; }
+      if (p.length === 1) { last = { ...p[0] }; startX = p[0].x; startY = p[0].y; moved = false; }
+    }, { passive: true });
+    zv.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) if (pts[t.identifier]) pts[t.identifier] = { x: t.clientX, y: t.clientY };
+      const p = list();
+      if (p.length === 2 && startDist) {
+        const d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+        zoomAt(startSc * d / startDist, mid.x, mid.y); moved = true;
+      } else if (p.length === 1 && last) {
+        const dx = p[0].x - last.x, dy = p[0].y - last.y; last = { ...p[0] };
+        if (Math.abs(p[0].x - startX) + Math.abs(p[0].y - startY) > 8) moved = true;
+        if (sc > 1) { tx += dx; ty += dy; clamp(); apply(); }
+      }
+    }, { passive: false });
+    zv.addEventListener('touchend', (e) => {
+      const t0 = e.changedTouches[0];
+      for (const t of e.changedTouches) delete pts[t.identifier];
+      if (list().length) { startDist = 0; const q = list()[0]; last = { ...q }; return; }
+      if (sc === 1 && moved && t0) {
+        const dx = t0.clientX - startX, dy = t0.clientY - startY;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(idx + (dx < 0 ? 1 : -1));
+        else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) close();      // swipe down closes
+      }
+      if (!moved && t0 && !e.target.closest('button')) {
+        const now = Date.now();
+        if (now - lastTap < 300) { sc > 1 ? fit() : zoomAt(2.5, t0.clientX, t0.clientY); lastTap = 0; }
+        else lastTap = now;
+      }
+      if (sc < 1.02 && sc !== 1) fit();
+    });
+  })();
 
   // SAVE mirrors the star next to the price (the star handles sign-in + the shelf).
   const saveBtn = document.getElementById('saveBtn');
