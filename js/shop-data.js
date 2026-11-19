@@ -37,7 +37,7 @@ const SNAFU_SHOP = [
     name: '1991 Gulf War \u201cThat\u2019s All Folks\u201d Tee',
     brand: 'Newstar California (blank)',
     year: 'c. 1991',
-    size: 'Measurements coming',
+    size: 'L',
     material: '100% cotton',
     color: 'Natural white; black and red-pink print',
     closure: 'Crewneck, single-stitch sleeves and hem',
@@ -48,7 +48,7 @@ const SNAFU_SHOP = [
     price: 75,
     gender: 'mens',
     cat: 'tops',
-    cutouts: ['/assets/shop/p025-cut-front.webp'],
+    cutouts: ['/assets/shop/p025-cut-front.webp', '/assets/shop/p025-cut-back.webp'],
     images: [
       '/assets/shop/p025-graphic.jpg',
       '/assets/shop/p025-tag.jpg',
