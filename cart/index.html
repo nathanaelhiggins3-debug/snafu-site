@@ -229,7 +229,7 @@ main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-widt
     // Shop pieces are one-of-one, so they get a stated rule instead of a
     // stepper. Goods are a production run and step freely.
     var qtyCell = i.unique
-      ? '<div class="unique">ONE OF ONE<small>only one exists</small></div>'
+      ? '<div class="unique">QTY 1<small>one available</small></div>'
       : '<div class="qty">' +
           '<button type="button" data-dec="' + esc(i.id) + '" aria-label="One fewer ' + esc(i.name) + '">&minus;</button>' +
           '<span>' + i.qty + '</span>' +
@@ -238,7 +238,7 @@ main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-widt
 
     var tag = i.source === 'goods'
       ? '<span class="origin-tag goods">SNAFU ORIGINAL</span>'
-      : '<span class="origin-tag shop">SHOP &mdash; 1 OF 1</span>';
+      : '<span class="origin-tag shop">SHOP &mdash; CURATED</span>';
 
     return '' +
       '<div class="row">' +
@@ -278,7 +278,7 @@ main { flex: 1; padding: clamp(24px, 4vw, 60px) clamp(16px, 3vw, 32px); max-widt
         '<button class="checkout" id="checkoutBtn" type="button">CHECKOUT · ' + money(total) + '</button>' +
         '<div class="err" id="checkoutErr" role="alert"></div>' +
         '<div class="note">Shipping and tax are added at checkout. ' +
-          'Every piece is one of one, so nothing is held until you pay. ' +
+          'There is one of each piece, and nothing is held until you pay. ' +
           '<strong>All sales are final.</strong> <a href="/shipping/">Shipping &amp; returns</a>' +
         '</div>' +
       '</div>';

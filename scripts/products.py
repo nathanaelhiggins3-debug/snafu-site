@@ -48,7 +48,7 @@ def main():
         img = share_image(p)
         name = p['name']
         bits = [b for b in (p.get('size') and 'Size ' + p['size'] if p.get('size') and 'coming' not in p['size'].lower() else '', p.get('year')) if b]
-        desc = '%s. %s. One of one, $%s at SNAFU.' % (name, ', '.join(bits), p['price']) if bits else '%s. One of one, $%s at SNAFU.' % (name, p['price'])
+        desc = '%s. %s. $%s, curated by SNAFU.' % (name, ', '.join(bits), p['price']) if bits else '%s. $%s, curated by SNAFU.' % (name, p['price'])
         if p.get('sold'):
             desc = '%s. Sold. New pieces land at snafu.quest/shop.' % name
         ld = {

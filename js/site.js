@@ -234,7 +234,7 @@
       w.innerHTML = '<div><button class="x" type="button" aria-label="Close">✕</button><h2>NEW HERE?</h2><ul>' +
         '<li><b>Read</b> — stories, shows and interviews in News.</li>' +
         '<li><b>Scroll</b> — the Gallery feed, updated all the time.</li>' +
-        '<li><b>Shop</b> — one-of-one pieces. When they are gone, they are gone.</li>' +
+        '<li><b>Shop</b> — curated pieces, hand-picked. When they are gone, they are gone.</li>' +
         '<li><b>Save</b> — tap ☆ on anything to keep it on your shelf.</li></ul></div>';
       latest.parentNode.insertBefore(w, latest);
       w.querySelector('.x').addEventListener('click', function () {
