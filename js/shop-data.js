@@ -32,6 +32,36 @@
 */
 const SNAFU_SHOP = [
   {
+    id: 'p025',
+    sku: 'SNF-TEE-2611-002',
+    name: '1991 Gulf War \u201cThat\u2019s All Folks\u201d Tee',
+    brand: 'Newstar California (blank)',
+    year: 'c. 1991',
+    size: 'Measurements coming',
+    material: '100% cotton',
+    color: 'Natural white; black and red-pink print',
+    closure: 'Crewneck, single-stitch sleeves and hem',
+    origin: 'Made in Dominican Republic',
+    condition: 'Worn vintage with light overall age. Small hole/snag near the bottom hem, shown in the photos. Sold as is.',
+    authNote: 'Original Newstar California neck tag: 100% cotton, made in Dominican Republic. Single-stitch sleeves and hem.',
+    note: 'Iraq invaded Kuwait on August 2, 1990. The UN gave Iraq until January 15, 1991 to withdraw. The air war began January 17, and a ceasefire followed on February 28, after 42 days. CNN carried the first night live from Baghdad, and screen printers moved just as fast: one Maryland shop had Desert Storm shirts on press the night after the bombing started. This one is the parody kind. A hand-drawn map of the region, Kuwait underlined, an IRAQ signpost over a smoking crater, a mushroom cloud above it, and the Looney Tunes sign-off underneath. No nuclear weapon was used in the war; the cloud is the cartoon\u2019s punchline.',
+    price: 75,
+    gender: 'mens',
+    cat: 'tops',
+    cutouts: ['/assets/shop/p025-cut-front.webp'],
+    images: [
+      '/assets/shop/p025-graphic.jpg',
+      '/assets/shop/p025-tag.jpg',
+      '/assets/shop/p025-sleeve.jpg',
+      '/assets/shop/p025-front-hanging.jpg'
+    ],
+    stripePrice: 'price_1UdamuLwaRjGaOhuIlmuLJST',
+    paymentLinkId: 'plink_1Udan1LwaRjGaOhuJCnVImnd',
+    paymentLink: 'https://buy.stripe.com/bJe28s84q4u386w31N3sI04',
+    added: '2026-11-19',
+    sold: false
+  },
+  {
     id: 'p024',
     sku: 'SNF-TEE-2611-001',
     name: 'Bess NYC Snake Tee',
