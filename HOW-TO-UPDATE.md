@@ -29,3 +29,7 @@ Sign-ups from the "Get first look" strip are stored in Vercel Blob. While signed
 ## SEO (search + link previews)
 After publishing an article or adding shop pieces, run `python3 scripts/seo.py`. It refreshes link-preview tags, article structured data, `sitemap.xml` and `robots.txt`.
 Each article needs: a specific `<title>`, a 1–2 sentence `<meta name="description">`, `snafu:published` (date) and `snafu:image` (cover).
+
+## Product pages and share previews
+
+Every shop piece gets its own page at /shop/p/<id>/ with its real name, price and a share image, so links sent by text or DM preview properly. After adding or editing a piece in js/shop-data.js, run `python3 scripts/seo.py`; it rebuilds those pages, the share images in assets/og/ and the sitemap. Old /shop/product.html?id= links redirect to the new pages.

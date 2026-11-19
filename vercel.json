@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/shop/product.html",
+      "has": [{ "type": "query", "key": "id", "value": "(?<pid>p[0-9]+)" }],
+      "destination": "/shop/p/:pid/",
+      "permanent": true
+    }
+  ]
+}

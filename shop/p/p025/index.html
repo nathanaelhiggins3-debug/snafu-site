@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <meta name="theme-color" content="#0c1412">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="SNAFU">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>1991 Gulf War “That’s All Folks” Tee — SNAFU.</title>
+  <meta name="description" content="1991 Gulf War “That’s All Folks” Tee. Size L, c. 1991. One of one, $75 at SNAFU.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --px: 3px;
+  --cream: #f2e4c4; --ink: #0c1412; --wheat: #e8d29a;
+  --red: #b8352b; --rose: #d96a5c; --gold: #e3aa4d;
+  --moss: #6b8a3a; --loam: #8a5a2b;
+  --deal: #d4622a; --deal-dim: #7a2f0e;
+  --display: 'Press Start 2P', monospace;
+  --body: 'Pixelify Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--ink); color: var(--cream); font-family: var(--body); min-height: 100vh; }
+img { image-rendering: pixelated; image-rendering: -moz-crisp-edges; }
+a { color: inherit; }
+
+/* ── TOP BAR ── */
+.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px clamp(16px, 3vw, 32px);
+  border-bottom: var(--px) solid var(--cream);
+  position: sticky; top: 52px; z-index: 20;
+  background: var(--ink);
+}
+.top a {
+  font-family: var(--display); font-size: clamp(10px, 1vw, 12px);
+  letter-spacing: .18em; color: var(--cream); text-decoration: none;
+  padding: calc(var(--px)*2) calc(var(--px)*3);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+.top .back::before { content: '\25C2  '; color: var(--rose); }
+.top a:hover { background: var(--cream); color: var(--ink); }
+.top .pack .count { display: inline-block; margin-left: 8px; background: var(--red); color: var(--cream); padding: 2px 6px; font-size: 10px; }
+.top .pack.empty-pack .count { background: var(--loam); }
+
+/* ── PAGE LAYOUT ── */
+.piece {
+  max-width: 900px; margin: 0 auto;
+  padding: clamp(32px, 5vw, 64px) clamp(16px, 3vw, 32px) 40px;
+  display: flex; flex-direction: column;
+  gap: clamp(32px, 4vw, 56px);
+}
+
+
+/* ── STAGE: cutouts float clean on the page, detail shots edge to edge ── */
+.stage { position: relative; }
+.stage-track {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.stage-track::-webkit-scrollbar { display: none; }
+.stage .slide {
+  flex: 0 0 100%; scroll-snap-align: center;
+  display: grid; place-items: center;
+  height: min(42svh, 400px); padding: 6px 0 12px;
+  grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(0, 1fr);
+}
+.stage .slide img { min-height: 0; min-width: 0; }
+.stage .slide img { image-rendering: auto; display: block; max-width: 100%; max-height: 100%; }
+.stage .slide.cut img {
+  object-fit: contain; width: 100%; height: 100%;
+  filter: drop-shadow(0 22px 22px rgba(0,0,0,.55)) drop-shadow(0 2px 2px rgba(0,0,0,.35));
+}
+.stage .slide.detail img { width: 100%; height: 100%; object-fit: cover; }
+.stage-count {
+  position: absolute; top: 6px; right: 0;
+  font-family: var(--display); font-size: 9px; letter-spacing: .12em; color: var(--wheat);
+}
+.stage-dots { display: flex; justify-content: center; gap: 7px; margin-top: -4px; }
+.stage-dots i { width: 7px; height: 7px; background: rgba(242,228,196,.25); }
+.stage-dots i.on { background: var(--gold); }
+.stage .slide img { cursor: zoom-in; }
+.stage-zoom { position: absolute; left: 10px; bottom: 26px; z-index: 3; font-family: var(--display, monospace); font-size: 8px; letter-spacing: .14em;
+  color: var(--cream); background: rgba(12,20,18,.7); padding: 5px 7px; pointer-events: none; }
+/* Full-screen photo viewer: tap a photo, pinch or double-tap to zoom, drag to pan, swipe to change photo. */
+.zv { position: fixed; inset: 0; z-index: 300; background: #080c0a; display: none; touch-action: none; user-select: none; -webkit-user-select: none; }
+.zv.open { display: block; }
+.zv-img { position: absolute; left: 50%; top: 50%; max-width: 100vw; max-height: 86vh; transform-origin: 0 0; will-change: transform; image-rendering: auto; -webkit-user-drag: none; }
+.zv-bar { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding: calc(env(safe-area-inset-top) + 10px) 14px 10px;
+  font-family: var(--display, monospace); font-size: 10px; letter-spacing: .14em; color: var(--cream); z-index: 2; }
+.zv-bar button, .zv-nav { background: rgba(12,20,18,.85); color: var(--cream); border: 3px solid var(--cream); font-family: inherit; font-size: 11px; letter-spacing: .12em; padding: 9px 12px; cursor: pointer; }
+.zv-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; padding: 12px 10px; }
+.zv-nav.prev { left: 8px; } .zv-nav.next { right: 8px; }
+.zv-hint { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 14px); left: 0; right: 0; text-align: center; font-family: var(--display, monospace); font-size: 8px; letter-spacing: .16em; color: rgba(242,228,196,.6); z-index: 2; }
+@media (hover: none) { .zv-nav { display: none; } }
+.stage .sold-mark {
+  position: absolute; top: 10px; left: 0; z-index: 2;
+  font-family: var(--display); font-size: 10px; letter-spacing: .14em;
+  background: var(--red); color: var(--cream); padding: 6px 9px;
+}
+
+/* ── PIXEL COVER (256×384) — legacy ── */
+.cover-wrap {
+  align-self: center;
+  position: relative;
+}
+.cover {
+  width: 256px; height: 384px;
+  background: #0a0a0a;
+  border: var(--px) solid var(--cream);
+  box-shadow: calc(var(--px)*2) calc(var(--px)*2) 0 rgba(2,2,0,.7);
+  display: grid; place-items: center;
+  overflow: hidden;
+  font-family: var(--display); font-size: 10px; color: var(--loam); letter-spacing: .12em; text-align: center; padding: 20px;
+}
+.cover img { width: 100%; height: 100%; object-fit: contain; }
+.is-deal .cover { border-color: var(--deal); box-shadow: calc(var(--px)*2) calc(var(--px)*2) 0 var(--deal-dim); }
+.cover-badge {
+  position: absolute; top: -10px; right: -10px;
+  background: var(--deal); color: var(--ink);
+  font-family: var(--display); font-size: 10px; letter-spacing: .12em;
+  padding: 6px 10px;
+  box-shadow: var(--px) var(--px) 0 var(--deal-dim);
+  transform: rotate(4deg);
+}
+
+/* ── REAL PHOTOS CUE + SCROLL ── */
+.photos-cue {
+  align-self: center;
+  font-family: var(--display); font-size: 10px; letter-spacing: .16em;
+  color: var(--gold);
+  animation: blink 1.4s steps(1, end) infinite;
+}
+.photos-cue::after { content: '  \25BE'; color: var(--moss); }
+@keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .3; } }
+
+.photos {
+  display: flex; gap: 12px;
+  overflow-x: auto; overflow-y: hidden;
+  padding: 4px 4px 14px;
+  scrollbar-color: var(--cream) var(--ink);
+  scrollbar-width: thin;
+}
+.photos::-webkit-scrollbar { height: 8px; }
+.photos::-webkit-scrollbar-track { background: var(--ink); }
+.photos::-webkit-scrollbar-thumb { background: var(--cream); }
+.photos .photo {
+  flex: 0 0 auto; width: clamp(220px, 32vw, 320px); aspect-ratio: 3 / 4;
+  background: var(--wheat);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  overflow: hidden;
+  display: grid; place-items: center;
+  font-family: var(--display); font-size: 10px; color: var(--loam); letter-spacing: .12em; text-align: center; padding: 12px;
+}
+.photos .photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── HEADLINE (name / sku / brand / era / price) ── */
+.head { display: flex; flex-direction: column; gap: 14px; }
+.head h1 {
+  font-family: var(--display);
+  font-size: clamp(20px, 3vw, 30px);
+  line-height: 1.3; color: var(--wheat); letter-spacing: .04em;
+}
+.head .meta-line {
+  font-family: var(--display); font-size: 10px; letter-spacing: .16em;
+  color: var(--cream); opacity: .75;
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+}
+.head .meta-line span::after { content: ' \00B7'; margin-left: 14px; color: var(--loam); }
+.head .meta-line span:last-child::after { content: ''; margin: 0; }
+.head .price-row { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.head .price {
+  font-family: var(--display); font-size: clamp(20px, 2.6vw, 26px);
+  color: var(--gold); letter-spacing: .1em;
+}
+.is-deal .head .price { color: var(--deal); }
+.head .was {
+  font-family: var(--display); font-size: 14px;
+  color: var(--loam); text-decoration: line-through; letter-spacing: .08em;
+}
+.head .price.sold { color: var(--rose); }
+.head .price.sold::before { content: 'SOLD  '; }
+
+/* ── BUY / ADD ── */
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.actions > * { flex: 1 1 140px; }
+.actions > .buy { flex-basis: 100%; }
+.actions .bag { background: transparent; color: var(--cream); }
+.actions .bag.in { background: var(--cream); color: var(--ink); }
+.actions button, .actions a.buy, .actions a.bag {
+  display: inline-block; text-decoration: none; text-align: center;
+  font-family: var(--display); font-size: 11px; letter-spacing: .16em;
+  padding: 14px 20px;
+  border: var(--px) solid var(--cream);
+  cursor: pointer;
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  transition: transform 80ms steps(2, end);
+}
+.actions button:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
+.actions .buy { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.actions .add { background: transparent; color: var(--cream); }
+.is-deal .actions .buy { background: var(--deal); border-color: var(--deal); }
+.actions button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+/* Checkout is not connected yet. The pending state reads as "not open yet"
+   rather than as a dead go-button. */
+.actions .buy.pending {
+  background: transparent; color: var(--wheat);
+  border-color: var(--wheat); border-style: dashed;
+  box-shadow: none; opacity: .8;
+}
+
+/* ── CLAIM CHECK ──
+   A calm, plain-language checkpoint immediately before the deeper product
+   record. It makes the one-of-one purchase model legible without flattening
+   the rest of the page into generic ecommerce language. */
+.claim-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 14px;
+  padding: 18px 20px;
+  border: var(--px) solid var(--gold);
+  background: rgba(227,170,77,.07);
+}
+.claim-check__mark {
+  color: var(--gold);
+  font-family: var(--display);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.claim-check__title {
+  font-family: var(--display); font-size: 9px; letter-spacing: .16em;
+  color: var(--gold); margin-bottom: 7px;
+}
+.claim-check__body {
+  font-family: var(--body); font-size: 15px; line-height: 1.5;
+  color: var(--cream);
+}
+
+/* ── AUTH BADGE ── */
+.auth {
+  padding: 20px;
+  border: var(--px) solid var(--moss);
+  background: rgba(107, 138, 58, .1);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.auth .stamp {
+  font-family: var(--display); font-size: 10px; letter-spacing: .2em;
+  color: var(--moss); text-transform: uppercase;
+}
+.auth .stamp::before { content: '\2714  '; color: var(--moss); }
+.auth .body {
+  font-family: var(--body); font-size: 16px;
+  color: var(--cream); line-height: 1.5;
+}
+
+/* ── EDITORIAL LINE (the note) ── */
+.snafu-line {
+  padding: 20px;
+  border-left: var(--px) solid var(--moss);
+  background: rgba(107,138,58,.08);
+  font-family: var(--body); font-size: 17px;
+  line-height: 1.5; color: var(--cream);
+}
+.snafu-line::before {
+  content: 'THE SNAFU LINE';
+  display: block;
+  font-family: var(--display); font-size: 9px;
+  letter-spacing: .18em; color: var(--moss);
+  margin-bottom: 10px;
+}
+
+/* ── SECTION HEADS (Condition / Measurements / Details / Also Listed / You'd Also Like) ── */
+.sec-head {
+  font-family: var(--display); font-size: 10px; letter-spacing: .2em;
+  color: var(--wheat);
+  border-bottom: var(--px) solid var(--cream);
+  padding-bottom: 8px; margin-bottom: 14px;
+}
+.is-deal .sec-head { color: var(--deal); border-bottom-color: var(--deal); }
+
+.condition { font-family: var(--body); font-size: 16px; line-height: 1.6; color: var(--cream); }
+
+/* Measurements table */
+.measurements .mgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.measurements .m {
+  padding: 12px 14px;
+  border: var(--px) solid var(--cream);
+  background: rgba(242,228,196,.04);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.measurements .m dt {
+  font-family: var(--display); font-size: 9px; letter-spacing: .16em;
+  color: var(--wheat); text-transform: uppercase;
+}
+.measurements .m dd small { font-size: .7em; opacity: .7; }
+.measurements .m dd {
+  font-family: var(--body); font-size: 18px; color: var(--cream);
+}
+
+/* Details grid */
+.details .dgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.details .d {
+  padding: 12px 14px;
+  border: var(--px) solid var(--cream);
+  background: rgba(242,228,196,.04);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.details .d dt {
+  font-family: var(--display); font-size: 9px; letter-spacing: .16em;
+  color: var(--wheat); text-transform: uppercase;
+}
+.details .d dd {
+  font-family: var(--body); font-size: 16px; color: var(--cream);
+}
+
+/* Also listed on */
+.listed .llist { display: flex; flex-wrap: wrap; gap: 10px; }
+.listed .llist a {
+  font-family: var(--display); font-size: 10px; letter-spacing: .12em;
+  color: var(--cream); text-decoration: none;
+  padding: 10px 14px;
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+}
+.listed .llist a:hover { background: var(--cream); color: var(--ink); }
+.listed .llist a::after { content: '  \2197'; color: var(--gold); }
+
+/* ── YOU'D ALSO LIKE ── */
+.also .agrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: clamp(10px, 2vw, 16px);
+}
+.also .card {
+  text-decoration: none; color: var(--cream); background: var(--ink);
+  border: var(--px) solid var(--cream);
+  box-shadow: var(--px) var(--px) 0 rgba(2,2,0,.7);
+  display: flex; flex-direction: column;
+  transition: transform 80ms steps(2, end);
+  position: relative;
+}
+.also .card:hover { transform: translate(calc(var(--px)*-1), calc(var(--px)*-1)); }
+.also .card.card--deal { border-color: var(--deal); box-shadow: var(--px) var(--px) 0 var(--deal-dim); }
+.also .card .deal-badge {
+  position: absolute; top: 0; right: 0;
+  background: var(--deal); color: var(--ink);
+  font-family: var(--display); font-size: 9px; letter-spacing: .1em;
+  padding: 4px 7px; z-index: 2;
+}
+.also .card .thumb {
+  aspect-ratio: 4 / 5; background: #f2e4c4; position: relative; z-index: 1;
+  grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(0, 1fr);
+  border-bottom: var(--px) solid var(--cream);
+  display: grid; place-items: center;
+  font-family: var(--display); font-size: 9px; color: var(--loam); letter-spacing: .12em;
+  text-align: center; padding: 6px 4px 2px; overflow: hidden;
+}
+.also .card.card--deal .thumb { border-bottom-color: var(--deal); }
+.also .card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.also .card .thumb img.cut { object-fit: contain; object-position: center bottom; min-height: 0; image-rendering: auto; background: none;
+  filter: drop-shadow(0 8px 8px rgba(0,0,0,.28)); }
+.also .card .info { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
+.also .card .name { font-family: var(--body); font-size: 14px; letter-spacing: .02em; }
+.also .card .price { font-family: var(--display); font-size: 10px; color: var(--gold); letter-spacing: .1em; }
+.also .card.card--deal .price { color: var(--deal); }
+.also .card .price-row { display: flex; align-items: baseline; gap: 6px; }
+.also .card .price-was { font-family: var(--display); font-size: 9px; color: var(--loam); text-decoration: line-through; letter-spacing: .06em; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--moss); color: var(--ink);
+  border: var(--px) solid var(--ink);
+  padding: 12px 18px;
+  font-family: var(--display); font-size: 11px; letter-spacing: .16em;
+  opacity: 0; pointer-events: none;
+  transition: opacity 200ms steps(3, end);
+  z-index: 30;
+}
+.toast.on { opacity: 1; }
+
+/* ── NOT FOUND ── */
+.notfound {
+  text-align: center; padding: 100px 20px;
+  font-family: var(--display); font-size: 12px;
+  color: var(--wheat); letter-spacing: .16em;
+}
+.notfound a { color: var(--gold); text-decoration: underline; }
+
+/* ── FOOTER ── */
+.colophon {
+  border-top: var(--px) solid var(--cream);
+  padding: 40px clamp(16px, 3vw, 32px);
+  display: grid; gap: 8px;
+  font-family: var(--body); font-size: 14px; color: var(--wheat);
+}
+.colophon .row1 { font-family: var(--display); font-size: 11px; letter-spacing: .18em; color: var(--cream); }
+.colophon a { color: var(--gold); text-decoration: none; }
+.colophon a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .cover { width: 220px; height: 330px; }
+}
+</style>
+<script src="/js/pixels.js"></script>
+  <!-- seo:start -->
+  <link rel="canonical" href="https://www.snafu.quest/shop/p/p025/">
+  <meta property="og:site_name" content="SNAFU">
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="1991 Gulf War “That’s All Folks” Tee">
+  <meta property="og:description" content="1991 Gulf War “That’s All Folks” Tee. Size L, c. 1991. One of one, $75 at SNAFU.">
+  <meta property="og:url" content="https://www.snafu.quest/shop/p/p025/">
+  <meta property="og:image" content="https://www.snafu.quest/assets/og/p025.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="1991 Gulf War “That’s All Folks” Tee">
+  <meta property="product:price:amount" content="75">
+  <meta property="product:price:currency" content="USD">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Product", "name": "1991 Gulf War “That’s All Folks” Tee", "sku": "SNF-TEE-2611-002", "image": ["https://www.snafu.quest/assets/og/p025.jpg"], "description": "1991 Gulf War “That’s All Folks” Tee. Size L, c. 1991. One of one, $75 at SNAFU.", "brand": {"@type": "Brand", "name": "Newstar California (blank)"}, "offers": {"@type": "Offer", "url": "https://www.snafu.quest/shop/p/p025/", "priceCurrency": "USD", "price": "75", "availability": "https://schema.org/InStock", "itemCondition": "https://schema.org/UsedCondition"}}</script>
+  <script>window.SNAFU_PRODUCT_ID = "p025";</script>
+  <!-- seo:end -->
+</head>
+<body data-snafu-hide-account-entry>
+
+<header class="top">
+  <a class="back" href="index.html">Back to the market</a>
+  <a class="pack empty-pack" id="pack" data-cart-badge href="/cart/">
+    BAG <span class="count" id="packCount" data-cart-count>0</span>
+  </a>
+</header>
+
+<main id="main"></main>
+
+<div class="toast" id="toast">ADDED TO BAG</div>
+
+<footer class="colophon">
+  <div class="row1">SNAFU. &nbsp;·&nbsp; SHOP &nbsp;·&nbsp; LOS ANGELES</div>
+  <div>Every item is cleaned. Every item is authenticated.</div>
+  <div><a href="/privacy/">Privacy</a></div>
+  <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
+</footer>
+
+<script src="/js/shop-data.js"></script>
+<script src="/js/cart.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const id = window.SNAFU_PRODUCT_ID || params.get('id');
+const ALL = window.SNAFU_SHOP || [];
+const product = ALL.find(p => p.id === id);
+const main = document.getElementById('main');
+
+if (!product) {
+  main.innerHTML = `
+    <div class="notfound">
+      This piece is not here anymore.<br><br>
+      <a href="index.html">back to the market</a>
+    </div>`;
+} else {
+  const isDeal = product.deal === true;
+
+  // Hero image slot: mainline uses the 16-bit pixel cover, deals use the first
+  // real photo. Mainline falls back to first real photo until the pixel cover
+  // is generated in Retro Diffusion.
+  const heroImg = isDeal
+    ? (product.images && product.images[0])
+    : (product.coverImage || (product.images && product.images[0]));
+  const heroLabel = isDeal ? 'REAL PHOTO PENDING' : 'PIXEL COVER PENDING';
+  const coverInner = heroImg
+    ? `<img src="${heroImg}" alt="${product.name}">`
+    : heroLabel;
+
+  // Real photos scroll — falls back to a single frame if no images yet
+  const photosHTML = (product.images && product.images.length)
+    ? product.images.map((src, i) => `
+        <div class="photo"><img src="${src}" alt="${product.name} photo ${i+1}"></div>
+      `).join('')
+    : `<div class="photo">REAL PHOTOS<br>PENDING</div>
+       <div class="photo">REAL PHOTOS<br>PENDING</div>
+       <div class="photo">REAL PHOTOS<br>PENDING</div>`;
+
+  // Meta line (SKU · BRAND · ERA · ORIGIN)
+  const metaBits = [];
+  if (product.sku)    metaBits.push(product.sku);
+  if (product.brand)  metaBits.push(product.brand);
+  if (product.year)   metaBits.push(product.year);
+  if (product.origin) metaBits.push(product.origin);
+  const metaLine = metaBits.map(b => `<span>${b}</span>`).join('');
+
+  // Price row (was/now if deal)
+  const priceHTML = isDeal && product.originalPrice
+    ? `<span class="was">$${product.originalPrice}</span>
+       <span class="price ${product.sold ? 'sold' : ''}">$${product.price}</span>`
+    : `<span class="price ${product.sold ? 'sold' : ''}">$${product.price}</span>`;
+
+  // Measurements
+  let measurementsHTML = '';
+  if (product.measurements && Object.keys(product.measurements).length) {
+    const items = Object.entries(product.measurements).map(([k, v]) => `
+      <dl class="m"><dt>${k}</dt><dd>${v}"${product.measurementsCm && product.measurementsCm[k] ? ` <small>/ ${product.measurementsCm[k]}cm</small>` : ''}</dd></dl>
+    `).join('');
+    measurementsHTML = `
+      <section class="measurements">
+        <div class="sec-head">Measurements</div>
+        <div class="mgrid">${items}</div>
+      </section>`;
+  }
+
+  // Details (material / color / closure / size)
+  const detailBits = [];
+  if (product.size)     detailBits.push(['Size (tagged)', product.size]);
+  if (product.material) detailBits.push(['Material', product.material]);
+  if (product.color)    detailBits.push(['Color', product.color]);
+  if (product.closure)  detailBits.push(['Closure', product.closure]);
+  const detailsHTML = detailBits.length ? `
+    <section class="details">
+      <div class="sec-head">Details</div>
+      <div class="dgrid">
+        ${detailBits.map(([k, v]) => `<dl class="d"><dt>${k}</dt><dd>${v}</dd></dl>`).join('')}
+      </div>
+    </section>` : '';
+
+  // Also listed on
+  const listedHTML = (product.alsoListedOn && product.alsoListedOn.length) ? `
+    <section class="listed">
+      <div class="sec-head">Also Listed On</div>
+      <div class="llist">
+        ${product.alsoListedOn.map(l => `<a href="${l.url}" target="_blank" rel="noopener">${l.platform}</a>`).join('')}
+      </div>
+    </section>` : '';
+
+  // You'd also like — cross-tier: prefer same category, then same gender, exclude self, cap 4
+  function pickRelated() {
+    const others = ALL.filter(p => p.id !== product.id);
+    const sameCat  = others.filter(p => p.cat === product.cat);
+    const sameGen  = others.filter(p => p.gender === product.gender && p.cat !== product.cat);
+    const rest     = others.filter(p => p.cat !== product.cat && p.gender !== product.gender);
+    return [...sameCat, ...sameGen, ...rest].slice(0, 4);
+  }
+  const related = pickRelated();
+  const relatedCard = p => {
+    const d = p.deal === true;
+    const price = d && p.originalPrice
+      ? `<div class="price-row"><span class="price-was">$${p.originalPrice}</span><span class="price">$${p.price}</span></div>`
+      : `<div class="price">$${p.price}</div>`;
+    const thumb = (p.cutouts && p.cutouts[0]) ? `<img class="cut" src="${p.cutouts[0]}" alt="${p.name}" loading="lazy">` : p.coverImage
+      ? `<img src="${p.coverImage}" alt="${p.name}">`
+      : p.name.toUpperCase();
+    return `
+      <a class="card ${d ? 'card--deal' : ''}" href="/shop/p/${p.id}/">
+        ${d ? '<span class="deal-badge">DEAL</span>' : ''}
+        <div class="thumb">${thumb}</div>
+        <div class="info">
+          <div class="name">${p.name}</div>
+          ${price}
+        </div>
+      </a>`;
+  };
+  const alsoHTML = related.length ? `
+    <section class="also">
+      <div class="sec-head">You May Also Like</div>
+      <div class="agrid">${related.map(relatedCard).join('')}</div>
+    </section>` : '';
+
+  // Stage: background-removed cutouts first, then detail shots (labels, tags, texture).
+  const cuts = product.cutouts || [];
+  const details = cuts.length ? (product.images || []) : (product.images || []);
+  const slides = cuts.map(src => ({ src, cut: true })).concat(details.map(src => ({ src, cut: false })));
+  const stageCount = slides.length;
+  const stageHTML = slides.length
+    ? slides.map((sl, i) => `<div class="slide ${sl.cut ? 'cut' : 'detail'}"><img src="${sl.src}" alt="${product.name}, photo ${i + 1} of ${slides.length}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></div>`).join('')
+    : `<div class="slide cut"><span>PHOTOS SOON</span></div>`;
+
+  main.innerHTML = `
+    <article class="piece ${isDeal ? 'is-deal' : ''}">
+
+      <div class="stage" aria-label="Photos">
+        ${product.sold ? '<span class="sold-mark">SOLD</span>' : ''}
+        <div class="stage-track" id="stageTrack">${stageHTML}</div>
+        ${slides.length ? '<span class="stage-zoom">TAP TO ZOOM</span>' : ''}
+        ${stageCount > 1 ? `<span class="stage-count" id="stageCount">1/${stageCount}</span>
+        <div class="stage-dots" id="stageDots">${Array.from({length: stageCount}, (_, i) => `<i${i ? '' : ' class="on"'}></i>`).join('')}</div>` : ''}
+      </div>
+
+      <div class="head">
+        <h1>${product.name}</h1>
+        <div class="meta-line">${metaLine}</div>
+        <div class="price-row">${priceHTML}
+          <button class="snafu-star" data-star-type="product"
+                  data-star-ref="/shop/product.html?id=${product.id}"
+                  data-star-title="${product.name}" data-star-image="${heroImg || ''}"
+                  data-star-section="${isDeal ? 'deals' : 'shop'}"></button>
+        </div>
+      </div>
+
+      <div class="actions">
+        ${product.sold
+          ? `<button class="buy" disabled>SOLD</button>`
+          : product.paymentLink
+            ? `<a class="buy" id="buyBtn" href="${product.paymentLink}" rel="noopener">BUY NOW · $${product.price}</a>
+               <button class="bag" id="bagBtn" type="button">+ ADD TO BAG</button>`
+            : `<button class="buy pending" disabled title="This piece is not open for checkout yet.">COMING SOON</button>`}
+        <button class="add snafu-save" id="saveBtn" type="button" ${product.sold ? 'disabled' : ''}>☆ SAVE</button>
+      </div>
+
+      ${product.sold ? '' : `
+        <aside class="claim-check" aria-label="Before you claim this piece">
+          <div class="claim-check__mark" aria-hidden="true">01</div>
+          <div>
+            <div class="claim-check__title">Before you claim it</div>
+            <p class="claim-check__body">One piece, one buyer. Review the condition and measurements below; fit is personal. Every item is cleaned and ready to wear. Pay securely by card through Stripe. Shipping is added at checkout. <b>All sales are final.</b> <a href="/shipping/">Shipping &amp; returns</a></p>
+          </div>
+        </aside>`}
+
+      ${product.authNote ? `
+        <div class="auth">
+          <div class="stamp">Authenticated by SNAFU</div>
+          <div class="body">${product.authNote}</div>
+        </div>` : ''}
+
+      ${product.condition ? `
+        <section>
+          <div class="sec-head">Condition</div>
+          <div class="condition">${product.condition}</div>
+        </section>` : ''}
+
+      ${measurementsHTML}
+
+      ${detailsHTML}
+
+      ${product.note ? `<div class="snafu-line">${product.note}</div>` : ''}
+
+      ${listedHTML}
+
+      ${alsoHTML}
+
+    </article>
+  `;
+
+  // ── PIXEL: ViewContent — fires once per product page load ──
+  if (typeof snafuTrackViewContent === 'function') {
+    snafuTrackViewContent(product.name, product.sku || product.id, product.price, product.cat);
+  }
+
+  const track = document.getElementById('stageTrack');
+  if (track && stageCount > 1) {
+    track.addEventListener('scroll', () => {
+      const n = Math.round(track.scrollLeft / track.clientWidth);
+      document.getElementById('stageCount').textContent = (n + 1) + '/' + stageCount;
+      document.querySelectorAll('#stageDots i').forEach((d, k) => d.classList.toggle('on', k === n));
+    }, { passive: true });
+  }
+
+  // ---- Photo viewer: tap a photo to open it full screen ----
+  (function () {
+    if (!slides.length || !track) return;
+    const zv = document.createElement('div');
+    zv.className = 'zv'; zv.setAttribute('role', 'dialog'); zv.setAttribute('aria-modal', 'true'); zv.setAttribute('aria-label', 'Photo viewer');
+    zv.innerHTML = '<div class="zv-bar"><span id="zvCount"></span><button type="button" id="zvClose" aria-label="Close">✕ CLOSE</button></div>' +
+      '<img class="zv-img" id="zvImg" alt="">' +
+      (slides.length > 1 ? '<button class="zv-nav prev" type="button" aria-label="Previous photo">◂</button><button class="zv-nav next" type="button" aria-label="Next photo">▸</button>' : '') +
+      '<div class="zv-hint">PINCH OR DOUBLE-TAP TO ZOOM</div>';
+    document.body.appendChild(zv);
+    const img = zv.querySelector('#zvImg');
+    let idx = 0, sc = 1, tx = 0, ty = 0, baseW = 0, baseH = 0;
+
+    const apply = () => { img.style.transform = `translate(${tx}px, ${ty}px) scale(${sc})`; };
+    const fit = () => {
+      // natural fitted size, centered
+      img.style.transform = 'none';
+      const r = img.getBoundingClientRect(); baseW = r.width; baseH = r.height;
+      sc = 1; tx = -baseW / 2; ty = -baseH / 2; apply();
+    };
+    const clamp = () => {
+      const W = innerWidth, H = innerHeight, w = baseW * sc, h = baseH * sc;
+      const cx = W / 2, cy = H / 2;
+      // keep the image covering the centre when zoomed; centred when smaller than the screen
+      if (w <= W) tx = -w / 2; else tx = Math.min(-cx, Math.max(W - cx - w, tx));
+      if (h <= H) ty = -h / 2; else ty = Math.min(-cy, Math.max(H - cy - h, ty));
+    };
+    const zoomAt = (ns, px, py) => {
+      ns = Math.max(1, Math.min(5, ns));
+      const ox = px - innerWidth / 2, oy = py - innerHeight / 2;   // point relative to image origin space
+      tx = ox - (ox - tx) * (ns / sc); ty = oy - (oy - ty) * (ns / sc); sc = ns; clamp(); apply();
+    };
+    const show = (i) => {
+      idx = (i + slides.length) % slides.length;
+      img.onload = fit; img.src = slides[idx].src; img.alt = product.name + ', photo ' + (idx + 1);
+      if (img.complete) fit();
+      zv.querySelector('#zvCount').textContent = slides.length > 1 ? (idx + 1) + '/' + slides.length : '';
+    };
+    const open = (i) => { show(i); zv.classList.add('open'); document.documentElement.style.overflow = 'hidden'; };
+    const close = () => {
+      zv.classList.remove('open'); document.documentElement.style.overflow = '';
+      track.scrollTo({ left: idx * track.clientWidth });
+    };
+
+    track.addEventListener('click', (e) => {
+      const sl = e.target.closest('.slide'); if (!sl || !sl.querySelector('img')) return;
+      open([...track.children].indexOf(sl));
+    });
+    zv.querySelector('#zvClose').addEventListener('click', close);
+    zv.querySelectorAll('.zv-nav').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); show(idx + (b.classList.contains('next') ? 1 : -1)); }));
+    addEventListener('keydown', (e) => {
+      if (!zv.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowRight') show(idx + 1);
+      if (e.key === 'ArrowLeft') show(idx - 1);
+    });
+    addEventListener('resize', () => { if (zv.classList.contains('open')) fit(); });
+
+    // Mouse: click toggles zoom, wheel zooms.
+    img.addEventListener('click', (e) => { if (matchMedia('(hover: none)').matches) return; sc > 1 ? fit() : zoomAt(2.5, e.clientX, e.clientY); });
+    zv.addEventListener('wheel', (e) => { e.preventDefault(); zoomAt(sc * (e.deltaY < 0 ? 1.15 : 0.87), e.clientX, e.clientY); }, { passive: false });
+
+    // Touch: pinch, pan, double-tap, swipe.
+    let pts = {}, startDist = 0, startSc = 1, mid = null, last = null, startX = 0, startY = 0, moved = false, lastTap = 0;
+    const list = () => Object.values(pts);
+    zv.addEventListener('touchstart', (e) => {
+      for (const t of e.changedTouches) pts[t.identifier] = { x: t.clientX, y: t.clientY };
+      const p = list();
+      if (p.length === 2) { startDist = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y); startSc = sc; mid = { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 }; }
+      if (p.length === 1) { last = { ...p[0] }; startX = p[0].x; startY = p[0].y; moved = false; }
+    }, { passive: true });
+    zv.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) if (pts[t.identifier]) pts[t.identifier] = { x: t.clientX, y: t.clientY };
+      const p = list();
+      if (p.length === 2 && startDist) {
+        const d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+        zoomAt(startSc * d / startDist, mid.x, mid.y); moved = true;
+      } else if (p.length === 1 && last) {
+        const dx = p[0].x - last.x, dy = p[0].y - last.y; last = { ...p[0] };
+        if (Math.abs(p[0].x - startX) + Math.abs(p[0].y - startY) > 8) moved = true;
+        if (sc > 1) { tx += dx; ty += dy; clamp(); apply(); }
+      }
+    }, { passive: false });
+    zv.addEventListener('touchend', (e) => {
+      const t0 = e.changedTouches[0];
+      for (const t of e.changedTouches) delete pts[t.identifier];
+      if (list().length) { startDist = 0; const q = list()[0]; last = { ...q }; return; }
+      if (sc === 1 && moved && t0) {
+        const dx = t0.clientX - startX, dy = t0.clientY - startY;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(idx + (dx < 0 ? 1 : -1));
+        else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) close();      // swipe down closes
+      }
+      if (!moved && t0 && !e.target.closest('button')) {
+        const now = Date.now();
+        if (now - lastTap < 300) { sc > 1 ? fit() : zoomAt(2.5, t0.clientX, t0.clientY); lastTap = 0; }
+        else lastTap = now;
+      }
+      if (sc < 1.02 && sc !== 1) fit();
+    });
+  })();
+
+  // SAVE mirrors the star next to the price (the star handles sign-in + the shelf).
+  const saveBtn = document.getElementById('saveBtn');
+  const star = document.querySelector('.price-row .snafu-star');
+  if (saveBtn && star) {
+    const sync = () => { const on = star.classList.contains('is-starred'); saveBtn.textContent = on ? '★ SAVED' : '☆ SAVE'; };
+    saveBtn.addEventListener('click', () => { star.click(); setTimeout(sync, 400); });
+    new MutationObserver(sync).observe(star, { attributes: true, attributeFilter: ['class'] });
+  }
+  // Bag: one-of-one, so a second tap just opens the bag.
+  const bagBtn = document.getElementById('bagBtn');
+  const syncBag = () => {
+    if (!bagBtn || !window.SNAFU_CART) return;
+    const inBag = window.SNAFU_CART.has(product.id);
+    bagBtn.classList.toggle('in', inBag);
+    bagBtn.textContent = inBag ? 'IN YOUR BAG · VIEW' : '+ ADD TO BAG';
+  };
+  if (bagBtn) {
+    syncBag();
+    window.addEventListener('snafu:cart', syncBag);
+    bagBtn.addEventListener('click', () => {
+      if (window.SNAFU_CART.has(product.id)) { location.href = '/cart/'; return; }
+      window.SNAFU_CART.add(product.id, 'shop');
+      showToast('ADDED TO BAG');
+      if (typeof snafuTrackAddToCart === 'function') snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);
+    });
+  }
+
+  // Live check: if the piece already sold through Stripe, say so.
+  if (!product.sold && product.paymentLinkId) {
+    fetch('/api/checkout?status=' + product.id).then(r => r.ok ? r.json() : null).then(d => {
+      if (!d || !(d.sold || []).includes(product.id)) return;
+      const acts = document.querySelector('.actions');
+      if (acts) acts.innerHTML = '<button class="buy" disabled>SOLD</button>';
+      const cc = document.querySelector('.claim-check'); if (cc) cc.remove();
+      if (window.SNAFU_CART) window.SNAFU_CART.remove(product.id);
+    }).catch(() => {});
+  }
+
+  const buyBtn = document.getElementById('buyBtn');
+  if (buyBtn) buyBtn.addEventListener('click', () => {
+    if (typeof snafuTrackAddToCart === 'function') snafuTrackAddToCart(product.name, product.sku || product.id, product.price, product.cat);
+  });
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 1500);
+}
+
+</script>
+<script src="/js/account-layer.js" defer></script>
+  <script src="/js/site.js" defer></script>
+</body>
+</html>

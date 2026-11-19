@@ -358,7 +358,7 @@ function cardHTML(p) {
        </div>`
     : `<div class="price-now">$${p.price}</div>`;
   return `
-    <a class="card ${p.sold ? 'sold' : ''}" href="product.html?id=${p.id}">
+    <a class="card ${p.sold ? 'sold' : ''}" href="/shop/p/${p.id}/">
       <span class="deal-badge">DEAL</span>
       <div class="thumb">${thumb}</div>
       <div class="info">

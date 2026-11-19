@@ -443,11 +443,11 @@ a { color: inherit; }
   <div><a href="mailto:nate@snafu.quest">nate@snafu.quest</a></div>
 </footer>
 
-<script src="../js/shop-data.js"></script>
-<script src="../js/cart.js"></script>
+<script src="/js/shop-data.js"></script>
+<script src="/js/cart.js"></script>
 <script>
 const params = new URLSearchParams(location.search);
-const id = params.get('id');
+const id = window.SNAFU_PRODUCT_ID || params.get('id');
 const ALL = window.SNAFU_SHOP || [];
 const product = ALL.find(p => p.id === id);
 const main = document.getElementById('main');
@@ -549,7 +549,7 @@ if (!product) {
       ? `<img src="${p.coverImage}" alt="${p.name}">`
       : p.name.toUpperCase();
     return `
-      <a class="card ${d ? 'card--deal' : ''}" href="product.html?id=${p.id}">
+      <a class="card ${d ? 'card--deal' : ''}" href="/shop/p/${p.id}/">
         ${d ? '<span class="deal-badge">DEAL</span>' : ''}
         <div class="thumb">${thumb}</div>
         <div class="info">

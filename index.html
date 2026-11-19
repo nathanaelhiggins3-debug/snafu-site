@@ -448,7 +448,7 @@ body {
     var p = (window.SNAFU_SHOP || []).filter(function (x) { return !x.sold; })[0];
     var row = document.getElementById('latest-shop');
     if (!p) return;
-    row.innerHTML = '<a href="/shop/product.html?id=' + esc(p.id) + '"><img src="' + esc((p.images || [])[0] || '') + '" alt="" loading="lazy"><span><small>SHOP · $' + esc(p.price) + '</small><b>' + esc(p.name) + '</b></span></a>';
+    row.innerHTML = '<a href="/shop/p/' + esc(p.id) + '/"><img src="' + esc((p.images || [])[0] || '') + '" alt="" loading="lazy"><span><small>SHOP · $' + esc(p.price) + '</small><b>' + esc(p.name) + '</b></span></a>';
     row.hidden = false;
   };
   document.head.appendChild(s);

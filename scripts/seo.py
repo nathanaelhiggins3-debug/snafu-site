@@ -11,7 +11,7 @@ import json, os, re, subprocess, html
 from datetime import date
 
 SITE = 'https://www.snafu.quest'  # the live host (snafu.quest redirects here)
-SKIP = ('admin/', 'desk/', 'looks-desk/', 'account/', 'cart/', 'checkout/', 'shop/cart.html', 'shop/deals.html', 'goods/', 'shop/product.html')  # product pages are per-?id; listed in the sitemap below
+SKIP = ('admin/', 'desk/', 'looks-desk/', 'account/', 'cart/', 'checkout/', 'shop/cart.html', 'shop/deals.html', 'goods/', 'shop/product.html', 'shop/p/')  # product pages are built by scripts/products.py; listed in the sitemap below
 DEFAULT_IMG = '/assets/icon-512.png'
 START, END = '<!-- seo:start -->', '<!-- seo:end -->'
 
@@ -82,10 +82,10 @@ def main():
             sitemap.append((url, published or date.today().isoformat(), is_article))
 
     # one sitemap entry per live shop piece
-    shop = subprocess.run(['node', '-e', 'console.log(JSON.stringify(require("./js/shop-data.js")))'], capture_output=True, text=True).stdout
-    for p in json.loads(shop or '[]'):
+    import products
+    for p in products.main():
         if not p.get('sold'):
-            sitemap.append((SITE + '/shop/product.html?id=' + p['id'], p.get('added') or date.today().isoformat(), False))
+            sitemap.append((SITE + '/shop/p/' + p['id'] + '/', p.get('added') or date.today().isoformat(), False))
     sitemap.sort(key=lambda x: (x[0] != SITE + '/', not x[2], x[0]))
     out = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for u, d, art in sitemap:

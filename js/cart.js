@@ -72,7 +72,7 @@
     } else {
       image = (entry.cutouts && entry.cutouts[0]) || entry.coverImage || (entry.images && entry.images[0]) || "";
       sub = [entry.year, entry.origin, entry.size].filter(Boolean).join("  ·  ");
-      href = "/shop/product.html?id=" + entry.id;
+      href = "/shop/p/" + entry.id + "/";
     }
     return {
       id: entry.id,
